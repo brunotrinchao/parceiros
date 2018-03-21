@@ -15,13 +15,12 @@ class CreatePropertiesTable extends Migration
     {
         Schema::create('properties', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('id_client')->unsigned();
-            $table->foreign('id_client')->references('id')->on('clients');
-            $table->decimal('amount', 10, 2)->comment('Valor do imóvel')->unique();
-            $table->decimal('input', 10, 2)->comment('Valor da entrada');
-            $table->integer('plots')->comment('Parcelas pretendida');
-            $table->integer('deadline')->comment('Prazo')->unique();
-            $table->char('type', 1)->comment('Proprietário | Interessado');
+            $table->integer('client_id')->unsigned();
+            $table->foreign('client_id')->references('id')->on('clients');
+            $table->decimal('amount', 10, 2)->comment('Valor do imóvel');
+            $table->string('type_propertie')->comment('Tipo de imóvel');
+            $table->string('neighborhood')->comment('Bairro pretendido');
+            $table->char('type', 1)->comment('Proprietário | Interessado | Todos');
             $table->text('note')->comment('Observação');
             $table->timestamps();
         });

@@ -13,7 +13,7 @@ class ContactsTableSeeder extends Seeder
     public function run()
     {
         Contact::create([
-            'id_client'    => 1,
+            'client_id'    => 1,
             'phone'         => '71987940816'
         ]);
     }

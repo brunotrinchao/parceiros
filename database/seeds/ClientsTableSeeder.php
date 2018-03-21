@@ -13,11 +13,12 @@ class ClientsTableSeeder extends Seeder
     public function run()
     {
         Client::create([
-            'id_user'   =>  1,
+            'user_id'   =>  1,
             'name'      =>  'Fulano',
             'email'     =>  'fulano@teste.com',
             'birth'     =>  date('1983-04-17'),
             'sex'       =>  'M',
+            'type'      =>  'F',
             'type'      =>  'F',
             'cpf_cnpj'  =>  '01023644517',
             'date'      =>  date('Y-m-d')

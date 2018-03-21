@@ -15,8 +15,9 @@ $this->group(['middleware' => ['auth'], 'namespace' => 'Admin\Imoveis'], functio
     // dashboard
     $this->get('admin/imoveis', 'AdminImoveisController@index')->name('admin.imoveis.home');
     // Indicações -> Proprietário
-    $this->get('admin/imoveis/indicacao/proprietario/comprar', 'Indicacao\Proprietario\AdminComprarController@index')->name('admin.imoveis.indicacao.proprietario.comprar');
-    $this->post('admin/imoveis/indicacao/proprietario/comprar', 'Indicacao\Proprietario\AdminComprarController@insertBuy')->name('admin.imoveis.indicacao.proprietario.comprar');
+    $this->get('admin/imoveis/indicacao/comprar', 'Indicacao\AdminComprarController@index')->name('admin.imoveis.indicacao.comprar');
+    $this->post('admin/imoveis/indicacao/comprar', 'Indicacao\AdminComprarController@insertBuy')->name('admin.imoveis.indicacao.comprar');
+    $this->post('admin/imoveis/indicacao/filtro', 'Indicacao\AdminComprarController@search')->name('admin.imoveis.indicacao.comprar.filtro');
 });
 
 $this->get('/', 'Site\SiteController@index')->name('home');

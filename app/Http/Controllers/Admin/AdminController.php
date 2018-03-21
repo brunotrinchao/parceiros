@@ -19,15 +19,15 @@ class AdminController extends Controller
                     'icon'    => 'pencil-square',
                     'submenu' => [
                         [
+                            'text'    => 'Comprar',
+                            'url'     => 'admin/imoveis/indicacao/comprar',
+                            'icon'     => 'circle'
+                        ],
+                        [
                             'text'    => 'Proprietário',
                             'url'     => '#',
                             'icon'     => 'circle',
                             'submenu' => [
-                                [
-                                    'text' => 'Comprar',
-                                    'url'  => 'admin/imoveis/indicacao/proprietario/comprar',
-                                    'icon'     => 'angle-double-right'
-                                ],
                                 [
                                     'text' => 'Vender',
                                     'url'  => '#',
@@ -45,16 +45,6 @@ class AdminController extends Controller
                             'url'     => '#',
                             'icon'     => 'circle',
                             'submenu' => [
-                                [
-                                    'text' => 'Comprar',
-                                    'url'  => '#',
-                                    'icon'     => 'angle-double-right'
-                                ],
-                                [
-                                    'text' => 'Vender',
-                                    'url'  => '#',
-                                    'icon'     => 'angle-double-right'
-                                ],
                                 [
                                     'text' => 'Alugar',
                                     'url'  => '#',

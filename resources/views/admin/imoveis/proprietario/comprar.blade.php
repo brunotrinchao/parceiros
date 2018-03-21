@@ -24,11 +24,149 @@
   opacity: .9;
 }
 </style>
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.27/daterangepicker.css"> 
+
 @stop
 @section('js')
-  <script>
-    $(function() {
-      $('.select2').select2()
+<!-- bootstrap mask money -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-maskmoney/3.0.2/jquery.maskMoney.min.js"></script>
+<!-- bootstrap imnutmask -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
+<!-- bootstrap datepicker -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.21.0/moment-with-locales.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.27/daterangepicker.js"></script>    
+<script>
+$(function() {
+      $('.select2').select2();
+
+     //Date picker
+     $('#datetimepicker').daterangepicker({
+        "singleDatePicker": true,
+        "autoApply": true,
+        "locale": {
+            "format": "MM/DD/YYYY",
+            "separator": " - ",
+            "applyLabel": "Apply",
+            "cancelLabel": "Cancel",
+            "fromLabel": "From",
+            "toLabel": "To",
+            "customRangeLabel": "Custom",
+            "weekLabel": "W",
+            "daysOfWeek": [
+                "Do",
+                "Se",
+                "Te",
+                "Qu",
+                "Qu",
+                "Se",
+                "Sa"
+            ],
+            "monthNames": [
+                "Janeiro",
+                "Fevereiro",
+                "Março",
+                "Abril",
+                "Maio",
+                "Junho",
+                "Julho",
+                "Agosto",
+                "Setembro",
+                "Outubro",
+                "Novembro",
+                "Dezembro"
+            ],
+            "firstDay": 1
+        },
+        "alwaysShowCalendars": true,
+        "startDate": "03/15/2018",
+        "endDate": "03/21/2018",
+        "opens": "left"
+    }, function(start, end, label) {
+      console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+    });
+
+
+    var start = moment().subtract(29, 'days');
+    var end = moment();
+     $('#data_cadastro').daterangepicker({
+        ranges: {
+           'Hoje': [moment(), moment()],
+           'Ontem': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+           'Últimos 7 dias': [moment().subtract(6, 'days'), moment()],
+           'Este mês': [moment().startOf('month'), moment().endOf('month')],
+           'Mês anterior': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        },
+        "locale": {
+            "format": "DD/MM/YYYY",
+            "separator": " até ",
+            "applyLabel": "Aplicar",
+            "cancelLabel": "Cancelar",
+            "fromLabel": "De",
+            "toLabel": "Para",
+            "customRangeLabel": "Selecionar período",
+            "daysOfWeek": [
+                "Do",
+                "Se",
+                "Te",
+                "Qu",
+                "Qu",
+                "Se",
+                "Sa"
+            ],
+            "monthNames": [
+                "Janeiro",
+                "Fevereiro",
+                "Março",
+                "Abril",
+                "Maio",
+                "Junho",
+                "Julho",
+                "Agosto",
+                "Setembro",
+                "Outubro",
+                "Novembro",
+                "Dezembro"
+            ],
+            "firstDay": 1
+        },
+        "startDate": start,
+        "endDate": end,
+        "opens": "center",
+        "endDate": end,
+        "maxDate": end,
+        "autoUpdateInput": false,
+        "alwaysShowCalendars": false,
+    }, function(start, end, label) {
+      if (start.format('DD/MM/YYYY') !== end.format('DD/MM/YYYY')) {
+          $('#data_cadastro').val(start.format('DD/MM/YYYY') + '-' + end.format('DD/MM/YYYY'));
+      } else {
+          $('#data_cadastro').val(start.format('DD/MM/YYYY'));
+      }
+    });
+
+
+    
+    $('#cpf').mask('999.999.999-99', { 'placeholder': '__.___.___-__' });
+    $('#telefone').mask("(99) 9999-9999?9", { 'placeholder': '(  ) _____-____)' })
+        .focusout(function (event) {  
+            var target, phone, element;  
+            target = (event.currentTarget) ? event.currentTarget : event.srcElement;  
+            phone = target.value.replace(/\D/g, '');
+            element = $(target);  
+            element.unmask();  
+            if(phone.length > 10) {  
+                element.mask("(99) 99999-999?9");  
+            } else {  
+                element.mask("(99) 9999-9999?9");  
+            }  
+        });
+    $('.valor').maskMoney({
+      prefix: 'R$ ',
+      decimal:",", 
+      thousands:"."
+    });
+
       // novo
       $('form[name=novo_imovel] select[name=type]').change(function(){
         var value = $(this).val();
@@ -40,7 +178,7 @@
         var numPhone = $('.clone_add_phone').length;
         var html = '<div class="col-md-6 clone_add_phone">';
         html += '<div class="input-group">';
-        html += '<input type="text" name="phone[]" class="form-control" placeholder="Telefone" required>';
+        html += '<input type="text" name="phone[]" class="form-control telefone" placeholder="Telefone" required>';
         html += '<span class="input-group-btn">';
         html += '<a class="btn btn-danger remove_phone" href="#"><i class="fa fa-minus"></i></a>';
         html += '</span>';
@@ -48,6 +186,19 @@
         html += '<br>';
         html += '</div>';
         $('.v_content_phones').append(html);
+        $('.telefone').mask("(99) 9999-9999?9", { 'placeholder': '(  ) _____-____)' })
+        .focusout(function (event) {  
+            var target, phone, element;  
+            target = (event.currentTarget) ? event.currentTarget : event.srcElement;  
+            phone = target.value.replace(/\D/g, '');
+            element = $(target);  
+            element.unmask();  
+            if(phone.length > 10) {  
+                element.mask("(99) 99999-999?9");  
+            } else {  
+                element.mask("(99) 9999-9999?9");  
+            }  
+        });
       });
 
       // Remove phone
@@ -75,9 +226,20 @@
           },
           success: function(data){
             $('.loader').fadeOut('fast', function(){
-            console.log(data);
-              $(this).remove();
+            var tipo = (data.success)? 'success' : 'danger';
+            var html = '<div class="alert alert-'+tipo+' alert-dismissible">';
+                  html += '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>';
+                  html += data.message;
+                  html += '</div>';
+                $('.v_content_msg').append(html);
+                $(this).remove();
             });
+            if(data.success){
+              $('form[name=novo_imovel] input').val('');
+              $('form[name=novo_imovel] textarea').val('');
+              $('form[name=novo_imovel] select').val('');
+              $('.v_content_phones').empty();
+            }
           },
           error: function(data){
              console.log(data.responseJSON.errors);
@@ -118,39 +280,18 @@
       <i class="fa fa-filter"></i> Filtrar</h3>
   </div>
   <div class="box-body">
-    <div class="row">
-      <form action="">
+
+  <form action="{{ route('admin.imoveis.indicacao.comprar.filtro')}}" method="POST" class="form form-inline">
         <input type="hidden" name="sessao" value="indicacao">
-        <input type="hidden" name="tipo" value="proprietario">
         <input type="hidden" name="acao" value="comprar">
-        <div class="col-md-2">
-          <div class="form-group">
-            <input type="text" class="form-control" placeholder="Nome">
-          </div>
-        </div>
-        <div class="col-md-2">
-          <div class="form-group">
-            <input class="form-control" type="text" placeholder="Telefone"> </div>
-        </div>
-        <div class="col-md-2">
-          <div class="form-group">
-            <input type="text" class="form-control pull-right" placeholder="data">
-          </div>
-        </div>
-        <div class="col-md-2">
-          <div class="form-group">
-            <button type="submit" class="btn btn-primary">
-              <i class="fa fa-search"></i>
-            </button>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="form-group">
+        {!! csrf_field() !!}
+            <input type="text" name="name" class="form-control" placeholder="Nome">
+            <input class="form-control" name="phone" type="text" id="telefone" placeholder="Telefone">
+            <input type="text" name="date" class="form-control" id="data_cadastro" value="{{ date('d/m/Y')}}" placeholder="data">
+            <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
             <a href="#" class="btn btn-primary pull-right" data-toggle="modal" data-target="#comprarModal"><i class="fa fa-plus"></i> Novo</a>
-          </div>
-        </div>
       </form>
-    </div>
+
   </div>
 </div>
 
@@ -172,19 +313,40 @@
         </tr>
       </thead>
       <tbody>
+          
         @forelse($clients as $client)
+        
         <tr>
-          <td><a href="#" class="btn-link">{{ $client->client_name }}</a></td>
-          <td>{{ $client->client_email }}</td>
-          <td>{{ $client->contact_phone }}</td>
-          <td>Cliente sem perfil</td>
-        <td>valor</td>
+          <td><a href="#" class="btn-link">{{ $client->name }}</a></td>
+          <td>{{ $client->email }}</td>
+          <td>
+              @if(count($client->contacts) > 0)
+                @forelse($client->contacts as $contato)
+                  {{ $contato->phone }} <br>
+                @empty
+                @endforelse
+              @else
+                -
+              @endif
+            </td>
+          <td>
+            @forelse($client->properties as $propertie)
+            {{ $client->formatStatusPropertie($propertie->properties_status['status']) }}
+            @empty
+            @endforelse
+          </td>
+        <td>
+            @forelse($client->properties as $propertie)
+            R$ {{ number_format($propertie->amount, 2, ',','.') }}
+            @empty
+            @endforelse
+        </td>
           <td width="50px">
               <div class="btn-group">
                   <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <span class="caret"></span>
                   </button>
-                  <ul class="dropdown-menu dropdown-menu-right">
+                  <ul class="dropdown-menu dropdown-menu-right" style="left: auto">
                     <li><a href="#"><i class="fa fa-dollar"></i> Gerar novo negócio</a></li>
                   </ul>
                 </div>
@@ -194,6 +356,7 @@
         @endforelse
       </tbody>
     </table>
+    {!! $clients->links() !!}
   </div>
   <!-- /.box-body -->
 </div>
@@ -211,19 +374,6 @@
         <div class="modal-body">
                 <div class="row">
                   <div class="col-md-12 v_content_msg"></div>
-                  <div class="col-md-12">
-                      <h4 style="background-color:#f7f7f7; font-size: 18px; text-align: center; padding: 7px 10px; margin-top: 0;">
-                     Dados Pessoais
-                      </h4>
-                  </div>
-                  <div class="col-md-6">
-                    <label>Tipo</label>
-                    <select class="form-control select2" name="type" style="width: 100%">
-                      <option value="J" selected>Pessoa Juridica</option>
-                      <option value="F">Pessoa Física</option>
-                    </select>
-                  </div>
-                  <div class="col-md-6 clearfix"></div>
                   <div class="col-md-6">
                       <div class="form-group">
                           <label>Nome</label>
@@ -236,26 +386,26 @@
                           <input type="email" name="email" class="form-control" placeholder="E-mail">
                         </div>
                   </div>
-                  <div class="col-md-6">
-                      <div class="form-group">
-                        <label>Nº Funcionários</label>
-                        <input type="text" name="n_officies" class="form-control" placeholder="Nº Funcionários">
-                      </div>
-                  </div>
                   <div class="col-md-4">
                       <div class="form-group">
                         <label>Sexo</label>
                         <select class="form-control select2" name="sex" style="width: 100%">
-                            <option value="" selected>.: Select :.</option>
+                            <option value="" selected>.: Selecione :.</option>
                             <option value="M">Masculino</option>
                             <option value="F">Feminino</option>
                           </select>
                       </div>
                   </div>
-                  <div class="col-md-6" class="v_cpf_cnpj">
+                  <div class="col-md-4" class="v_cpf_cnpj">
                       <div class="form-group">
-                        <label>CNPJ</label>
-                        <input type="text" name="cpf_cnpj" class="form-control" placeholder="CNPJ">
+                        <label>CPF</label>
+                        <input type="text" id="cpf" name="cpf_cnpj" class="form-control" placeholder="CPF">
+                      </div>
+                  </div>
+                  <div class="col-md-4">
+                      <div class="form-group">
+                        <label>Data de nascimento</label>
+                        <input type="text" name="birth" id="datetimepicker" class="form-control" placeholder="Data de nascimento">
                       </div>
                   </div>
                   <!-- contato -->
@@ -277,32 +427,26 @@
                   </div>
                   <div class="col-md-6">
                       <div class="form-group">
-                        <label>Valor do crédito</label>
-                        <input type="text" name="amount" class="form-control" placeholder="Valor do crédito">
+                        <label>Valor do imóvel</label>
+                        <input type="text" name="amount" class="form-control valor" placeholder="Valor do crédito">
                       </div>
                   </div>
                   <div class="col-md-6">
                       <div class="form-group">
-                        <label>Valor do lance</label>
-                        <input type="text" name="input" class="form-control" placeholder="Valor do lance">
+                        <label>Tipo do imóvel</label>
+                        <input type="text" name="type_propertie" class="form-control" placeholder="Tipo do imóvel">
                       </div>
                   </div>
                   <div class="col-md-6">
                       <div class="form-group">
-                        <label>Parcela pretendida</label>
-                        <input type="text" name="plots" class="form-control" placeholder="Parcela pretendida">
-                      </div>
-                  </div>
-                  <div class="col-md-6">
-                      <div class="form-group">
-                        <label>Prazo de compra</label>
-                        <input type="text" name="deadline" class="form-control" placeholder="Prazo de compra">
+                        <label>Bairro de preferência</label>
+                        <input type="text" name="neighborhood" class="form-control" placeholder="Bairro de preferência">
                       </div>
                   </div>
                   <div class="col-md-12">
                       <div class="form-group">
                         <label>Observações</label>
-                        <textarea class="form-control" rows="3"></textarea>
+                        <textarea class="form-control" name="note" rows="3"></textarea>
                       </div>
                   </div>
                 </div>
