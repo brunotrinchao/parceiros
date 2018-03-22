@@ -17,7 +17,7 @@ class AdminComprarController extends AdminController
 
     public function index(){
         $clients = Client::where('clients.user_id', auth()->user()->id)
-                            ->paginate($this->totalPage);
+                        ->paginate($this->totalPage);
         foreach ($clients as $key => $client) {
             $addresses = $client->addresses;
             $contacts = $client->contacts;
@@ -65,9 +65,12 @@ class AdminComprarController extends AdminController
     }
 
 
-    public function search(Request $request, Client $clients){
+    public function search(Request $request, Client $client){
         $dataFrom = $request->all();
-        $searchClients = $clients->search($dataFrom, $this->totalPage);
+        $clients = $client->search($dataFrom, $this->totalPage);
+        $properties = $client->formatStatusPropertie(null);
+
+        return view('admin.imoveis.proprietario.comprar', compact('clients', 'properties'));
     }
 
     private static function numberUnformat($number)
@@ -80,4 +83,5 @@ class AdminComprarController extends AdminController
         }
         return $ret;
     }
+
 }

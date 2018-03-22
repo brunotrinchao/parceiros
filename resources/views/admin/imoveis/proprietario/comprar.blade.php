@@ -256,7 +256,16 @@ $(function() {
           }
       });
       });
+
+      // Visualizar
+      $('.visualizarCompra').click(function(e){
+        e.preventDefault()
+        var compra_id = $(this).attr('data-id');
+        $('#comprarEditarModal').modal('show');
+      });
     });
+
+    
   </script>
 @stop
 
@@ -317,7 +326,7 @@ $(function() {
         @forelse($clients as $client)
         
         <tr>
-          <td><a href="#" class="btn-link">{{ $client->name }}</a></td>
+          <td><a href="#" data-id="{{ $client->id }}" class="btn-link visualizarCompra">{{ $client->name }}</a></td>
           <td>{{ $client->email }}</td>
           <td>
               @if(count($client->contacts) > 0)
@@ -356,7 +365,7 @@ $(function() {
         @endforelse
       </tbody>
     </table>
-    {!! $clients->links() !!}
+    {{--  {!! $clients->links() !!}  --}}
   </div>
   <!-- /.box-body -->
 </div>
@@ -455,6 +464,102 @@ $(function() {
                 <button type="submit" class="btn btn-primary">Cadastrar</button>
               </div>
           </form>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+
+<!-- MODAL | Comprar (Editar - Vizualizar) -->
+<div id="comprarEditarModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Bruno José Souza Trinchão</h4>
+        </div>
+        <div class="modal-body">
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                  <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">Dados pessoais</a></li>
+                  <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">Negócios</a></li>
+                </ul>
+                <div class="tab-content">
+                  <div class="tab-pane active" id="tab_1">
+                      <div class="row">
+                          <div class="col-md-12 v_content_msg"></div>
+                          <div class="col-md-6">
+                              <div class="form-group">
+                                  <label>Nome</label>
+                                  <input type="text" name="name" class="form-control" placeholder="Nome">
+                                </div>
+                          </div>
+                          <div class="col-md-6">
+                              <div class="form-group">
+                                  <label>E-mail</label>
+                                  <input type="email" name="email" class="form-control" placeholder="E-mail">
+                                </div>
+                          </div>
+                          <div class="col-md-4">
+                              <div class="form-group">
+                                <label>Sexo</label>
+                                <select class="form-control select2" name="sex" style="width: 100%">
+                                    <option value="" selected>.: Selecione :.</option>
+                                    <option value="M">Masculino</option>
+                                    <option value="F">Feminino</option>
+                                  </select>
+                              </div>
+                          </div>
+                          <div class="col-md-4" class="v_cpf_cnpj">
+                              <div class="form-group">
+                                <label>CPF</label>
+                                <input type="text" id="cpf" name="cpf_cnpj" class="form-control" placeholder="CPF">
+                              </div>
+                          </div>
+                          <div class="col-md-4">
+                              <div class="form-group">
+                                <label>Data de nascimento</label>
+                                <input type="text" name="birth" id="datetimepicker" class="form-control" placeholder="Data de nascimento">
+                              </div>
+                          </div>
+                          <!-- contato -->
+                          <div class="col-md-12">
+                              <div class="form-group">
+                                <label>Contato</label>
+                                <input type="text" name="contact" class="form-control" placeholder="Contato">
+                              </div>
+                          </div>
+                          <div class="col-md-12">
+                            <a href="#" class="btn btn-link add_phone"><i class="fa fa-plus"></i> Adicionar telefone</a>
+                          </div>
+                          <!-- Container pphones -->
+                          <div class="col-md-6 clone_add_phone">
+                            <div class="input-group">
+                              <input type="text" name="phone[]" class="form-control telefone" placeholder="Telefone" required>
+                              <span class="input-group-btn">
+                              <a class="btn btn-danger remove_phone" href="#"><i class="fa fa-minus"></i></a>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                  </div>
+                  <!-- /.tab-pane -->
+                  <div class="tab-pane" id="tab_2">
+                    The European languages are members of the same family. Their separate existence is a myth.
+                    For science, music, sport, etc, Europe uses the same vocabulary. The languages only differ
+                    in their grammar, their pronunciation and their most common words. Everyone realizes why a
+                    new common language would be desirable: one could refuse to pay expensive translators. To
+                    achieve this, it would be necessary to have uniform grammar, pronunciation and more common
+                    words. If several languages coalesce, the grammar of the resulting language is more simple
+                    and regular than that of the individual languages.
+                  </div>
+                  <!-- /.tab-pane -->
+                </div>
+                <!-- /.tab-content -->
+              </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Cadastrar</button>
+        </div>
       </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
   </div><!-- /.modal -->
