@@ -41,7 +41,7 @@ $(function() {
       $('.select2').select2();
 
      //Date picker
-     $('#datetimepicker').daterangepicker({
+     $('.datetimepicker').daterangepicker({
         "singleDatePicker": true,
         "autoApply": true,
         "locale": {
@@ -147,8 +147,8 @@ $(function() {
 
 
     
-    $('#cpf').mask('999.999.999-99', { 'placeholder': '__.___.___-__' });
-    $('#telefone').mask("(99) 9999-9999?9", { 'placeholder': '(  ) _____-____)' })
+    $('.cpf').mask('999.999.999-99', { 'placeholder': '__.___.___-__' });
+    $('.telefone').mask("(99) 9999-9999?9", { 'placeholder': '(  ) _____-____)' })
         .focusout(function (event) {  
             var target, phone, element;  
             target = (event.currentTarget) ? event.currentTarget : event.srcElement;  
@@ -175,8 +175,10 @@ $(function() {
       // Add phone
       $('.add_phone').click(function(e){
         e.preventDefault();
+        var col = ($(this).attr('data-col').length > 0)? $(this).attr('data-col') : 6;
+        console.log(col);
         var numPhone = $('.clone_add_phone').length;
-        var html = '<div class="col-md-6 clone_add_phone">';
+        var html = '<div class="col-md-'+col+' clone_add_phone">';
         html += '<div class="input-group">';
         html += '<input type="text" name="phone[]" class="form-control telefone" placeholder="Telefone" required>';
         html += '<span class="input-group-btn">';
@@ -261,7 +263,32 @@ $(function() {
       $('.visualizarCompra').click(function(e){
         e.preventDefault()
         var compra_id = $(this).attr('data-id');
-        $('#comprarEditarModal').modal('show');
+
+        $.get( "./comprar/"+compra_id, function(retorno){
+          if(retorno.success){
+            $.each(retorno.clients, function(i, e){
+             $('#comprarEditarModal form[name=editClient] input[name=' + i +']').val(e).attr('readonly', 'readonly').focus();
+            });
+            $.each(retorno.clients.contacts, function(i, e){
+              console.log(e.phone);
+              var html = '<div class="col-md-4 clone_add_phone">';
+              html += '<div class="input-group">';
+              html += '<input type="text" name="phone[]" class="form-control telefone" val="'+e.phone+'" placeholder="'+e.phone+'" readonly>';
+              html += '<span class="input-group-btn">';
+              html += '<a class="btn btn-danger remove_phone" href="#"><i class="fa fa-minus"></i></a>';
+              html += '</span>';
+              html += '</div>';
+              html += '<br>';
+              html += '</div>';
+              $('.v_content_phones').append(html);
+            });
+            $('form[name=editClient] .select2-selection__rendered').html((retorno.clients.sex == 'M')? 'Masculino' : 'Feminino' );
+            $('.select2').attr("disabled", true);
+            $('#comprarEditarModal').modal('show');
+          }else{
+
+          }
+        });
       });
     });
 
@@ -295,7 +322,7 @@ $(function() {
         <input type="hidden" name="acao" value="comprar">
         {!! csrf_field() !!}
             <input type="text" name="name" class="form-control" placeholder="Nome">
-            <input class="form-control" name="phone" type="text" id="telefone" placeholder="Telefone">
+            <input class="form-control telefone" name="phone" type="text" placeholder="Telefone">
             <input type="text" name="date" class="form-control" id="data_cadastro" value="{{ date('d/m/Y')}}" placeholder="data">
             <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
             <a href="#" class="btn btn-primary pull-right" data-toggle="modal" data-target="#comprarModal"><i class="fa fa-plus"></i> Novo</a>
@@ -314,10 +341,10 @@ $(function() {
       <thead>
         <tr>
           <th>Nome</th>
-          <th>E-mail</th>
-          <th>Telefone</th>
-          <th>Status</th>
-          <th>Valor</th>
+          <th class="hidden-sm">E-mail</th>
+          <th class="hidden-sm">Telefone</th>
+          <th class="hidden-sm">Status</th>
+          <th class="hidden-sm">Valor</th>
           <th style="width: 40px"></th>
         </tr>
       </thead>
@@ -327,8 +354,8 @@ $(function() {
         
         <tr>
           <td><a href="#" data-id="{{ $client->id }}" class="btn-link visualizarCompra">{{ $client->name }}</a></td>
-          <td>{{ $client->email }}</td>
-          <td>
+          <td class="hidden-sm">{{ $client->email }}</td>
+          <td class="hidden-sm">
               @if(count($client->contacts) > 0)
                 @forelse($client->contacts as $contato)
                   {{ $contato->phone }} <br>
@@ -338,13 +365,13 @@ $(function() {
                 -
               @endif
             </td>
-          <td>
+          <td class="hidden-sm">
             @forelse($client->properties as $propertie)
             {{ $client->formatStatusPropertie($propertie->properties_status['status']) }}
             @empty
             @endforelse
           </td>
-        <td>
+        <td clss="hidden-sm">
             @forelse($client->properties as $propertie)
             R$ {{ number_format($propertie->amount, 2, ',','.') }}
             @empty
@@ -408,13 +435,13 @@ $(function() {
                   <div class="col-md-4" class="v_cpf_cnpj">
                       <div class="form-group">
                         <label>CPF</label>
-                        <input type="text" id="cpf" name="cpf_cnpj" class="form-control" placeholder="CPF">
+                        <input type="text" name="cpf_cnpj" class="form-control cpf" placeholder="CPF">
                       </div>
                   </div>
                   <div class="col-md-4">
                       <div class="form-group">
                         <label>Data de nascimento</label>
-                        <input type="text" name="birth" id="datetimepicker" class="form-control" placeholder="Data de nascimento">
+                        <input type="text" name="birth" class="form-control datetimepicker" placeholder="Data de nascimento">
                       </div>
                   </div>
                   <!-- contato -->
@@ -485,7 +512,8 @@ $(function() {
                 </ul>
                 <div class="tab-content">
                   <div class="tab-pane active" id="tab_1">
-                      <div class="row">
+                    <form action="" name="editClient">  
+                    <div class="row">
                           <div class="col-md-12 v_content_msg"></div>
                           <div class="col-md-6">
                               <div class="form-group">
@@ -512,35 +540,33 @@ $(function() {
                           <div class="col-md-4" class="v_cpf_cnpj">
                               <div class="form-group">
                                 <label>CPF</label>
-                                <input type="text" id="cpf" name="cpf_cnpj" class="form-control" placeholder="CPF">
+                                <input type="text" name="cpf_cnpj" class="form-control cpf" placeholder="CPF">
                               </div>
                           </div>
                           <div class="col-md-4">
                               <div class="form-group">
                                 <label>Data de nascimento</label>
-                                <input type="text" name="birth" id="datetimepicker" class="form-control" placeholder="Data de nascimento">
+                                <input type="text" name="birth" class="form-control datetimepicker" placeholder="Data de nascimento">
                               </div>
                           </div>
                           <!-- contato -->
-                          <div class="col-md-12">
+                          <div class="col-md-4">
                               <div class="form-group">
                                 <label>Contato</label>
                                 <input type="text" name="contact" class="form-control" placeholder="Contato">
                               </div>
                           </div>
+                        </div>
+                        <div class="row">
                           <div class="col-md-12">
-                            <a href="#" class="btn btn-link add_phone"><i class="fa fa-plus"></i> Adicionar telefone</a>
+                            <label>Telefones</label>
+                            <a href="#" data-col="4" class="btn btn-link add_phone"><i class="fa fa-plus"></i> Adicionar telefone</a>
                           </div>
-                          <!-- Container pphones -->
-                          <div class="col-md-6 clone_add_phone">
-                            <div class="input-group">
-                              <input type="text" name="phone[]" class="form-control telefone" placeholder="Telefone" required>
-                              <span class="input-group-btn">
-                              <a class="btn btn-danger remove_phone" href="#"><i class="fa fa-minus"></i></a>
-                              </span>
-                            </div>
+                          <div class="v_content_phones">
                           </div>
                         </div>
+                      </form>
+                    </form>
                   </div>
                   <!-- /.tab-pane -->
                   <div class="tab-pane" id="tab_2">

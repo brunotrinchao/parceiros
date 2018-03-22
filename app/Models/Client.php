@@ -52,6 +52,7 @@ class Client extends Model
         
     }
 
+
     public function addresses(){
         return $this->hasMany(Address::class);
     }

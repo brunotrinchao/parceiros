@@ -73,6 +73,24 @@ class AdminComprarController extends AdminController
         return view('admin.imoveis.proprietario.comprar', compact('clients', 'properties'));
     }
 
+    public function getClient($id){
+        $clients = Client::where('clients.id', $id)
+                        ->first();
+        $addresses = $clients->addresses;
+        $contacts = $clients->contacts;
+        $properties = $clients->properties;
+        foreach ($properties as $key => $propertie) {
+            $properties_status = $propertie->properties_status;
+        }
+        if(!empty($clients)){
+            $data['clients'] = $clients; 
+            $data['success'] = true; 
+        }else{
+            $data['success'] = false; 
+        }
+        return $data;
+    }
+
     private static function numberUnformat($number)
     {
         $ret = null;
