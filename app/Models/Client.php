@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Address;
 use App\Models\Contact;
 use App\Models\Imovel\Properties;
+use App\User;
 
 class Client extends Model
 {
@@ -63,6 +64,10 @@ class Client extends Model
 
     public function properties(){
         return $this->hasMany(Properties::class);
+    }
+
+    public function users(){
+        return $this->belongsTo(User::class);
     }
 
     private function validaCPF($cpf)

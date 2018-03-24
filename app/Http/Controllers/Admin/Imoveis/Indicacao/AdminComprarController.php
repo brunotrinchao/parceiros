@@ -6,9 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Admin\AdminController;
+use Illuminate\Support\Facades\DB;
 use App\Models\Client;
 use App\Models\Imovel\Properties;
 use App\Models\Contact;
+use App\User;
 
 class AdminComprarController extends AdminController
 {
@@ -16,17 +18,27 @@ class AdminComprarController extends AdminController
     private $totalPage = 2;
 
     public function index(){
-        $clients = Client::where('clients.user_id', auth()->user()->id)
-                        ->paginate($this->totalPage);
-        foreach ($clients as $key => $client) {
-            $addresses = $client->addresses;
-            $contacts = $client->contacts;
-            $properties = $client->properties;
-            foreach ($properties as $key => $propertie) {
-                $properties_status = $propertie->properties_status;
-            }
-        }
-        // dd($clients);
+        $clients = DB::table('clients')
+        ->select('clients.id',
+        'clients.user_id',
+        'clients.birth',
+        'clients.contact',
+        'clients.cpf_cnpj',
+        'clients.date',
+        'clients.email',
+        'clients.name',
+        'clients.n_officials',
+        'clients.sex',
+        'clients.type')
+        ->selectRaw('GROUP_CONCAT(contacts.phone) AS phone')
+        ->join('users', 'users.id', '=', 'clients.user_id')
+        ->join('partners', 'partners.id', '=', 'users.partner_id')
+        ->join('contacts', 'clients.id', '=', 'contacts.client_id')
+        ->where('users.id', '=', intval(auth()->user()->id))
+        ->groupBy('contacts.client_id')
+        // ->toSql();
+        ->get();
+
         return view('admin.imoveis.proprietario.comprar', compact('clients'));
     }
 

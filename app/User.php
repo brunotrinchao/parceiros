@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Models\Client;
+use App\Models\Partner;
 class User extends Authenticatable
 {
     use Notifiable;
@@ -19,5 +20,9 @@ class User extends Authenticatable
 
     public function clients(){
         return $this->hasMany(Client::class);
+    }
+
+    public function partners(){
+        return $this->hasMany(Partner::class);
     }
 }

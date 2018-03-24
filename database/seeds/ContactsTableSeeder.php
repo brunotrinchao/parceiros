@@ -12,9 +12,11 @@ class ContactsTableSeeder extends Seeder
      */
     public function run()
     {
-        Contact::create([
-            'client_id'    => 1,
-            'phone'         => '71987940816'
-        ]);
+        for($i = 16; $i <= 52; $i++){
+            Contact::create([
+                'client_id'    => $i,
+                'phone'         => '71987940816'
+            ]);
+        }
     }
 }

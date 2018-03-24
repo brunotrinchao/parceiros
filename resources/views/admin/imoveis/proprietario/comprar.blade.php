@@ -1,302 +1,199 @@
-@extends('adminlte::page') 
-@section('title_prefix', 'Indicação | Comprar') 
-@section('css')
-<style>
-.loader{
-  position:fixed;
-  left:0;
-  top:0;
-  width: 100%;
-  height: 100%;
-  z-index: 999999;
-  background-color: rgba(0,0,0,.5);
-  display:none;
-}
-.loader img{
-  position: absolute; 
-  top:50%; 
-  margin-top:-20px; 
-  left:50%; 
-  margin-left:-20px;
-  background: #fff; 
-  padding: 4px; 
-  border-radius: 50%; 
-  opacity: .9;
-}
-</style>
-      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.27/daterangepicker.css"> 
-
-@stop
-@section('js')
-<!-- bootstrap mask money -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-maskmoney/3.0.2/jquery.maskMoney.min.js"></script>
-<!-- bootstrap imnutmask -->
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
-<!-- bootstrap datepicker -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.21.0/moment-with-locales.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.27/daterangepicker.js"></script>    
+@extends('adminlte::page') @section('title_prefix', 'Indicação | Comprar') @section('js')
 <script>
-$(function() {
-      $('.select2').select2();
-
-     //Date picker
-     $('.datetimepicker').daterangepicker({
-        "singleDatePicker": true,
-        "autoApply": true,
-        "locale": {
-            "format": "MM/DD/YYYY",
-            "separator": " - ",
-            "applyLabel": "Apply",
-            "cancelLabel": "Cancel",
-            "fromLabel": "From",
-            "toLabel": "To",
-            "customRangeLabel": "Custom",
-            "weekLabel": "W",
-            "daysOfWeek": [
-                "Do",
-                "Se",
-                "Te",
-                "Qu",
-                "Qu",
-                "Se",
-                "Sa"
-            ],
-            "monthNames": [
-                "Janeiro",
-                "Fevereiro",
-                "Março",
-                "Abril",
-                "Maio",
-                "Junho",
-                "Julho",
-                "Agosto",
-                "Setembro",
-                "Outubro",
-                "Novembro",
-                "Dezembro"
-            ],
-            "firstDay": 1
-        },
-        "alwaysShowCalendars": true,
-        "startDate": "03/15/2018",
-        "endDate": "03/21/2018",
-        "opens": "left"
-    }, function(start, end, label) {
-      console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+  $(document).ready(function () {
+    // novo
+    $('form[name=novo_imovel] select[name=type]').change(function () {
+      var value = $(this).val();
+      console.log(value);
+    });
+    // Add phone
+    $('.add_phone').click(function (e) {
+      e.preventDefault();
+      var col = ($(this).attr('data-col').length > 0) ? $(this).attr('data-col') : 6;
+      console.log(col);
+      var numPhone = $('.clone_add_phone').length;
+      var html = '<div class="col-md-' + col + ' clone_add_phone">';
+      html += '<div class="input-group">';
+      html +=
+        '<input type="text" name="phone[]" class="form-control telefone" placeholder="Telefone" required>';
+      html += '<span class="input-group-btn">';
+      html += '<a class="btn btn-danger remove_phone" href="#"><i class="fa fa-minus"></i></a>';
+      html += '</span>';
+      html += '</div>';
+      html += '<br>';
+      html += '</div>';
+      $('.v_content_phones').append(html);
+      $('.telefone').mask("(99) 9999-9999?9", {
+          'placeholder': '(  ) _____-____)'
+        })
+        .focusout(function (event) {
+          var target, phone, element;
+          target = (event.currentTarget) ? event.currentTarget : event.srcElement;
+          phone = target.value.replace(/\D/g, '');
+          element = $(target);
+          element.unmask();
+          if (phone.length > 10) {
+            element.mask("(99) 99999-999?9");
+          } else {
+            element.mask("(99) 9999-9999?9");
+          }
+        });
     });
 
+    // Remove phone
+    $(document).on('click', '.remove_phone', function (e) {
+      e.preventDefault();
+      var container_phone = $(this).parents().eq(3);
+      var total = $('#' + container_phone[0].id).find('.clone_add_phone').length;
+      var disabled = $('#' + container_phone[0].id).find('input').attr('readonly');
 
-    var start = moment().subtract(29, 'days');
-    var end = moment();
-     $('#data_cadastro').daterangepicker({
-        ranges: {
-           'Hoje': [moment(), moment()],
-           'Ontem': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-           'Últimos 7 dias': [moment().subtract(6, 'days'), moment()],
-           'Este mês': [moment().startOf('month'), moment().endOf('month')],
-           'Mês anterior': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-        },
-        "locale": {
-            "format": "DD/MM/YYYY",
-            "separator": " até ",
-            "applyLabel": "Aplicar",
-            "cancelLabel": "Cancelar",
-            "fromLabel": "De",
-            "toLabel": "Para",
-            "customRangeLabel": "Selecionar período",
-            "daysOfWeek": [
-                "Do",
-                "Se",
-                "Te",
-                "Qu",
-                "Qu",
-                "Se",
-                "Sa"
-            ],
-            "monthNames": [
-                "Janeiro",
-                "Fevereiro",
-                "Março",
-                "Abril",
-                "Maio",
-                "Junho",
-                "Julho",
-                "Agosto",
-                "Setembro",
-                "Outubro",
-                "Novembro",
-                "Dezembro"
-            ],
-            "firstDay": 1
-        },
-        "startDate": start,
-        "endDate": end,
-        "opens": "center",
-        "endDate": end,
-        "maxDate": end,
-        "autoUpdateInput": false,
-        "alwaysShowCalendars": false,
-    }, function(start, end, label) {
-      if (start.format('DD/MM/YYYY') !== end.format('DD/MM/YYYY')) {
-          $('#data_cadastro').val(start.format('DD/MM/YYYY') + '-' + end.format('DD/MM/YYYY'));
-      } else {
-          $('#data_cadastro').val(start.format('DD/MM/YYYY'));
+      if(disabled != 'readonly'){
+        if (total == 1) {
+          $.gNotify.warning('<strong>Atenção</strong> ', 'É obrigatório um telefone de contato.');
+          return
+        }
+        $(this).parent().parent().parent().remove();
       }
     });
 
+    // Novo
+    $('.btn_novo').click(function (e) {
+      // $('#comprarModal .v_content_phones .clone_add_phone').remove();
+    });
+    $(document).on('submit', 'form[name=novo_imovel]', function (e) {
+      e.preventDefault();
+      var url = $(this).attr('action');
+      $.ajax({
+        headers: {
+          'X-CSRF-Token': $('input[name="_token"]').val()
+        },
+        type: 'POST',
+        url: url,
+        data: $(this).serialize(),
+        dataType: 'json',
+        beforeSend: function () {
+          $('.v_content_msg').empty();
+          $('body').append('<div class="loader"><img src="{{ url("imagens/ajax-loader.gif")}}"></div>');
+          $('.loader').fadeIn('fast')
+        },
+        success: function (data) {
+          $('.loader').fadeOut('fast', function () {
+            var tipo = (data.success) ? 'success' : 'danger';
+            var titulo = (data.success) ? 'Sucesso' : 'Erro';
+            $.gNotify.tipo('<strong>' + titulo + '</strong> ', data.message);
+            // $('.v_content_msg').append(html);
+            $(this).remove();
+          });
+          if (data.success) {
+            $('form[name=novo_imovel] input').val('');
+            $('form[name=novo_imovel] textarea').val('');
+            $('form[name=novo_imovel] select').val('');
+            $('.v_content_phones').empty();
 
-    
-    $('.cpf').mask('999.999.999-99', { 'placeholder': '__.___.___-__' });
-    $('.telefone').mask("(99) 9999-9999?9", { 'placeholder': '(  ) _____-____)' })
-        .focusout(function (event) {  
-            var target, phone, element;  
-            target = (event.currentTarget) ? event.currentTarget : event.srcElement;  
-            phone = target.value.replace(/\D/g, '');
-            element = $(target);  
-            element.unmask();  
-            if(phone.length > 10) {  
-                element.mask("(99) 99999-999?9");  
-            } else {  
-                element.mask("(99) 9999-9999?9");  
-            }  
-        });
-    $('.valor').maskMoney({
-      prefix: 'R$ ',
-      decimal:",", 
-      thousands:"."
+          }
+        },
+        error: function (data) {
+          console.log(data.responseJSON.errors);
+          $('.loader').fadeOut('fast', function () {
+            $.each(data.responseJSON.errors, function (i, e) {
+              $.gNotify.danger('<strong>Erro</strong> ', e[0]);
+            });
+          });
+        }
+      });
     });
 
-      // novo
-      $('form[name=novo_imovel] select[name=type]').change(function(){
-        var value = $(this).val();
-        console.log(value);
-      });
-      // Add phone
-      $('.add_phone').click(function(e){
-        e.preventDefault();
-        var col = ($(this).attr('data-col').length > 0)? $(this).attr('data-col') : 6;
-        console.log(col);
-        var numPhone = $('.clone_add_phone').length;
-        var html = '<div class="col-md-'+col+' clone_add_phone">';
-        html += '<div class="input-group">';
-        html += '<input type="text" name="phone[]" class="form-control telefone" placeholder="Telefone" required>';
-        html += '<span class="input-group-btn">';
-        html += '<a class="btn btn-danger remove_phone" href="#"><i class="fa fa-minus"></i></a>';
-        html += '</span>';
-        html += '</div>';
-        html += '<br>';
-        html += '</div>';
-        $('.v_content_phones').append(html);
-        $('.telefone').mask("(99) 9999-9999?9", { 'placeholder': '(  ) _____-____)' })
-        .focusout(function (event) {  
-            var target, phone, element;  
-            target = (event.currentTarget) ? event.currentTarget : event.srcElement;  
-            phone = target.value.replace(/\D/g, '');
-            element = $(target);  
-            element.unmask();  
-            if(phone.length > 10) {  
-                element.mask("(99) 99999-999?9");  
-            } else {  
-                element.mask("(99) 9999-9999?9");  
-            }  
-        });
-      });
-
-      // Remove phone
-      $(document).on('click', '.remove_phone', function(e){
-        e.preventDefault();
-        $(this).parent().parent().parent().remove();
-      });
-
-      // Novo
-      $(document).on('submit','form[name=novo_imovel]', function(e){
-        e.preventDefault();
-        var url = $(this).attr('action');
-        $.ajax({
-          headers: {
-              'X-CSRF-Token': $('input[name="_token"]').val()
-          },
-          type: 'POST',
-          url: url,
-          data: $(this).serialize(),
-          dataType: 'json',
-          beforeSend: function(){
-            $('.v_content_msg').empty();
-            $('body').append('<div class="loader"><img src="{{ url("imagens/ajax-loader.gif")}}"></div>');
-            $('.loader').fadeIn('fast')          
-          },
-          success: function(data){
-            $('.loader').fadeOut('fast', function(){
-            var tipo = (data.success)? 'success' : 'danger';
-            var html = '<div class="alert alert-'+tipo+' alert-dismissible">';
-                  html += '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>';
-                  html += data.message;
-                  html += '</div>';
-                $('.v_content_msg').append(html);
-                $(this).remove();
-            });
-            if(data.success){
-              $('form[name=novo_imovel] input').val('');
-              $('form[name=novo_imovel] textarea').val('');
-              $('form[name=novo_imovel] select').val('');
-              $('.v_content_phones').empty();
+    // Visualizar
+    $(document).on('click', '.visualizarCompra', function (e) {
+      e.preventDefault()
+      var compra_id = $(this).attr('data-id');
+      $.get("./comprar/" + compra_id, function (retorno) {
+        if (retorno.success) {
+          $('form[name=editClient] input, form[name=editClient] select').attr('readonly', 'readonly')
+          $.each(retorno.clients, function (i, e) {
+            if(i == 'birth'){
+              $('form[name=editClient] .datetimepicker').data('daterangepicker').setStartDate(moment(e).format('DD/MM/YYYY'));
+              $('#comprarEditarModal form[name=editClient] input[name=' + i + ']').val(moment(e).format('DD/MM/YYYY')).focus();
+            }else{
+              $('#comprarEditarModal form[name=editClient] input[name=' + i + ']').val(e).focus();
             }
-          },
-          error: function(data){
-             console.log(data.responseJSON.errors);
-             $('.loader').fadeOut('fast', function(){
-               var html = '<div class="alert alert-danger alert-dismissible">';
-                  html += '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>';
-                  $.each(data.responseJSON.errors, function(i, e){
-                    html += e[0] + '<br>';
-                  });
-                  html += '</div>';
-                $('.v_content_msg').append(html);
-                $(this).remove();
-             });
-          }
-      });
-      });
+          });
+          var v_phone = '';
+          $.each(retorno.clients.contacts, function (i, e) {
+            v_phone += '<div class="col-md-4 clone_add_phone">';
+            v_phone += '<div class="input-group">';
+            v_phone += '<input type="text" name="phone[]" class="form-control telefone" value="' + e.phone +
+              '" placeholder="' + e.phone + '" readonly>';
+            v_phone += '<span class="input-group-btn">';
+            v_phone +=
+              '<a class="btn btn-danger remove_phone" href="#"><i class="fa fa-minus"></i></a>';
+            v_phone += '</span>';
+            v_phone += '</div>';
+            v_phone += '<br>';
+            v_phone += '</div>';
+          });
+          $('#comprarEditarModal .v_content_phones').empty().append(v_phone);
+          $('form[name=editClient] .select2-selection__rendered').html((retorno.clients.sex == 'M') ? 'Masculino' : 'Feminino');
+          $('form[name=editClient] .select2').attr("disabled", true);
 
-      // Visualizar
-      $('.visualizarCompra').click(function(e){
-        e.preventDefault()
-        var compra_id = $(this).attr('data-id');
-
-        $.get( "./comprar/"+compra_id, function(retorno){
-          if(retorno.success){
-            $.each(retorno.clients, function(i, e){
-             $('#comprarEditarModal form[name=editClient] input[name=' + i +']').val(e).attr('readonly', 'readonly').focus();
+          $('.cpf').mask('999.999.999-99', {
+            'placeholder': '__.___.___-__'
+          });
+          $('.telefone').mask("(99) 9999-9999?9", {
+              'placeholder': '(  ) _____-____)'
+            })
+            .focusout(function (event) {
+              var target, phone, element;
+              target = (event.currentTarget) ? event.currentTarget : event.srcElement;
+              phone = target.value.replace(/\D/g, '');
+              element = $(target);
+              element.unmask();
+              if (phone.length > 10) {
+                element.mask("(99) 99999-999?9");
+              } else {
+                element.mask("(99) 9999-9999?9");
+              }
             });
-            $.each(retorno.clients.contacts, function(i, e){
-              console.log(e.phone);
-              var html = '<div class="col-md-4 clone_add_phone">';
-              html += '<div class="input-group">';
-              html += '<input type="text" name="phone[]" class="form-control telefone" val="'+e.phone+'" placeholder="'+e.phone+'" readonly>';
-              html += '<span class="input-group-btn">';
-              html += '<a class="btn btn-danger remove_phone" href="#"><i class="fa fa-minus"></i></a>';
-              html += '</span>';
-              html += '</div>';
-              html += '<br>';
-              html += '</div>';
-              $('.v_content_phones').append(html);
-            });
-            $('form[name=editClient] .select2-selection__rendered').html((retorno.clients.sex == 'M')? 'Masculino' : 'Feminino' );
-            $('.select2').attr("disabled", true);
-            $('#comprarEditarModal').modal('show');
-          }else{
+          $('#comprarEditarModal').modal('show');
+        } else {
 
-          }
-        });
+        }
       });
     });
 
-    
-  </script>
-@stop
+    // Habilita edição dados pessoais
+    $('#comprarEditarModal .btn_edita_dados').click(function(e){
+      e.preventDefault();
+      $(this).css('display', 'none');
+      $('.btn_salva_dados, .btn_cancela_dados').css('display', 'inline-block');
+      $('#comprarEditarModal form[name=editClient] input, #comprarEditarModal form[name=editClient] select').removeAttr('readonly').removeAttr('disabled');
+    });
 
-@section('content_header')
+    // Desabilita edição dados pessoais
+    $('#comprarEditarModal .btn_cancela_dados').click(function(e){
+      e.preventDefault();
+      $(this).css('display', 'none');
+      $('.btn_salva_dados').css('display', 'none');
+      $('.btn_edita_dados').css('display', 'inline-block');
+      $('#comprarEditarModal form[name=editClient] input').attr('readonly','readonly');
+      $('#comprarEditarModal form[name=editClient] select').attr('disabled','disabled');
+
+    });
+
+    // Edita dados pessoais
+    $('#comprarEditarModal form[name=editClient]').submit(function(e){
+      e.preventDefault();
+      var page = $(this).attr('action');
+      var token = $('input[name="_token"]').val();
+      var param = $(this).serialize();
+      $.gAjax.exec(page, token, param, false, function(retorno){
+        console.log(retorno);
+      }, true, false, false, false);
+      console.log($(this).serialize());
+    });
+  });
+</script>
+@stop @section('content_header')
 <h1>Indicação</h1>
 <ol class="breadcrumb">
   <li>
@@ -311,22 +208,26 @@ $(function() {
 @stop @section('content')
 
 <div class="box box-solid">
+  {{--
   <div class="box-header with-border">
     <h3 class="box-title">
       <i class="fa fa-filter"></i> Filtrar</h3>
-  </div>
+  </div> --}}
   <div class="box-body">
 
-  <form action="{{ route('admin.imoveis.indicacao.comprar.filtro')}}" method="POST" class="form form-inline">
-        <input type="hidden" name="sessao" value="indicacao">
-        <input type="hidden" name="acao" value="comprar">
-        {!! csrf_field() !!}
-            <input type="text" name="name" class="form-control" placeholder="Nome">
-            <input class="form-control telefone" name="phone" type="text" placeholder="Telefone">
-            <input type="text" name="date" class="form-control" id="data_cadastro" value="{{ date('d/m/Y')}}" placeholder="data">
-            <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
-            <a href="#" class="btn btn-primary pull-right" data-toggle="modal" data-target="#comprarModal"><i class="fa fa-plus"></i> Novo</a>
-      </form>
+    {{--
+    <form action="{{ route('admin.imoveis.indicacao.comprar.filtro')}}" method="POST" class="form form-inline">
+      <input type="hidden" name="sessao" value="indicacao">
+      <input type="hidden" name="acao" value="comprar"> {!! csrf_field() !!}
+      <input type="text" name="name" class="form-control" placeholder="Nome">
+      <input class="form-control telefone" name="phone" type="text" placeholder="Telefone">
+      <input type="text" name="date" class="form-control" id="data_cadastro" value="{{ date('d/m/Y')}}" placeholder="data">
+      <button type="submit" class="btn btn-primary">
+        <i class="fa fa-search"></i>
+      </button>
+    </form> --}}
+    <a href="#" class="btn btn-primary pull-right btn_novo" data-toggle="modal" data-target="#comprarModal">
+      <i class="fa fa-plus"></i> Novo</a>
 
   </div>
 </div>
@@ -335,258 +236,357 @@ $(function() {
 <div class="box box-solid">
   <div class="box-header with-border">
     <h3 class="box-title">Comprar</h3>
-    </div>
+  </div>
   <div class="box-body">
-      <table class="table table-bordered table-hover">
+    <table class="table table-striped table-bordered dt-responsive nowrap datatables" width="100%">
       <thead>
         <tr>
-          <th>Nome</th>
+          <th data-priority="1">Nome</th>
           <th class="hidden-sm">E-mail</th>
           <th class="hidden-sm">Telefone</th>
-          <th class="hidden-sm">Status</th>
-          <th class="hidden-sm">Valor</th>
+          <th class="hidden-sm">CPF</th>
+          <th class="hidden-sm">Cdastrado em</th>
           <th style="width: 40px"></th>
         </tr>
       </thead>
       <tbody>
-          
         @forelse($clients as $client)
-        
+
         <tr>
-          <td><a href="#" data-id="{{ $client->id }}" class="btn-link visualizarCompra">{{ $client->name }}</a></td>
-          <td class="hidden-sm">{{ $client->email }}</td>
-          <td class="hidden-sm">
-              @if(count($client->contacts) > 0)
-                @forelse($client->contacts as $contato)
-                  {{ $contato->phone }} <br>
-                @empty
-                @endforelse
-              @else
-                -
-              @endif
-            </td>
-          <td class="hidden-sm">
-            @forelse($client->properties as $propertie)
-            {{ $client->formatStatusPropertie($propertie->properties_status['status']) }}
-            @empty
-            @endforelse
+          <td>
+            <a href="#" data-id="{{ $client->id }}" class="btn-link visualizarCompra">{{ $client->name }}</a>
           </td>
-        <td clss="hidden-sm">
-            @forelse($client->properties as $propertie)
-            R$ {{ number_format($propertie->amount, 2, ',','.') }}
-            @empty
-            @endforelse
-        </td>
+          <td class="hidden-sm">{{ $client->email }}</td>
+          <td class="hidden-sm">{{ $client->phone }}</td>
+          <td class="hidden-sm">{{ $client->cpf_cnpj }}</td>
+          <td clss="hidden-sm">{{ date('d/m/Y', strtotime($client->date)) }}</td>
           <td width="50px">
-              <div class="btn-group">
-                  <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu dropdown-menu-right" style="left: auto">
-                    <li><a href="#"><i class="fa fa-dollar"></i> Gerar novo negócio</a></li>
-                  </ul>
-                </div>
+            <div class="btn-group">
+              <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-right" style="left: auto">
+                <li>
+                  <a href="#">
+                    <i class="fa fa-dollar"></i> Gerar novo negócio</a>
+                </li>
+              </ul>
+            </div>
           </td>
         </tr>
-        @empty
-        @endforelse
+        @empty @endforelse
       </tbody>
     </table>
-    {{--  {!! $clients->links() !!}  --}}
+    {{-- {!! $clients->links() !!} --}}
   </div>
   <!-- /.box-body -->
 </div>
 
 <!-- MODAL | Comprar -->
 <div id="comprarModal" class="modal fade" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">Comprar</h4>
-        </div>
-        <form action="./comprar" name="novo_imovel">
-          {!! csrf_field() !!}
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Comprar</h4>
+      </div>
+      <form action="./comprar" name="novo_imovel">
+        {!! csrf_field() !!}
+        <input type="hidden" name="birth" class="form-control daterange" placeholder="Data de nascimento">
         <div class="modal-body">
-                <div class="row">
-                  <div class="col-md-12 v_content_msg"></div>
-                  <div class="col-md-6">
-                      <div class="form-group">
-                          <label>Nome</label>
-                          <input type="text" name="name" class="form-control" placeholder="Nome">
-                        </div>
-                  </div>
-                  <div class="col-md-6">
-                      <div class="form-group">
-                          <label>E-mail</label>
-                          <input type="email" name="email" class="form-control" placeholder="E-mail">
-                        </div>
-                  </div>
-                  <div class="col-md-4">
-                      <div class="form-group">
-                        <label>Sexo</label>
-                        <select class="form-control select2" name="sex" style="width: 100%">
-                            <option value="" selected>.: Selecione :.</option>
-                            <option value="M">Masculino</option>
-                            <option value="F">Feminino</option>
-                          </select>
-                      </div>
-                  </div>
-                  <div class="col-md-4" class="v_cpf_cnpj">
-                      <div class="form-group">
-                        <label>CPF</label>
-                        <input type="text" name="cpf_cnpj" class="form-control cpf" placeholder="CPF">
-                      </div>
-                  </div>
-                  <div class="col-md-4">
-                      <div class="form-group">
-                        <label>Data de nascimento</label>
-                        <input type="text" name="birth" class="form-control datetimepicker" placeholder="Data de nascimento">
-                      </div>
-                  </div>
-                  <!-- contato -->
-                  <div class="col-md-12">
-                      <div class="form-group">
-                        <label>Contato</label>
-                        <input type="text" name="contact" class="form-control" placeholder="Contato">
-                      </div>
-                  </div>
-                  <div class="col-md-12">
-                    <a href="#" class="btn btn-link add_phone"><i class="fa fa-plus"></i> Adicionar telefone</a>
-                  </div>
-                  <!-- Container pphones -->
-                  <div class="v_content_phones"></div>
-                  <div class="col-md-12">
-                      <h4 style="background-color:#f7f7f7; font-size: 18px; text-align: center; padding: 7px 10px; margin-top: 0;">
-                    Informações do negocio
-                      </h4>
-                  </div>
-                  <div class="col-md-6">
-                      <div class="form-group">
-                        <label>Valor do imóvel</label>
-                        <input type="text" name="amount" class="form-control valor" placeholder="Valor do crédito">
-                      </div>
-                  </div>
-                  <div class="col-md-6">
-                      <div class="form-group">
-                        <label>Tipo do imóvel</label>
-                        <input type="text" name="type_propertie" class="form-control" placeholder="Tipo do imóvel">
-                      </div>
-                  </div>
-                  <div class="col-md-6">
-                      <div class="form-group">
-                        <label>Bairro de preferência</label>
-                        <input type="text" name="neighborhood" class="form-control" placeholder="Bairro de preferência">
-                      </div>
-                  </div>
-                  <div class="col-md-12">
-                      <div class="form-group">
-                        <label>Observações</label>
-                        <textarea class="form-control" name="note" rows="3"></textarea>
-                      </div>
-                  </div>
+          <div class="row">
+            <div class="col-md-12 v_content_msg"></div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Nome</label>
+                <input type="text" name="name" class="form-control" placeholder="Nome" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>E-mail</label>
+                <input type="email" name="email" class="form-control" placeholder="E-mail" required>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Sexo</label>
+                <select class="form-control select2" name="sex" style="width: 100%" required>
+                  <option value="" selected>.: Selecione :.</option>
+                  <option value="M">Masculino</option>
+                  <option value="F">Feminino</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-4" class="v_cpf_cnpj">
+              <div class="form-group">
+                <label>CPF</label>
+                <input type="text" name="cpf_cnpj" class="form-control cpf" placeholder="CPF" required>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label>Data de nascimento</label>
+              <div class="pull-right datetimepicker" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
+                <input type="hidden" name="birth">
+                <i class="fa fa-calendar"></i>
+                <span><input type="text" name="birth" style="border: none;" value="{{date('d/m/Y')}}" disabled></span>
+                <b class="caret pull-right"></b>
+              </div>
+            </div>
+            <!-- contato -->
+            <div class="col-md-12">
+              <div class="form-group">
+                <label>Contato</label>
+                <input type="text" name="contact" class="form-control" placeholder="Contato">
+              </div>
+            </div>
+            <div class="col-md-12">
+              <a href="#" data-col="4" class="btn btn-link add_phone">
+                <i class="fa fa-plus"></i> Adicionar telefone</a>
+            </div>
+            <!-- Container pphones -->
+            <div class="v_content_phones" id="container_novo">
+              <div class="col-md-4 clone_add_phone">
+                <div class="input-group">
+                  <input type="text" name="phone[]" class="form-control telefone" value="" placeholder="Telefone" required>
+                  <span class="input-group-btn">
+                    <a class="btn btn-danger remove_phone" href="#">
+                      <i class="fa fa-minus"></i>
+                    </a>
+                  </span>
                 </div>
+                <br>
               </div>
-              <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">Cadastrar</button>
+            </div>
+            <div class="col-md-12">
+              <h4 style="background-color:#f7f7f7; font-size: 18px; text-align: center; padding: 7px 10px; margin-top: 0;">
+                Informações do negocio
+              </h4>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Valor do imóvel</label>
+                <input type="text" name="amount" class="form-control valor" placeholder="Valor do crédito">
               </div>
-          </form>
-      </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-  </div><!-- /.modal -->
-
-
-<!-- MODAL | Comprar (Editar - Vizualizar) -->
-<div id="comprarEditarModal" class="modal fade" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">Bruno José Souza Trinchão</h4>
-        </div>
-        <div class="modal-body">
-            <div class="nav-tabs-custom">
-                <ul class="nav nav-tabs">
-                  <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">Dados pessoais</a></li>
-                  <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">Negócios</a></li>
-                </ul>
-                <div class="tab-content">
-                  <div class="tab-pane active" id="tab_1">
-                    <form action="" name="editClient">  
-                    <div class="row">
-                          <div class="col-md-12 v_content_msg"></div>
-                          <div class="col-md-6">
-                              <div class="form-group">
-                                  <label>Nome</label>
-                                  <input type="text" name="name" class="form-control" placeholder="Nome">
-                                </div>
-                          </div>
-                          <div class="col-md-6">
-                              <div class="form-group">
-                                  <label>E-mail</label>
-                                  <input type="email" name="email" class="form-control" placeholder="E-mail">
-                                </div>
-                          </div>
-                          <div class="col-md-4">
-                              <div class="form-group">
-                                <label>Sexo</label>
-                                <select class="form-control select2" name="sex" style="width: 100%">
-                                    <option value="" selected>.: Selecione :.</option>
-                                    <option value="M">Masculino</option>
-                                    <option value="F">Feminino</option>
-                                  </select>
-                              </div>
-                          </div>
-                          <div class="col-md-4" class="v_cpf_cnpj">
-                              <div class="form-group">
-                                <label>CPF</label>
-                                <input type="text" name="cpf_cnpj" class="form-control cpf" placeholder="CPF">
-                              </div>
-                          </div>
-                          <div class="col-md-4">
-                              <div class="form-group">
-                                <label>Data de nascimento</label>
-                                <input type="text" name="birth" class="form-control datetimepicker" placeholder="Data de nascimento">
-                              </div>
-                          </div>
-                          <!-- contato -->
-                          <div class="col-md-4">
-                              <div class="form-group">
-                                <label>Contato</label>
-                                <input type="text" name="contact" class="form-control" placeholder="Contato">
-                              </div>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="col-md-12">
-                            <label>Telefones</label>
-                            <a href="#" data-col="4" class="btn btn-link add_phone"><i class="fa fa-plus"></i> Adicionar telefone</a>
-                          </div>
-                          <div class="v_content_phones">
-                          </div>
-                        </div>
-                      </form>
-                    </form>
-                  </div>
-                  <!-- /.tab-pane -->
-                  <div class="tab-pane" id="tab_2">
-                    The European languages are members of the same family. Their separate existence is a myth.
-                    For science, music, sport, etc, Europe uses the same vocabulary. The languages only differ
-                    in their grammar, their pronunciation and their most common words. Everyone realizes why a
-                    new common language would be desirable: one could refuse to pay expensive translators. To
-                    achieve this, it would be necessary to have uniform grammar, pronunciation and more common
-                    words. If several languages coalesce, the grammar of the resulting language is more simple
-                    and regular than that of the individual languages.
-                  </div>
-                  <!-- /.tab-pane -->
-                </div>
-                <!-- /.tab-content -->
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Tipo do imóvel</label>
+                <input type="text" name="type_propertie" class="form-control" placeholder="Tipo do imóvel">
               </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Bairro de preferência</label>
+                <input type="text" name="neighborhood" class="form-control" placeholder="Bairro de preferência">
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="form-group">
+                <label>Observações</label>
+                <textarea class="form-control" name="note" rows="3"></textarea>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="modal-footer">
           <button type="submit" class="btn btn-primary">Cadastrar</button>
         </div>
-      </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-  </div><!-- /.modal -->
+      </form>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+
+<!-- MODAL | Comprar (Editar - Vizualizar) -->
+<div id="comprarEditarModal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title"><i class="fa fa-user"></i> Bruno José Souza Trinchão</h4>
+      </div>
+      <div class="modal-body">
+        <div class="nav-tabs-custom">
+          <ul class="nav nav-tabs">
+            <li class="active">
+              <a href="#tab_1" data-toggle="tab" aria-expanded="true">Dados pessoais</a>
+            </li>
+            <li class="">
+              <a href="#tab_2" data-toggle="tab" aria-expanded="false">Negócios</a>
+            </li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane active" id="tab_1">
+              <form action="./usuario" name="editClient">
+                  {!! csrf_field() !!}
+                <div class="row">
+                  <div class="col-md-12 v_content_msg"></div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Nome</label>
+                      <input type="text" name="name" class="form-control" placeholder="Nome">
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>E-mail</label>
+                      <input type="email" name="email" class="form-control" placeholder="E-mail">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Sexo</label>
+                      <select class="form-control select2" name="sex" style="width: 100%">
+                        <option value="" selected>.: Selecione :.</option>
+                        <option value="M">Masculino</option>
+                        <option value="F">Feminino</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-4" class="v_cpf_cnpj">
+                    <div class="form-group">
+                      <label>CPF</label>
+                      <input type="text" name="cpf_cnpj" class="form-control cpf" placeholder="CPF">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Data de nascimento</label>
+                      <div class="datetimepicker" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
+                          <i class="fa fa-calendar"></i>&nbsp;
+                          <span><input type="text" name="birth" style="border: none;" value="{{date('d/m/Y')}}" disabled></span>
+                          <b class="caret pull-right"></b>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- contato -->
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Contato</label>
+                      <input type="text" name="contact" class="form-control" placeholder="Contato">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <label>Telefones</label>
+                    <a href="#" data-col="4" class="btn btn-link add_phone" style="display:none">
+                      <i class="fa fa-plus"></i> Adicionar telefone</a>
+                  </div>
+                  <div class="v_content_phones" id="container_editar">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12" style="text-align:right">
+                    <a href="" class="btn text-red btn_edita_dados"><i class="fa fa-pencil"></i> Editar</a>
+                    <a href="" class="btn btn-default btn_cancela_dados" style="display:none"><i class="fa fa-ban"></i> Cancelar</a>
+                    <button type="submit" class="btn btn-success btn_salva_dados" style="display:none">Salvar</button>
+                  </div>
+                </div>
+              </form>
+              </form>
+            </div>
+            <!-- /.tab-pane -->
+            <div class="tab-pane" id="tab_2">
+              <div class="box box-default">
+                <div class="box-header with-border" data-widget="collapse" style="cursor:pointer">
+                  <i class="fa fa-exchange"></i>Apartamento 
+                  <span class="time pull-right">
+                    <i class="fa fa-calendar"></i> 10/10/2018</span>
+                </div>
+                <form>
+                  <div class="box-body">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label>Valor do imóvel</label>
+                          <input type="email" class="form-control" disabled="disabled" value="R$ 100.00,00">
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label>Bairro</label>
+                          <input type="email" class="form-control" disabled="disabled" value="Costa Azul">
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <label>Observação</label>
+                          <textarea class="form-control" rows="3" disabled="disabled"> Etiam porta sem malesuada magna mollis euismod. Etiam porta sem malesuada magna mollis euismod.
+                            Etiam porta sem malesuada magna mollis euismod. Etiam porta sem malesuada magna mollis euismod.
+                            </textarea>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="box-footer">
+                    <select name="" id="" disabled="disabled">
+                      <option value="">Aguardando</option>
+                    </select>
+                    <button type="submit" class="btn btn-success pull-right" style="display:none">
+                      <i class="fa fa-floppy-o"></i> Salvar</button>
+                    <a href="#" class="btn text-red pull-right">
+                      <i class="fa fa-pencil"></i> Editar</a>
+                  </div>
+                </form>
+              </div>
+              <div class="box box-default collapsed-box">
+                <div class="box-header with-border" data-widget="collapse" style="cursor:pointer">
+                  <i class="fa fa-exchange"></i>Apartamento
+                  <span class="time pull-right">
+                    <i class="fa fa-calendar"></i> 10/10/2018</span>
+                </div>
+                <form>
+                  <div class="box-body">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label>Valor do imóvel</label>
+                          <input type="email" class="form-control" disabled="disabled" value="R$ 100.00,00">
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label>Bairro</label>
+                          <input type="email" class="form-control" disabled="disabled" value="Costa Azul">
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <label>Observação</label>
+                          <textarea class="form-control" rows="3" disabled="disabled"> Etiam porta sem malesuada magna mollis euismod. Etiam porta sem malesuada magna mollis euismod.
+                            Etiam porta sem malesuada magna mollis euismod. Etiam porta sem malesuada magna mollis euismod.
+                            </textarea>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="box-footer">
+                    <button type="submit" class="btn btn-success pull-right" style="display:none">
+                      <i class="fa fa-floppy-o"></i> Salvar</button>
+                    <a href="#" class="btn btn-default pull-right">
+                      <i class="fa fa-pencil"></i> Editar</a>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <!-- /.tab-pane -->
+          </div>
+          <!-- /.tab-content -->
+        </div>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
 @stop
