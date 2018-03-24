@@ -97,8 +97,10 @@ class AdminComprarController extends AdminController
         if(!empty($clients)){
             $data['clients'] = $clients; 
             $data['success'] = true; 
+            $data['message'] = 'Cliente carregado com sucesso.'; 
         }else{
             $data['success'] = false; 
+            $data['message'] = 'Erro ao carregar cliente.'; 
         }
         return $data;
     }

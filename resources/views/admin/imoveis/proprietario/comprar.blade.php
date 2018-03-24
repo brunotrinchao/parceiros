@@ -106,18 +106,19 @@
     // Visualizar
     $(document).on('click', '.visualizarCompra', function (e) {
       e.preventDefault()
-      var compra_id = $(this).attr('data-id');
-      $.get("./comprar/" + compra_id, function (retorno) {
+      var client_id = $(this).attr('data-id');
+      $.get("./comprar/" + client_id, function (retorno) {
         if (retorno.success) {
-          $('form[name=editClient] input, form[name=editClient] select').attr('readonly', 'readonly')
-          $.each(retorno.clients, function (i, e) {
-            if(i == 'birth'){
-              $('form[name=editClient] .datetimepicker').data('daterangepicker').setStartDate(moment(e).format('DD/MM/YYYY'));
-              $('#comprarEditarModal form[name=editClient] input[name=' + i + ']').val(moment(e).format('DD/MM/YYYY')).focus();
-            }else{
-              $('#comprarEditarModal form[name=editClient] input[name=' + i + ']').val(e).focus();
-            }
-          });
+          $('form[name=editClient] input, form[name=editClient] select').attr('readonly', 'readonly');
+          $('form[name=editClient] input[name=id]').val(client_id);
+          $('form[name=editClient] input[name=name]').val(retorno.clients.name);
+          $('form[name=editClient] input[name=email]').val(retorno.clients.email);
+          $('form[name=editClient] input[name=cpf_cnpj]').val(retorno.clients.cpf_cnpj);
+          $('form[name=editClient] input[name=contact]').val(retorno.clients.contact);
+          $('form[name=editClient] input[name=birth]').val(moment(retorno.clients.birth).format('DD/MM/YYYY'));
+          $('form[name=editClient] select[name=sex]').val(retorno.clients.sex);
+          $('form[name=editClient] .select2-selection__rendered').html((retorno.clients.sex == 'M') ? 'Masculino' : 'Feminino');
+          $('form[name=editClient] .select2').attr("disabled", true);
           var v_phone = '';
           $.each(retorno.clients.contacts, function (i, e) {
             v_phone += '<div class="col-md-4 clone_add_phone">';
@@ -133,32 +134,34 @@
             v_phone += '</div>';
           });
           $('#comprarEditarModal .v_content_phones').empty().append(v_phone);
-          $('form[name=editClient] .select2-selection__rendered').html((retorno.clients.sex == 'M') ? 'Masculino' : 'Feminino');
-          $('form[name=editClient] .select2').attr("disabled", true);
 
-          $('.cpf').mask('999.999.999-99', {
-            'placeholder': '__.___.___-__'
-          });
-          $('.telefone').mask("(99) 9999-9999?9", {
-              'placeholder': '(  ) _____-____)'
-            })
-            .focusout(function (event) {
-              var target, phone, element;
-              target = (event.currentTarget) ? event.currentTarget : event.srcElement;
-              phone = target.value.replace(/\D/g, '');
-              element = $(target);
-              element.unmask();
-              if (phone.length > 10) {
-                element.mask("(99) 99999-999?9");
-              } else {
-                element.mask("(99) 9999-9999?9");
-              }
-            });
           $('#comprarEditarModal').modal('show');
-        } else {
 
+        } else {
+          $.gNotify.danger('', retorno.message);
         }
       });
+    });
+
+    $('#comprarEditarModal').on('show.bs.modal', function (e) {
+      $('.cpf').mask('999.999.999-99', {
+        'placeholder': '__.___.___-__'
+      });
+      $('.telefone').mask("(99) 9999-9999?9", {
+          'placeholder': '(  ) _____-____)'
+        })
+        .focusout(function (event) {
+          var target, phone, element;
+          target = (event.currentTarget) ? event.currentTarget : event.srcElement;
+          phone = target.value.replace(/\D/g, '');
+          element = $(target);
+          element.unmask();
+          if (phone.length > 10) {
+            element.mask("(99) 99999-999?9");
+          } else {
+            element.mask("(99) 9999-9999?9");
+          }
+        });
     });
 
     // Habilita edição dados pessoais
@@ -186,10 +189,14 @@
       var page = $(this).attr('action');
       var token = $('input[name="_token"]').val();
       var param = $(this).serialize();
-      $.gAjax.exec(page, token, param, false, function(retorno){
+      console.log(param);
+      $.gAjax.execCallback(page, token, param, false, function(retorno){
         console.log(retorno);
-      }, true, false, false, false);
-      console.log($(this).serialize());
+      }, true, false, false, function(erro, payload, msg){
+        console.log(erro);
+        console.log(payload);
+        console.log(msg);
+      });
     });
   });
 </script>
@@ -425,8 +432,9 @@
           </ul>
           <div class="tab-content">
             <div class="tab-pane active" id="tab_1">
-              <form action="./usuario" name="editClient">
+              <form action="{{ url('/cliente/editar') }}" name="editClient">
                   {!! csrf_field() !!}
+                  <input name="id" type="hidden">
                 <div class="row">
                   <div class="col-md-12 v_content_msg"></div>
                   <div class="col-md-6">

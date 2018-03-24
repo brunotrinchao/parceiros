@@ -10,6 +10,10 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+// Usuários
+$this->group(['middleware' => ['auth']], function(){
+    $this->post('cliente/editar', 'Auth\EditController@edit')->name('cliente.editar');
+});
 // Imóveis
 $this->group(['middleware' => ['auth'], 'namespace' => 'Admin\Imoveis'], function(){
     // dashboard
