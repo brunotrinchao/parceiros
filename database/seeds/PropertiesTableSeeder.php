@@ -18,6 +18,7 @@ class PropertiesTableSeeder extends Seeder
             'type_propertie'        =>  'Apartamento',
             'neighborhood'          =>  'Costa Azul',
             'type'                  =>  'T',
+            'trade'                 =>  'C',
             'note'                  =>  'Teste'
         ]);
     }

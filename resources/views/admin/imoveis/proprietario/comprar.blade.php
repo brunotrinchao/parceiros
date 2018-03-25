@@ -13,15 +13,15 @@
       console.log(col);
       var numPhone = $('.clone_add_phone').length;
       var html = '<div class="col-md-' + col + ' clone_add_phone">';
-      html += '<div class="input-group">';
+      html +='<div class="input-group">';
       html +=
-        '<input type="text" name="phone[]" class="form-control telefone" placeholder="Telefone" required>';
-      html += '<span class="input-group-btn">';
-      html += '<a class="btn btn-danger remove_phone" href="#"><i class="fa fa-minus"></i></a>';
-      html += '</span>';
-      html += '</div>';
-      html += '<br>';
-      html += '</div>';
+        '<input type="text" name="phone[]" class="form-control telefone" placeholder="Telefone">';
+      html +='<span class="input-group-btn">';
+      html +='<a class="btn btn-danger remove_phone" href="#"><i class="fa fa-minus"></i></a>';
+      html +='</span>';
+      html +='</div>';
+      html +='<br>';
+      html +='</div>';
       $('.v_content_phones').append(html);
       $('.telefone').mask("(99) 9999-9999?9", {
           'placeholder': '(  ) _____-____)'
@@ -136,7 +136,8 @@
           $('#comprarEditarModal .v_content_phones').empty().append(v_phone);
 
           $('#comprarEditarModal').modal('show');
-
+          loadNegocios(client_id)
+          $('#comprarEditarModal #tab_negocios').attr('data-client-id',client_id);
         } else {
           $.gNotify.danger('', retorno.message);
         }
@@ -191,13 +192,68 @@
       var param = $(this).serialize();
       console.log(param);
       $.gAjax.execCallback(page, token, param, false, function(retorno){
-        console.log(retorno);
+        if(retorno.success){
+        $.gNotify.success(null, retorno.message);
+      }else{
+        $.gNotify.danger(null, retorno.message);
+      }
       }, true, false, false, function(erro, payload, msg){
         console.log(erro);
         console.log(payload);
         console.log(msg);
       });
     });
+
+    // Carrega negócios
+   function loadNegocios(id){
+    $.gAjax.load('./negocios/comprar/' + id, {type: 'T', trade: 'C'}, '.container_negocios', function(retorno){
+
+      var html = ''
+      $.each(retorno.data, function(i, e){
+        console.log(e);
+      });
+        html += '<div class="box box-default">';
+        html += '<div class="box-header with-border" data-widget="collapse" style="cursor:pointer">';
+        html +='<i class="fa fa-exchange"></i>Apartamento <span class="time pull-right"><i class="fa fa-calendar"></i> 10/10/2018</span>';
+        html +='</div>';
+        html +='<form>';
+          html +='<div class="box-body">';
+            html +='<div class="row">';
+              html +='<div class="col-md-6">';
+                html +='<div class="form-group">';
+                  html +='<label>Valor do imóvel</label>';
+                  html +='<input type="email" class="form-control" disabled="disabled" value="R$ 100.00,00">';
+                html +='</div>';
+              html +='</div>';
+              html +='<div class="col-md-6">';
+                html +='<div class="form-group">';
+                  html +='<label>Bairro</label>';
+                  html +='<input type="email" class="form-control" disabled="disabled" value="Costa Azul">';
+                html +='</div>';
+            html +=' </div>';
+              html +='<div class="col-md-12">';
+                html +='<div class="form-group">';
+                  html +='<label>Observação</label>';
+                  html +='<textarea class="form-control" rows="3" disabled="disabled"> Etiam porta sem malesuada magna mollis euismod. Etiam porta sem malesuada magna mollis euismod.';
+                    html +='</textarea>';
+                html +='</div>';
+            html +=' </div>';
+            html +='</div>';
+          html +='</div>';
+          html +='<div class="box-footer">';
+            html +='<select name="" id="" disabled="disabled">';
+              html +='<option value="">Aguardando</option>';
+            html +='</select>';
+            html +='<button type="submit" class="btn btn-success pull-right" style="display:none">';
+              html +='<i class="fa fa-floppy-o"></i> Salvar</button>';
+            html +='<a href="#" class="btn text-red pull-right">';
+              html +='<i class="fa fa-pencil"></i> Editar</a>';
+          html +='</div>';
+        html +='</form>';
+    html +=' </div>';
+    }, true, true);
+   }
+
   });
 </script>
 @stop @section('content_header')
@@ -264,7 +320,7 @@
             <a href="#" data-id="{{ $client->id }}" class="btn-link visualizarCompra">{{ $client->name }}</a>
           </td>
           <td class="hidden-sm">{{ $client->email }}</td>
-          <td class="hidden-sm">{{ $client->phone }}</td>
+          <td class="hidden-sm"></td>
           <td class="hidden-sm">{{ $client->cpf_cnpj }}</td>
           <td clss="hidden-sm">{{ date('d/m/Y', strtotime($client->date)) }}</td>
           <td width="50px">
@@ -308,19 +364,19 @@
             <div class="col-md-6">
               <div class="form-group">
                 <label>Nome</label>
-                <input type="text" name="name" class="form-control" placeholder="Nome" required>
+                <input type="text" name="name" class="form-control" placeholder="Nome">
               </div>
             </div>
             <div class="col-md-6">
               <div class="form-group">
                 <label>E-mail</label>
-                <input type="email" name="email" class="form-control" placeholder="E-mail" required>
+                <input type="email" name="email" class="form-control" placeholder="E-mail">
               </div>
             </div>
             <div class="col-md-4">
               <div class="form-group">
                 <label>Sexo</label>
-                <select class="form-control select2" name="sex" style="width: 100%" required>
+                <select class="form-control select2" name="sex" style="width: 100%">
                   <option value="" selected>.: Selecione :.</option>
                   <option value="M">Masculino</option>
                   <option value="F">Feminino</option>
@@ -330,7 +386,7 @@
             <div class="col-md-4" class="v_cpf_cnpj">
               <div class="form-group">
                 <label>CPF</label>
-                <input type="text" name="cpf_cnpj" class="form-control cpf" placeholder="CPF" required>
+                <input type="text" name="cpf_cnpj" class="form-control cpf" placeholder="CPF">
               </div>
             </div>
             <div class="col-md-4">
@@ -357,7 +413,7 @@
             <div class="v_content_phones" id="container_novo">
               <div class="col-md-4 clone_add_phone">
                 <div class="input-group">
-                  <input type="text" name="phone[]" class="form-control telefone" value="" placeholder="Telefone" required>
+                  <input type="text" name="phone[]" class="form-control telefone" value="" placeholder="Telefone">
                   <span class="input-group-btn">
                     <a class="btn btn-danger remove_phone" href="#">
                       <i class="fa fa-minus"></i>
@@ -427,7 +483,7 @@
               <a href="#tab_1" data-toggle="tab" aria-expanded="true">Dados pessoais</a>
             </li>
             <li class="">
-              <a href="#tab_2" data-toggle="tab" aria-expanded="false">Negócios</a>
+              <a href="#tab_2" id="tab_negocios" data-toggle="tab" aria-expanded="false">Negócios</a>
             </li>
           </ul>
           <div class="tab-content">
@@ -503,7 +559,7 @@
               </form>
             </div>
             <!-- /.tab-pane -->
-            <div class="tab-pane" id="tab_2">
+            <div class="tab-pane container_negocios" id="tab_2">
               <div class="box box-default">
                 <div class="box-header with-border" data-widget="collapse" style="cursor:pointer">
                   <i class="fa fa-exchange"></i>Apartamento 

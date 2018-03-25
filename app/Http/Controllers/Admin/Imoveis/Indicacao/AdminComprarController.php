@@ -18,6 +18,7 @@ class AdminComprarController extends AdminController
     private $totalPage = 2;
 
     public function index(){
+
         $clients = DB::table('clients')
         ->select('clients.id',
         'clients.user_id',
@@ -30,12 +31,12 @@ class AdminComprarController extends AdminController
         'clients.n_officials',
         'clients.sex',
         'clients.type')
-        ->selectRaw('GROUP_CONCAT(contacts.phone) AS phone')
+        // ->selectRaw('GROUP_CONCAT(contacts.phone) AS phone')
         ->join('users', 'users.id', '=', 'clients.user_id')
         ->join('partners', 'partners.id', '=', 'users.partner_id')
-        ->join('contacts', 'clients.id', '=', 'contacts.client_id')
+        // ->join('contacts', 'clients.id', '=', 'contacts.client_id')
         ->where('users.id', '=', intval(auth()->user()->id))
-        ->groupBy('contacts.client_id')
+        // ->groupBy('contacts.client_id')
         // ->toSql();
         ->get();
 
@@ -45,7 +46,7 @@ class AdminComprarController extends AdminController
     public function insertBuy(Request $request, Response $response,Client $client, Properties $propertie, Contact $contact){
         $validatedData = $request->validate([
             'name' => 'required|max:255',
-            'email' => 'required|email|unique:users,email',
+            'email' => 'required|email|unique:clients,email',
             'cpf_cnpj' => 'required|unique:clients,cpf_cnpj',
             'birth' => 'required'
         ]);

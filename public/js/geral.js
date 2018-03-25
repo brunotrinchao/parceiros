@@ -7,6 +7,7 @@ $(document).ready(function(){
        $('.datetimepicker').daterangepicker({
           "singleDatePicker": true,
           "autoApply": true,
+          "showDropdowns": true,
           "locale": {
               "format": "DD/MM/YYYY",
               "separator": " - ",
@@ -56,6 +57,7 @@ $(document).ready(function(){
   
       // date range
        $('.daterange').daterangepicker({
+        "showDropdowns": true,
           ranges: {
              'Hoje': [moment(), moment()],
              'Ontem': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],

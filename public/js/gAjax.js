@@ -1,25 +1,17 @@
 (function($) {
     $.gAjax = {
-        load: function(page, token, param, target, callback, async, preloader) {
-            if (jQuery.type(param) === 'array') {
-                param.push({ name: 'AMBIENTE', value: AMBIENTE });
-            } else {
-                jQuery.extend(param, { AMBIENTE: AMBIENTE });
-            }
+        load: function(page, param, target, callback, async, preloader) {
 
             if (async === undefined)
                 async = true;
             jQuery.ajax({
-                headers: {
-                    'X-CSRF-Token': token
-                },
-                type: "POST",
+                type: "GET",
                 url: page,
                 data: param,
                 async: async,
                 beforeSend: function() {
                     if (preloader === undefined || preloader == true)
-                    $('body').append('<div class="loader"><img src="{{ url("imagens/ajax-loader.gif")}}"></div>');
+                    $('body').append('<div class="loader"><img src="../../../imagens/ajax-loader.gif"></div>');
                     $('.loader').fadeIn('fast')
                 },
                 error: function(xhr, textStatus, errorThrown) {
@@ -119,6 +111,7 @@
                     if (!json.status && (alertError === undefined || alertError === true)) {
                         $.gNotify.danger(null, json.message);
                     }
+
                 }
             });
         }

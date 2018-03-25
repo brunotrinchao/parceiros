@@ -19,8 +19,9 @@ class CreatePropertiesTable extends Migration
             $table->foreign('client_id')->references('id')->on('clients');
             $table->decimal('amount', 10, 2)->comment('Valor do imóvel');
             $table->string('type_propertie')->comment('Tipo de imóvel');
+            $table->char('trade', 1)->comment('C: Compra | V: Venda | A: Alguel');
             $table->string('neighborhood')->comment('Bairro pretendido');
-            $table->char('type', 1)->comment('Proprietário | Interessado | Todos');
+            $table->char('type', 1)->comment('P:Proprietário | I:Interessado | T:Todos');
             $table->text('note')->comment('Observação');
             $table->timestamps();
         });
