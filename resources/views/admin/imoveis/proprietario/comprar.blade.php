@@ -168,9 +168,9 @@
     // Habilita edição dados pessoais
     $('#comprarEditarModal .btn_edita_dados').click(function(e){
       e.preventDefault();
-      $(this).css('display', 'none');
-      $('.btn_salva_dados, .btn_cancela_dados').css('display', 'inline-block');
       $('#comprarEditarModal form[name=editClient] input, #comprarEditarModal form[name=editClient] select').removeAttr('readonly').removeAttr('disabled');
+      $(this).hide();
+      $('.btn_salva_dados, .btn_cancela_dados').css('display', 'inline-block');
     });
 
     // Desabilita edição dados pessoais
@@ -204,53 +204,140 @@
       });
     });
 
+    // Habilita edição do negocio
+    $(document).on('click', '#comprarEditarModal .btn_edita_negocio', function(e){
+      e.preventDefault();
+      var id = $(this).attr('href');
+      $('#comprarEditarModal form[name=edita_negocio_'+id+'] input').removeAttr('disabled');
+      $('#comprarEditarModal form[name=edita_negocio_'+id+'] textarea').removeAttr('disabled');
+      $('#comprarEditarModal form[name=edita_negocio_'+id+'] select').removeAttr('disabled');
+      $(this).hide();
+      $('#comprarEditarModal form[name=edita_negocio_'+id+'] .btn_salva_negocio, #comprarEditarModal form[name=edita_negocio_'+id+'] .btn_cancela_negocio').css('display', 'inline-block');
+    });
+
+    // Desabilita edição do negocio
+    $(document).on('click', '#comprarEditarModal .btn_cancela_negocio', function(e){
+      e.preventDefault();
+      var id = $(this).attr('href');
+      $('#comprarEditarModal form[name=edita_negocio_'+id+'] input').attr('disabled','disabled');
+      $('#comprarEditarModal form[name=edita_negocio_'+id+'] textarea').attr('disabled','disabled');
+      $('#comprarEditarModal form[name=edita_negocio_'+id+'] select').attr('disabled','disabled');
+      $(this).css('display', 'none');
+      $('.btn_salva_negocio').css('display', 'none');
+      $('.btn_edita_negocio').css('display', 'inline-block');
+    });
+
+    // Edita negocio
+    $(document).on('submit', '#comprarEditarModal form.edita_negocio_form', function(e){
+      e.preventDefault();
+      var page = './negocios/comprar/';
+      var token = $('input[name="_token"]').val();
+      var param = $(this).serialize();
+      var idNegocio = $(this).find('input[name=id]').val();
+      var valueTipoImovel = $('form[name=edita_negocio_'+idNegocio+']').find('input[name=type_propertie]').val();
+      console.log(param);
+      $.gAjax.execCallback(page, token, param, false, function(retorno){
+        if(retorno.success){
+          $('#negocio_'+idNegocio).find('.box-title .titulo-negocio').text(valueTipoImovel);
+          $.gNotify.success(null, retorno.message);
+        }else{
+          $.gNotify.danger(null, retorno.message);
+        }
+      }, true, false, false, function(erro, payload, msg){
+        console.log(erro);
+        console.log(payload);
+        console.log(msg);
+      });
+    });
+    
     // Carrega negócios
    function loadNegocios(id){
     $.gAjax.load('./negocios/comprar/' + id, {type: 'T', trade: 'C'}, '.container_negocios', function(retorno){
+      if(retorno.success){
+        var arrStatus = {
+          A: 'Aguardando contato',
+          B: 'Telefone errado',
+          C: 'Desistiu contato',
+          D: 'Négocio fechado',
+          E: 'Em andamento'
+        }
+        var html = ''
+        $.each(retorno.data, function(i, e){
+          var collapseIn = (i == 0)? ' in' : '';
 
-      var html = ''
-      $.each(retorno.data, function(i, e){
-        console.log(e);
+          html += '<div class="panel box box-default" id="negocio_'+e.id+'">';
+            html += '<div class="box-header with-border">';
+              html += ' <h4 class="box-title" style="display:block">';
+                html += '<a data-toggle="collapse" data-parent="#accordion" href="#collapse'+e.id+'">';
+                  html += '<i class="fa fa-exchange"></i> <span class="titulo-negocio">'+e.type_propertie+'</span>';
+                  html += '<span class="time pull-right"><i class="fa fa-calendar"></i> '+moment(e.date).format('DD/MM/YY H:mm:ss')+'</span>';
+                html += '</a>';
+              html += '</h4>';
+            html += '</div>';
+            html += '<div id="collapse'+e.id+'" class="panel-collapse collapse '+collapseIn+'">';
+              html +='<form name="edita_negocio_'+e.id+'" class="edita_negocio_form">';
+                  html +='{!! csrf_field() !!}';
+                  html +='<input name="id" type="hidden" value="'+e.id+'">';
+                  html += '<div class="box-body">';
+                      html +='<div class="row">';
+                        html +='<div class="col-md-4">';
+                          html +='<div class="form-group">';
+                            html +='<label>Tipo do imóvel</label>';
+                            html +='<input type="text" name="type_propertie" class="form-control" disabled="disabled" value="'+e.type_propertie+'">';
+                          html +='</div>';
+                        html +='</div>';
+                        html +='<div class="col-md-4">';
+                          html +='<div class="form-group">';
+                            html +='<label>Valor do imóvel</label>';
+                            html +='<input type="text" name="amount" data-symbol="R$ " data-thousands="." data-decimal="," class="form-control valor" disabled="disabled" value="'+numberToReal(parseFloat(e.amount))+'">';
+                          html +='</div>';
+                        html +='</div>';
+                        html +='<div class="col-md-4">';
+                          html +='<div class="form-group">';
+                            html +='<label>Bairro</label>';
+                            html +='<input type="text" name="neighborhood" class="form-control" disabled="disabled" value="'+e.neighborhood+'">';
+                          html +='</div>';
+                      html +=' </div>';
+                        html +='<div class="col-md-12">';
+                          html +='<div class="form-group">';
+                            html +='<label>Observação</label>';
+                            html +='<textarea class="form-control" name="note" rows="3" disabled="disabled">'+e.note+'</textarea>';
+                          html +='</div>';
+                      html +=' </div>';
+                        html +='<div class="col-md-12">';
+                          html +='<div class="form-group">';
+                            html +='<label style="display:block">Status</label>';
+                            html +='<select name="status" id="" disabled="disabled" style="width:220px;">';
+                              $.each(arrStatus, function(index, element){
+                                var selected = (index == e.status)? 'selected':'';
+                                html +='<option value="'+index+'" '+selected+'>'+element+'</option>';
+                              });
+                            html +='</select>';
+                          html +='</div>';
+                        html +='</div>';
+                      html +='</div>';
+                      html += '<div class="row">';
+                      html +='<div class="col-md-12" style="text-align: right;">';
+                          html +='<a href="'+e.id+'" class="btn btn-default btn_cancela_negocio" style="display:none"><i class="fa fa-ban"></i> Cancelar</a>';
+                          html +='<button type="submit" class="btn btn-success btn_salva_negocio" style="display:none">Salvar</button>';
+                          html +='<a href="'+e.id+'" class="btn text-red btn_edita_negocio"><i class="fa fa-pencil"></i> Editar</a>';
+                        html +='</div>';
+                      html += '</div>';
+                  html += ' </div>';
+              html +='</form>';
+            html += '</div>';
+          html += '</div>';
       });
-        html += '<div class="box box-default">';
-        html += '<div class="box-header with-border" data-widget="collapse" style="cursor:pointer">';
-        html +='<i class="fa fa-exchange"></i>Apartamento <span class="time pull-right"><i class="fa fa-calendar"></i> 10/10/2018</span>';
-        html +='</div>';
-        html +='<form>';
-          html +='<div class="box-body">';
-            html +='<div class="row">';
-              html +='<div class="col-md-6">';
-                html +='<div class="form-group">';
-                  html +='<label>Valor do imóvel</label>';
-                  html +='<input type="email" class="form-control" disabled="disabled" value="R$ 100.00,00">';
-                html +='</div>';
-              html +='</div>';
-              html +='<div class="col-md-6">';
-                html +='<div class="form-group">';
-                  html +='<label>Bairro</label>';
-                  html +='<input type="email" class="form-control" disabled="disabled" value="Costa Azul">';
-                html +='</div>';
-            html +=' </div>';
-              html +='<div class="col-md-12">';
-                html +='<div class="form-group">';
-                  html +='<label>Observação</label>';
-                  html +='<textarea class="form-control" rows="3" disabled="disabled"> Etiam porta sem malesuada magna mollis euismod. Etiam porta sem malesuada magna mollis euismod.';
-                    html +='</textarea>';
-                html +='</div>';
-            html +=' </div>';
-            html +='</div>';
-          html +='</div>';
-          html +='<div class="box-footer">';
-            html +='<select name="" id="" disabled="disabled">';
-              html +='<option value="">Aguardando</option>';
-            html +='</select>';
-            html +='<button type="submit" class="btn btn-success pull-right" style="display:none">';
-              html +='<i class="fa fa-floppy-o"></i> Salvar</button>';
-            html +='<a href="#" class="btn text-red pull-right">';
-              html +='<i class="fa fa-pencil"></i> Editar</a>';
-          html +='</div>';
-        html +='</form>';
-    html +=' </div>';
+      $('.container_negocios').append(html);
+      $('select').select2();
+      $('.valor').maskMoney({
+          prefix: 'R$ ',
+          decimal:",", 
+          thousands:"."
+        });
+    }else{
+      $('.container_negocios').html('<p>'+retorno.message+'</p>');
+    }
     }, true, true);
    }
 
@@ -556,91 +643,9 @@
                   </div>
                 </div>
               </form>
-              </form>
             </div>
             <!-- /.tab-pane -->
-            <div class="tab-pane container_negocios" id="tab_2">
-              <div class="box box-default">
-                <div class="box-header with-border" data-widget="collapse" style="cursor:pointer">
-                  <i class="fa fa-exchange"></i>Apartamento 
-                  <span class="time pull-right">
-                    <i class="fa fa-calendar"></i> 10/10/2018</span>
-                </div>
-                <form>
-                  <div class="box-body">
-                    <div class="row">
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label>Valor do imóvel</label>
-                          <input type="email" class="form-control" disabled="disabled" value="R$ 100.00,00">
-                        </div>
-                      </div>
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label>Bairro</label>
-                          <input type="email" class="form-control" disabled="disabled" value="Costa Azul">
-                        </div>
-                      </div>
-                      <div class="col-md-12">
-                        <div class="form-group">
-                          <label>Observação</label>
-                          <textarea class="form-control" rows="3" disabled="disabled"> Etiam porta sem malesuada magna mollis euismod. Etiam porta sem malesuada magna mollis euismod.
-                            Etiam porta sem malesuada magna mollis euismod. Etiam porta sem malesuada magna mollis euismod.
-                            </textarea>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="box-footer">
-                    <select name="" id="" disabled="disabled">
-                      <option value="">Aguardando</option>
-                    </select>
-                    <button type="submit" class="btn btn-success pull-right" style="display:none">
-                      <i class="fa fa-floppy-o"></i> Salvar</button>
-                    <a href="#" class="btn text-red pull-right">
-                      <i class="fa fa-pencil"></i> Editar</a>
-                  </div>
-                </form>
-              </div>
-              <div class="box box-default collapsed-box">
-                <div class="box-header with-border" data-widget="collapse" style="cursor:pointer">
-                  <i class="fa fa-exchange"></i>Apartamento
-                  <span class="time pull-right">
-                    <i class="fa fa-calendar"></i> 10/10/2018</span>
-                </div>
-                <form>
-                  <div class="box-body">
-                    <div class="row">
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label>Valor do imóvel</label>
-                          <input type="email" class="form-control" disabled="disabled" value="R$ 100.00,00">
-                        </div>
-                      </div>
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label>Bairro</label>
-                          <input type="email" class="form-control" disabled="disabled" value="Costa Azul">
-                        </div>
-                      </div>
-                      <div class="col-md-12">
-                        <div class="form-group">
-                          <label>Observação</label>
-                          <textarea class="form-control" rows="3" disabled="disabled"> Etiam porta sem malesuada magna mollis euismod. Etiam porta sem malesuada magna mollis euismod.
-                            Etiam porta sem malesuada magna mollis euismod. Etiam porta sem malesuada magna mollis euismod.
-                            </textarea>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="box-footer">
-                    <button type="submit" class="btn btn-success pull-right" style="display:none">
-                      <i class="fa fa-floppy-o"></i> Salvar</button>
-                    <a href="#" class="btn btn-default pull-right">
-                      <i class="fa fa-pencil"></i> Editar</a>
-                  </div>
-                </form>
-              </div>
+            <div class="tab-pane container_negocios box-group" id="tab_2">
             </div>
             <!-- /.tab-pane -->
           </div>
@@ -654,3 +659,4 @@
 </div>
 <!-- /.modal -->
 @stop
+

@@ -18,7 +18,7 @@ class AdminComprarController extends AdminController
     private $totalPage = 2;
 
     public function index(){
-
+        
         $clients = DB::table('clients')
         ->select('clients.id',
         'clients.user_id',

@@ -98,4 +98,11 @@ class Helper{
         return date('Y-m-d', strtotime(str_replace('/', '-', $date)));
     }
 
+    public static function unFormatMoney($money){
+        $retorno = str_replace('R$ ', '', $money);
+        $retorno = str_replace('.', '', $retorno);
+        $retorno = str_replace(',', '.', $retorno);
+        return $retorno;
+    }
+
 }

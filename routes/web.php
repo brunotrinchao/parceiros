@@ -11,6 +11,10 @@
 |
 */
 // Usuários
+$this->group([], function(){
+    $this->post('usuario/login', 'Auth\CustonLoginController@loginUser')->name('usuario.login');
+});
+// Clientes
 $this->group(['middleware' => ['auth']], function(){
     $this->post('cliente/editar', 'Auth\EditController@edit')->name('cliente.editar');
 });
@@ -25,9 +29,11 @@ $this->group(['middleware' => ['auth'], 'namespace' => 'Admin\Imoveis'], functio
     $this->post('admin/imoveis/indicacao/filtro', 'Indicacao\AdminComprarController@search')->name('admin.imoveis.indicacao.comprar.filtro');
     // Negocios
     $this->get('admin/imoveis/indicacao/negocios/comprar/{id}', 'AdminPropertiesController@getPropertiesClient')->name('admin.imoveis.indicacao.negocios.comprar');
+    $this->post('admin/imoveis/indicacao/negocios/comprar', 'AdminPropertiesController@update')->name('admin.imoveis.indicacao.negocios.comprar');
 });
 
 $this->get('/', 'Site\SiteController@index')->name('home');
+$this->get('/login', 'Site\SiteController@index')->name('login');
 
 Auth::routes();
 

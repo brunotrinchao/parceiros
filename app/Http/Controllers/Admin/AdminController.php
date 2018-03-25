@@ -15,6 +15,11 @@ class AdminController extends Controller
             $event->menu->add('IMÓVEIS');
             $event->menu->add(
                 [
+                    'text'    => 'Dashboard',
+                    'url'     => 'admin',
+                    'icon'     => 'dashboard'
+                ],
+                [
                     'text'    => 'Indicação',
                     'icon'    => 'pencil-square',
                     'submenu' => [

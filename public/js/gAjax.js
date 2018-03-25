@@ -31,7 +31,7 @@
                 },
                 success: function(resp) {
                     if (preloader === undefined || preloader == true)
-                    $('.loader').fadeOut('fast')
+                    $('.loader').fadeOut('fast').remove();
 
                     jQuery(target).html(resp);
 
