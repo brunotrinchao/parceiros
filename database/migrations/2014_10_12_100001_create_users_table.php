@@ -25,6 +25,7 @@ class CreateUsersTable extends Migration
             $table->char('level', 1)->default('U');
             $table->char('status', 1)->default('A');
             $table->string('contact')->nullable();
+            $table->tinyInteger('is_permission');
             $table->rememberToken();
             $table->timestamps();
         });

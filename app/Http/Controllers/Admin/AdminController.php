@@ -9,8 +9,10 @@ use JeroenNoten\LaravelAdminLte\Events\BuildingMenu;
 
 class AdminController extends Controller
 {
-    function __construct(Dispatcher $events)
+    function __construct(Request $request, Dispatcher $events)
     {
+        $this->middleware('auth');
+
         $events->listen(BuildingMenu::class, function (BuildingMenu $event) {
             $event->menu->add('IMÓVEIS');
             $event->menu->add(
@@ -85,44 +87,9 @@ class AdminController extends Controller
                     'icon'    => 'cog',
                 ]
             );
-            // $event->menu->add(
-            //     [
-            //     'text' => 'Indicação',
-            //     'url' => 'admin/imoveis/blog',
-            //     'icon' => 'file',
-            //     'submenu' => [
-            //             'text' => 'Proprietário',
-            //             [
-            //                 'text' => 'Comprar',
-            //                 'url'  => '#',
-            //             ],
-            //             [
-            //                 'text' => 'Vender',
-            //                 'url'  => '#',
-            //             ],
-            //             [
-            //                 'text' => 'Alugar',
-            //                 'url'  => '#',
-            //             ]
-            //         ],
-            //         [
-            //             'text' => 'Interessado',
-            //             [
-            //                 'text' => 'Comprar',
-            //                 'url'  => '#',
-            //             ],
-            //             [
-            //                 'text' => 'Vender',
-            //                 'url'  => '#',
-            //             ],
-            //             [
-            //                 'text' => 'Alugar',
-            //                 'url'  => '#',
-            //             ]
-            //         ]
-            //     ]);
         });
 
     }
+
 
 }

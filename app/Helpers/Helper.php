@@ -105,4 +105,34 @@ class Helper{
         return $retorno;
     }
 
+    public static function checkPermission($permissions){
+        $userAccess = Helper::getMyPermission(auth()->user()->level);
+        // dd($permission);
+        foreach ($permissions as $key => $value) {
+            if($value == $userAccess){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static function getMyPermission($nivel)
+    {
+        switch ($nivel) {
+        case 'S':
+            return 'superadmin';
+            break;
+        case 'A':
+            return 'admin';
+            break;
+        case 'G':
+            return 'gerente';
+            break;
+        case 'U':
+            return 'usuario';
+            break;
+        }
+    }
+
+
 }

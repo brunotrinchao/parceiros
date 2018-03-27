@@ -40,7 +40,7 @@ class AdminComprarController extends AdminController
         // ->toSql();
         ->get();
 
-        return view('admin.imoveis.proprietario.comprar', compact('clients'));
+        return view('admin.imoveis.comprar', compact('clients'));
     }
 
     public function insertBuy(Request $request, Response $response,Client $client, Properties $propertie, Contact $contact){
@@ -83,7 +83,7 @@ class AdminComprarController extends AdminController
         $clients = $client->search($dataFrom, $this->totalPage);
         $properties = $client->formatStatusPropertie(null);
 
-        return view('admin.imoveis.proprietario.comprar', compact('clients', 'properties'));
+        return view('admin.imoveis.comprar', compact('clients', 'properties'));
     }
 
     public function getClient($id){

@@ -43,13 +43,11 @@ var notify;
                 });
             },
             error: function(error, payload, msg) {
-                $.notifyClose();
-                $.notify({
-                    icon: "fa fa-check",
-                    message: msg
-                },{
-                    type: 'danger'
-                });
+                notify.update({
+                    'type': 'danger', 
+                    'icon': "fa fa-ban",
+                    'message': msg, 
+                    'progress': 100});
             },
             success: function(json) {
                 notify.update({

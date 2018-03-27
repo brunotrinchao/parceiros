@@ -32,8 +32,9 @@
                 success: function(resp) {
                     if (preloader === undefined || preloader == true)
                     $('.loader').fadeOut('fast').remove();
-
-                    jQuery(target).html(resp);
+                    if(target != null || target != undefined){
+                        jQuery(target).html(resp);
+                    }
 
                     if (typeof callback === 'function') {
                         callback.call(this, resp);

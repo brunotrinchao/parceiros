@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\Admin;
 
 use Validator;
 use App\Models\Client;
@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Helpers\Helper;
 
-class EditController extends Controller
+class ClientController extends Controller
 {
     
     protected function edit(Request $request, Response $response, Contact $contact){
@@ -69,6 +69,26 @@ class EditController extends Controller
         $retorno['success'] = true;
         return response()->json($retorno);
 
+    }
+
+    protected function get($id){
+        $clients = Client::where('clients.id', $id)
+                        ->first();
+        $addresses = $clients->addresses;
+        $contacts = $clients->contacts;
+        $properties = $clients->properties;
+        foreach ($properties as $key => $propertie) {
+            $properties_status = $propertie->properties_status;
+        }
+        if(!empty($clients)){
+            $data['clients'] = $clients; 
+            $data['success'] = true; 
+            $data['message'] = 'Cliente carregado com sucesso.'; 
+        }else{
+            $data['success'] = false; 
+            $data['message'] = 'Erro ao carregar cliente.'; 
+        }
+        return $data;
     }
 
 }
