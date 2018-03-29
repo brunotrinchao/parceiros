@@ -42,13 +42,13 @@
                 }
             });
         },
-        exec: function(page, param, token, success, error, alert, async, preloader) {
+        exec: function(page, param, success, error, alert, async, preloader) {
 
             if (async === undefined)
                 async = true;
             jQuery.ajax({
                 headers: {
-                    'X-CSRF-Token': token
+                    'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
                 },
                 type: "POST",
                 url: page,
@@ -75,13 +75,13 @@
                 }
             });
         },
-        execCallback: function(page, token, param, alert, callback, async, preloader, alertError, errorCallBack) {
+        execCallback: function(page, param, alert, callback, async, preloader, alertError, errorCallBack) {
 
             if (async === undefined)
                 async = true;
             jQuery.ajax({
                 headers: {
-                    'X-CSRF-Token': token
+                    'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
                 },
                 type: "POST",
                 url: page,

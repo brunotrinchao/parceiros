@@ -133,6 +133,15 @@ class Helper{
             break;
         }
     }
-
+    public static function numberUnformat($number)
+    {
+        $ret = null;
+        if (!empty($number)) {
+            $ret = str_replace(',', '.', str_replace('.', '', $number));
+            $ret = str_replace('R$ ', '', $ret);
+            $ret = str_replace('% ', '', $ret);
+        }
+        return $ret;
+    }
 
 }

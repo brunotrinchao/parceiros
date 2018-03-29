@@ -10,6 +10,7 @@ use App\Models\Imovel\Properties;
 use App\Models\Client;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\Helper;
+use App\Models\Imovel\Properties_Buy_Status;
 
 class AdminPropertiesController extends Controller
 {
@@ -57,7 +58,26 @@ class AdminPropertiesController extends Controller
         return response()->json($retorno);
     }
 
-    public function update(Request $request){
+    public function create(Request $request, Response $response, Properties $propertie){
+        $propertie->client_id = $request->id;
+        $propertie->amount = number_format(Helper::numberUnformat($request->amount), 2, '.', '');     
+        $propertie->note = $request->note;
+        $propertie->type_propertie = $request->type_propertie;
+        $propertie->neighborhood = $request->neighborhood;
+        $propertie->type = $request->type;
+        $propertie->trade = $request->trade;
+        $propertieInsert = $propertie->insert($propertie);
+        if($propertieInsert){
+            $retorno['success'] = true;
+            $retorno['message'] = 'Negócio criado com sucesso.';
+            return response()->json($retorno);
+        }
+        $retorno['success'] = false;
+        $retorno['message'] = 'Erro ao criar negócio.';
+        return response()->json($retorno);
+    }
+
+    public function update(Request $request, Properties_Buy_Status $status){
 
         // Valida campos
         $messagesRule = [
@@ -80,20 +100,25 @@ class AdminPropertiesController extends Controller
         }
 
         $propertie = Properties::find($request->get('id'));
-        $propertie->amount = Helper::unFormatMoney($request->get('amount'));
+        $propertie->amount = number_format(Helper::numberUnformat($request->amount), 2, '.', ''); 
         $propertie->type_propertie = $request->get('type_propertie');
         $propertie->neighborhood = $request->get('neighborhood');
         $propertie->note = $request->get('note');
-
+        
+        
         if($propertie->save()){
             $retorno['message'] = 'Negócio atualizado com sucesso.';
             $retorno['success'] = true;
+            if($request->get('status') != $propertie->status){
+                $status = $propertie->properties_status;
+                $status->status = $request->get('status');
+            }
             return response()->json($retorno);
         }
 
         $retorno['message'] = 'Erro ao atualizar negócio.';
         $retorno['success'] = true;
         return response()->json($retorno);
-        dd($propertie);
+        // dd($propertie);
     }
 }

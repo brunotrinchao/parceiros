@@ -11,4 +11,8 @@ class AdminClientsController extends Controller
     public function clients(){
         return $this->hasMany(Properties::class);
     }
+
+    // public function create(){
+
+    // }
 }

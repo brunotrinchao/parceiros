@@ -69,6 +69,7 @@ class AdminComprarController extends AdminController
             $propertie->type_propertie = $request->type_propertie;
             $propertie->neighborhood = $request->neighborhood;
             $propertie->type = 'T';
+            $propertie->trade = 'C';
             $propertieInsert = $propertie->insert($propertie);
             // Contato
             $contactInsert = $contact->insert($clientInsert['last_insert_id'], $request->phone);

@@ -22,6 +22,8 @@
     <!-- datatable -->
     <link rel="stylesheet" href="{{asset('js/plugins/datatable/datatables.css')}}"> 
     <link rel="stylesheet" href="{{asset('js/plugins/datatable/responsive.bootstrap.min.css')}}"> 
+    <!-- select -->
+    <link rel="stylesheet" href="{{asset('js/plugins/select/bootstrap-select.css')}}"> 
 
     @if(config('adminlte.plugins.select2'))
     <!-- Select2 -->
@@ -71,9 +73,10 @@
 <script type="text/javascript" src="{{asset('js/plugins/datatable/datatables.js')}}"></script>
 <!-- notify -->
 <script type="text/javascript" src="{{asset('js/plugins/notify/bootstrap-notify.min.js')}}"></script>
+<!-- select -->
+<script type="text/javascript" src="{{asset('js/plugins/select/bootstrap-select.min.js')}}"></script>
 <script src="{{ asset('js/gNotify.js')}}"></script>
 <script src="{{ asset('js/gAjax.js')}}"></script>
-
 
 <script src="{{ asset('js/geral.js')}}"></script>
 

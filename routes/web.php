@@ -31,7 +31,8 @@ $this->group(['middleware' => ['auth'], 'namespace' => 'Admin\Imoveis'], functio
     // middleware('check-permission:usuario|superadmin|admin|gerente')->
     // Negocios
     $this->get('admin/imoveis/indicacao/negocios/comprar/{id}', 'AdminPropertiesController@getPropertiesClient')->name('admin.imoveis.indicacao.negocios.comprar');
-    $this->post('admin/imoveis/indicacao/negocios/comprar', 'AdminPropertiesController@update')->name('admin.imoveis.indicacao.negocios.comprar');
+    $this->post('admin/imoveis/indicacao/negocios/comprar', 'AdminPropertiesController@create')->name('admin.imoveis.indicacao.negocios.comprar');
+    $this->post('admin/imoveis/indicacao/negocios/comprar/editar', 'AdminPropertiesController@update')->name('admin.imoveis.indicacao.negocios.comprar.editar');
 });
 
 $this->get('/', 'Site\SiteController@index')->name('home');

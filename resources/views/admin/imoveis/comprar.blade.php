@@ -122,7 +122,7 @@
             <div class="col-md-4">
               <div class="form-group">
                 <label>Sexo</label>
-                <select class="form-control select2" name="sex" style="width: 100%">
+                <select class="form-control selected" name="sex" style="width: 100%">
                   <option value="" selected>.: Selecione :.</option>
                   <option value="M">Masculino</option>
                   <option value="F">Feminino</option>
@@ -254,7 +254,7 @@
                   <div class="col-md-4">
                     <div class="form-group">
                       <label>Sexo</label>
-                      <select class="form-control select2" name="sex" style="width: 100%">
+                      <select class="form-control selected" name="sex" style="width: 100%">
                         <option value="" selected>.: Selecione :.</option>
                         <option value="M">Masculino</option>
                         <option value="F">Feminino</option>
@@ -328,27 +328,29 @@
           </button>
           <h4 class="modal-title">Comprar</h4>
         </div>
-        <form action="./comprar" name="novo_negocio">
-          <input type="hidden" name="birth" class="form-control daterange" placeholder="Data de nascimento">
+        <form action="" name="novo_negocio">
+          <input type="hidden" name="id">
+          <input type="hidden" name="trade" value="C">
+          <input type="hidden" name="type" value="T">
           <div class="modal-body">
             <div class="row">
               <div class="col-md-12 v_content_msg"></div>
               <div class="col-md-6">
                 <div class="form-group">
                   <label>Nome</label>
-                  <input type="text" name="name" class="form-control" placeholder="Nome">
+                  <input type="text" name="name" class="form-control" placeholder="Nome" readonly>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-group">
                   <label>E-mail</label>
-                  <input type="email" name="email" class="form-control" placeholder="E-mail">
+                  <input type="email" name="email" class="form-control" placeholder="E-mail" readonly>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="form-group">
                   <label>Sexo</label>
-                  <select class="form-control select2" name="sex" style="width: 100%">
+                  <select class="form-control selected" name="sex" style="width: 100%">
                     <option value="" selected>.: Selecione :.</option>
                     <option value="M">Masculino</option>
                     <option value="F">Feminino</option>
@@ -358,17 +360,14 @@
               <div class="col-md-4" class="v_cpf_cnpj">
                 <div class="form-group">
                   <label>CPF</label>
-                  <input type="text" name="cpf_cnpj" class="form-control cpf" placeholder="CPF">
+                  <input type="text" name="cpf_cnpj" class="form-control cpf" placeholder="CPF" readonly>
                 </div>
               </div>
               <div class="col-md-4">
-                <label>Data de nascimento</label>
-                <div class="pull-right datetimepicker" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
-                  <input type="hidden" name="birth">
-                  <i class="fa fa-calendar"></i>
-                  <span><input type="text" name="birth" style="border: none;" value="{{date('d/m/Y')}}" disabled></span>
-                  <b class="caret pull-right"></b>
-                </div>
+                <div class="form-group">
+                    <label>Data de nascimento</label>
+                    <input type="text" name="birth" class="form-control cpf" placeholder="Aniversário" readonly>
+                  </div>
               </div>
               <div class="col-md-12">
                 <h4 style="background-color:#f7f7f7; font-size: 18px; text-align: center; padding: 7px 10px; margin-top: 0;">

@@ -63,7 +63,7 @@ $(document).ready(function () {
       var url = $(this).attr('action');
       $.ajax({
         headers: {
-          'X-CSRF-Token': $('input[name="_token"]').val()
+          'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
         },
         type: 'POST',
         url: url,
@@ -115,8 +115,8 @@ $(document).ready(function () {
           $('form[name=editClient] input[name=contact]').val(retorno.clients.contact);
           $('form[name=editClient] input[name=birth]').val(moment(retorno.clients.birth).format('DD/MM/YYYY'));
           $('form[name=editClient] select[name=sex]').val(retorno.clients.sex);
-          $('form[name=editClient] .select2-selection__rendered').html((retorno.clients.sex == 'M') ? 'Masculino' : 'Feminino');
-          $('form[name=editClient] .select2').attr("disabled", true);
+        //   $('form[name=editClient] .select2-selection__rendered').html((retorno.clients.sex == 'M') ? 'Masculino' : 'Feminino');
+        //   $('form[name=editClient] .select2').attr("disabled", true);
           var v_phone = '';
           $.each(retorno.clients.contacts, function (i, e) {
             v_phone += '<div class="col-md-4 clone_add_phone">';
@@ -186,10 +186,9 @@ $(document).ready(function () {
     $('#comprarEditarModal form[name=editClient]').submit(function(e){
       e.preventDefault();
       var page = $(this).attr('action');
-      var token = $('input[name="_token"]').val();
       var param = $(this).serialize();
       console.log(param);
-      $.gAjax.execCallback(page, token, param, false, function(retorno){
+      $.gAjax.execCallback(page, param, false, function(retorno){
         if(retorno.success){
         $.gNotify.success(null, retorno.message);
       }else{
@@ -206,19 +205,20 @@ $(document).ready(function () {
     $(document).on('click', '#comprarEditarModal .btn_edita_negocio', function(e){
       e.preventDefault();
       var id = $(this).attr('href');
-      $('#comprarEditarModal form[name=edita_negocio_'+id+'] input').removeAttr('disabled');
-      $('#comprarEditarModal form[name=edita_negocio_'+id+'] textarea').removeAttr('disabled');
+      $('#comprarEditarModal form[name=edita_negocio_'+id+'] input').removeAttr('readonly');
+      $('#comprarEditarModal form[name=edita_negocio_'+id+'] textarea').removeAttr('readonly');
       $('#comprarEditarModal form[name=edita_negocio_'+id+'] select').removeAttr('disabled');
       $(this).hide();
       $('#comprarEditarModal form[name=edita_negocio_'+id+'] .btn_salva_negocio, #comprarEditarModal form[name=edita_negocio_'+id+'] .btn_cancela_negocio').css('display', 'inline-block');
+      
     });
 
     // Desabilita edição do negocio
     $(document).on('click', '#comprarEditarModal .btn_cancela_negocio', function(e){
       e.preventDefault();
       var id = $(this).attr('href');
-      $('#comprarEditarModal form[name=edita_negocio_'+id+'] input').attr('disabled','disabled');
-      $('#comprarEditarModal form[name=edita_negocio_'+id+'] textarea').attr('disabled','disabled');
+      $('#comprarEditarModal form[name=edita_negocio_'+id+'] input').attr('readonly','readonly');
+      $('#comprarEditarModal form[name=edita_negocio_'+id+'] textarea').attr('readonly','readonly');
       $('#comprarEditarModal form[name=edita_negocio_'+id+'] select').attr('disabled','disabled');
       $(this).css('display', 'none');
       $('.btn_salva_negocio').css('display', 'none');
@@ -228,13 +228,12 @@ $(document).ready(function () {
     // Edita negocio
     $(document).on('submit', '#comprarEditarModal form.edita_negocio_form', function(e){
       e.preventDefault();
-      var page = './negocios/comprar/';
-      var token = $('input[name="_token"]').val();
+      var page = '/admin/imoveis/indicacao/negocios/comprar/editar';
       var param = $(this).serialize();
       var idNegocio = $(this).find('input[name=id]').val();
       var valueTipoImovel = $('form[name=edita_negocio_'+idNegocio+']').find('input[name=type_propertie]').val();
       console.log(param);
-      $.gAjax.execCallback(page, token, param, false, function(retorno){
+      $.gAjax.execCallback(page, param, false, function(retorno){
         if(retorno.success){
           $('#negocio_'+idNegocio).find('.box-title .titulo-negocio').text(valueTipoImovel);
           $.gNotify.success(null, retorno.message);
@@ -248,9 +247,31 @@ $(document).ready(function () {
       });
     });
 
+    // Carrega modal novo negocio
     $(document).on('click','.btn_novo_negocio',function(e){
         e.preventDefault();
         loadCliente(1);
+    });
+
+    $('form[name=novo_negocio]').submit(function(e){
+        e.preventDefault();
+        var page = _url+'/admin/imoveis/indicacao/negocios/comprar';
+        var param = $(this).serialize();
+        $.gAjax.execCallback(page, param, false, function(retorno){
+            if(retorno.success){
+                $.gNotify.success(null, retorno.message);
+                $('#novoNegocioModal input[name=amount]').val('');
+                $('#novoNegocioModal input[name=type_propertie]').val('');
+                $('#novoNegocioModal input[name=neighborhood]').val('');
+                $('#novoNegocioModal textarea[name=note]').val('');
+              }else{
+                $.gNotify.danger(null, retorno.message);
+              }
+        }, true, false, false, function(erro, payload, msg){
+            console.log(erro);
+            console.log(payload);
+            console.log(msg);
+          });
     });
 });
     
@@ -265,7 +286,8 @@ $(document).ready(function () {
           D: 'Négocio fechado',
           E: 'Em andamento'
         }
-        var html = ''
+        var html = '';
+        var selectHtml = [];
         $.each(retorno.data, function(i, e){
           var collapseIn = (i == 0)? ' in' : '';
 
@@ -286,31 +308,31 @@ $(document).ready(function () {
                         html +='<div class="col-md-4">';
                           html +='<div class="form-group">';
                             html +='<label>Tipo do imóvel</label>';
-                            html +='<input type="text" name="type_propertie" class="form-control" disabled="disabled" value="'+e.type_propertie+'">';
+                            html +='<input type="text" name="type_propertie" class="form-control" readonly="readonly" value="'+e.type_propertie+'">';
                           html +='</div>';
                         html +='</div>';
                         html +='<div class="col-md-4">';
                           html +='<div class="form-group">';
                             html +='<label>Valor do imóvel</label>';
-                            html +='<input type="text" name="amount" data-symbol="R$ " data-thousands="." data-decimal="," class="form-control valor" disabled="disabled" value="'+numberToReal(parseFloat(e.amount))+'">';
+                            html +='<input type="text" name="amount" data-symbol="R$ " data-thousands="." data-decimal="," class="form-control valor" readonly="readonly" value="'+numberToReal(parseFloat(e.amount))+'">';
                           html +='</div>';
                         html +='</div>';
                         html +='<div class="col-md-4">';
                           html +='<div class="form-group">';
                             html +='<label>Bairro</label>';
-                            html +='<input type="text" name="neighborhood" class="form-control" disabled="disabled" value="'+e.neighborhood+'">';
+                            html +='<input type="text" name="neighborhood" class="form-control" readonly="readonly" value="'+e.neighborhood+'">';
                           html +='</div>';
                       html +=' </div>';
                         html +='<div class="col-md-12">';
                           html +='<div class="form-group">';
                             html +='<label>Observação</label>';
-                            html +='<textarea class="form-control" name="note" rows="3" disabled="disabled">'+e.note+'</textarea>';
+                            html +='<textarea class="form-control" name="note" rows="3" readonly="readonly">'+e.note+'</textarea>';
                           html +='</div>';
                       html +=' </div>';
                         html +='<div class="col-md-12">';
                           html +='<div class="form-group">';
                             html +='<label style="display:block">Status</label>';
-                            html +='<select name="status" id="" disabled="disabled" style="width:220px;">';
+                            html +='<select name="status" id="select_'+e.id+'" style="width:220px;" disabled>';
                               $.each(arrStatus, function(index, element){
                                 var selected = (index == e.status)? 'selected':'';
                                 html +='<option value="'+index+'" '+selected+'>'+element+'</option>';
@@ -330,9 +352,8 @@ $(document).ready(function () {
               html +='</form>';
             html += '</div>';
           html += '</div>';
-      });
-      $('.container_negocios').append(html);
-      $('select').select2();
+        });
+        $('.container_negocios').append(html);
       $('.valor').maskMoney({
           prefix: 'R$ ',
           decimal:",", 
@@ -373,13 +394,14 @@ $(document).ready(function () {
                 'message': retorno.message, 
                 'progress': 100});
                 
+                $('#novoNegocioModal input[name=id]').val(retorno.clients.id);
                 $('#novoNegocioModal input[name=name]').val(retorno.clients.name).attr('readonly', 'readonly');
                 $('#novoNegocioModal input[name=email]').val(retorno.clients.email).attr('readonly', 'readonly');
                 $('#novoNegocioModal input[name=cpf_cnpj]').val(retorno.clients.cpf_cnpj).attr('readonly', 'readonly');
                 $('#novoNegocioModal input[name=birth]').val(moment(retorno.clients.birth).format('DD/MM/YYYY'));
                 $('#novoNegocioModal select[name=sex]').val(retorno.clients.sex);
-                $('#novoNegocioModal .select2-selection__rendered').html((retorno.clients.sex == 'M') ? 'Masculino' : 'Feminino');
-                $('#novoNegocioModal .select2').attr("disabled", true);
+                // $('#novoNegocioModal .select2').attr("disabled", true);
+                // $('#novoNegocioModal .select2-selection__rendered').html((retorno.clients.sex == 'M') ? 'Masculino' : 'Feminino');
 
             $('#novoNegocioModal').modal('show');
             
