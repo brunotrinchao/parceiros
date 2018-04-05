@@ -35,6 +35,18 @@ $this->group(['middleware' => ['auth'], 'namespace' => 'Admin\Imoveis'], functio
     $this->post('admin/imoveis/indicacao/negocios/comprar/editar', 'AdminPropertiesController@update')->name('admin.imoveis.indicacao.negocios.comprar.editar');
 });
 
+// Arquivos
+$this->group(['middleware' => ['auth'], 'namespace' => 'Admin'], function(){
+    $this->middleware('check-permission:superadmin|admin|gerente')
+         ->get('admin/{produto}/arquivos', 'AdminArchiveController@list')->name('admin.{produto}.arquivos');
+    $this->middleware('check-permission:superadmin')
+         ->get('admin/arquivos/novo', 'AdminArchiveController@add')->name('admin.arquivos.novo');
+    $this->get('admin/{produto}/arquivos/{id}', 'AdminArchiveController@item')->name('admin.{produto}.arquivos.{id}');
+    $this->get('admin/{produto}/arquivos/download/{id}', 'AdminArchiveController@download')->name('admin.{produto}.arquivos.download.{id}');
+    $this->middleware('check-permission:superadmin')
+         ->post('admin/arquivos/upload', 'AdminArchiveController@upload')->name('admin.arquivos.upload');
+});
+
 $this->get('/', 'Site\SiteController@index')->name('home');
 $this->get('/login', 'Site\SiteController@index')->name('login');
 

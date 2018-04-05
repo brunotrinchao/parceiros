@@ -17,24 +17,7 @@
 @stop @section('content')
 
 <div class="box box-solid">
-  {{--
-  <div class="box-header with-border">
-    <h3 class="box-title">
-      <i class="fa fa-filter"></i> Filtrar</h3>
-  </div> --}}
   <div class="box-body">
-
-    {{--
-    <form action="{{ route('admin.imoveis.indicacao.comprar.filtro')}}" method="POST" class="form form-inline">
-      <input type="hidden" name="sessao" value="indicacao">
-      <input type="hidden" name="acao" value="comprar"> {!! csrf_field() !!}
-      <input type="text" name="name" class="form-control" placeholder="Nome">
-      <input class="form-control telefone" name="phone" type="text" placeholder="Telefone">
-      <input type="text" name="date" class="form-control" id="data_cadastro" value="{{ date('d/m/Y')}}" placeholder="data">
-      <button type="submit" class="btn btn-primary">
-        <i class="fa fa-search"></i>
-      </button>
-    </form> --}}
     <a href="#" class="btn btn-primary pull-right btn_novo" data-toggle="modal" data-target="#comprarModal">
       <i class="fa fa-plus"></i> Novo</a>
 
@@ -54,7 +37,7 @@
           <th class="hidden-sm">E-mail</th>
           <th class="hidden-sm">Telefone</th>
           <th class="hidden-sm">CPF</th>
-          <th class="hidden-sm">Cdastrado em</th>
+          <th>Cdastrado em</th>
           <th style="width: 40px"></th>
         </tr>
       </thead>

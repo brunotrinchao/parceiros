@@ -54,3 +54,12 @@
 .datetimepicker b{
   width: 10px;
 }
+
+/* imput File */
+
+.input_file_content{
+  border: 1px solid #ccc;
+  padding: 5px;
+  float: right;
+  width: 100%;
+}

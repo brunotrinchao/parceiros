@@ -21,7 +21,6 @@ class ClientsTableSeeder extends Seeder
                 'birth'     =>  date('1983-04-17'),
                 'sex'       =>  'M',
                 'type'      =>  'F',
-                'type'      =>  'F',
                 'cpf_cnpj'  =>  '0000000000'.$i,
                 'date'      =>  date('Y-m-d')
             ]);

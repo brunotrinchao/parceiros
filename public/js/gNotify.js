@@ -28,7 +28,6 @@
                 },
                 warning: function(title, msg){
                         $.notify({
-                                icon: 'fa fa-exclamation',
                                 title: title,
                                 message: msg
                         },{

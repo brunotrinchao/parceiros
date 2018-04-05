@@ -133,6 +133,7 @@ class Helper{
             break;
         }
     }
+
     public static function numberUnformat($number)
     {
         $ret = null;
@@ -143,5 +144,60 @@ class Helper{
         }
         return $ret;
     }
+
+    public static function getIcon($ext){
+        $ext = Helper::getExtension($ext);
+        $retorno = 'file-o';
+        switch ($ext) {
+            case 'pdf':
+                $retorno = 'file-pdf-o';
+                break;
+            case 'rar':
+                $retorno = 'file-archive-o';
+                break;
+            case 'zip':
+                $retorno = 'file-archive-o';
+                break;
+            case 'doc':
+                $retorno = 'file-word-o';
+                break;
+            case 'docx':
+                $retorno = 'file-word-o';
+                break;
+            case 'ppt':
+                $retorno = 'file-powerpoint-o';
+                break;
+            case 'pptx':
+                $retorno = 'file-powerpoint-o';
+                break;
+            case 'xls':
+                $retorno = 'file-excel-o';
+                break;
+            case 'xlsx':
+                $retorno = 'file-excel-o';
+                break;
+            case 'jpg':
+                $retorno = 'file-image-o';
+                break;
+            case 'png':
+                $retorno = 'file-image-o';
+                break;
+
+        }
+        return $retorno;
+    }
+
+    public static function getExtension($file){
+        $expFile = explode('/', $file);
+        return pathinfo($expFile[count($expFile) - 1], PATHINFO_EXTENSION);
+        
+    }
+
+    public static function createSlug($str, $delimiter = '-'){
+
+        $slug = strtolower(trim(preg_replace('/[\s-]+/', $delimiter, preg_replace('/[^A-Za-z0-9-]+/', $delimiter, preg_replace('/[&]/', 'and', preg_replace('/[\']/', '', iconv('UTF-8', 'ASCII//TRANSLIT', $str))))), $delimiter));
+        return $slug;
+    
+    } 
 
 }

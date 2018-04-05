@@ -1,4 +1,5 @@
 $(document).ready(function(){
+    inputFile();
         // Select
         $('select').select2();
         var start = moment().subtract(29, 'days');
@@ -52,6 +53,55 @@ $(document).ready(function(){
                 $('.datetimepicker input').val(start.format('DD/MM/YYYY') + '-' + end.format('DD/MM/YYYY'));
             } else {
                 $('.datetimepicker input').val(start.format('DD/MM/YYYY'));
+            }
+      });
+       $('.datecalendar').daterangepicker({
+          "singleDatePicker": true,
+          "autoApply": true,
+          "showDropdowns": true,
+          "locale": {
+              "format": "DD/MM/YYYY",
+              "separator": " - ",
+              "applyLabel": "Apply",
+              "cancelLabel": "Cancel",
+              "fromLabel": "From",
+              "toLabel": "To",
+              "customRangeLabel": "Custom",
+              "weekLabel": "W",
+              "daysOfWeek": [
+                  "Do",
+                  "Se",
+                  "Te",
+                  "Qu",
+                  "Qu",
+                  "Se",
+                  "Sa"
+              ],
+              "monthNames": [
+                  "Janeiro",
+                  "Fevereiro",
+                  "Março",
+                  "Abril",
+                  "Maio",
+                  "Junho",
+                  "Julho",
+                  "Agosto",
+                  "Setembro",
+                  "Outubro",
+                  "Novembro",
+                  "Dezembro"
+              ],
+              "firstDay": 1
+          },
+          "alwaysShowCalendars": true,
+          "endDate": end,
+          "minDate": end,
+          "opens": "left"
+      }, function(start, end, label) {
+        if (start.format('DD/MM/YYYY') !== end.format('DD/MM/YYYY')) {
+                $('.datecalendar input').val(start.format('DD/MM/YYYY') + '-' + end.format('DD/MM/YYYY'));
+            } else {
+                $('.datecalendar input').val(start.format('DD/MM/YYYY'));
             }
       });
   
@@ -159,9 +209,40 @@ $(document).ready(function(){
         }
       });
 
-    });
+      
+
+});
 function numberToReal(numero) {
     var numero = numero.toFixed(2).split('.');
     numero[0] = "R$ " + numero[0].split(/(?=(?:...)*$)/).join('.');
     return numero.join(',');
+}
+
+function inputFile(){
+    // var _this = $('input[type=file]');
+    $('.input-file').before(
+		function() {
+			if ( ! $(this).prev().hasClass('input-ghost') ) {
+				var element = $("<input type='file' class='input-ghost' style='visibility:hidden; height:0'>");
+				element.attr("name",$(this).attr("name"));
+				element.change(function(){
+                    console.log((element.val()).split('\\').pop());
+					element.next(element).find('input').val((element.val()).split('\\').pop());
+				});
+				$(this).find("button.btn-choose").click(function(){
+					element.click();
+				});
+				$(this).find("button.btn-reset").click(function(){
+					element.val(null);
+					$(this).parents(".input-file").find('input').val('');
+				});
+				$(this).find('input').css("cursor","pointer");
+				$(this).find('input').mousedown(function() {
+					$(this).parents('.input-file').prev().click();
+					return false;
+				});
+				return element;
+			}
+		}
+	);
 }

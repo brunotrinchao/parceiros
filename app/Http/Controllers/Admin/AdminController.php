@@ -75,7 +75,7 @@ class AdminController extends Controller
                 [
                     'text'    => 'Material promocional',
                     'icon'    => 'archive',
-                    'url'    => '#',
+                    'url'    => 'admin/imoveis/arquivos',
                 ],
                 [
                     'text'    => 'Ajuda',

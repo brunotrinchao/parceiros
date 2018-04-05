@@ -1,5 +1,15 @@
 <?php
-
+if (!defined('RDS_HOSTNAME')) {
+  define('RDS_HOSTNAME', $_SERVER['RDS_HOSTNAME']);
+  define('RDS_USERNAME', $_SERVER['RDS_USERNAME']);
+  define('RDS_PASSWORD', $_SERVER['RDS_PASSWORD']);
+  define('RDS_DB_NAME', $_SERVER['RDS_DB_NAME']);
+}else{
+define('RDS_HOSTNAME', env('DB_HOST', '127.0.0.1'));
+  define('RDS_USERNAME', env('DB_USERNAME', 'forge'));
+  define('RDS_PASSWORD', env('DB_PASSWORD', ''));
+  define('RDS_DB_NAME', env('DB_DATABASE', 'forge'));
+}
 return [
 
     /*
