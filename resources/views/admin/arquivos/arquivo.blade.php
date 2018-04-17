@@ -66,7 +66,7 @@
     <a href="{{ url('admin/'.$archive->product) }}">{{ $archive->product_format }}</a>
   </li>
   <li>
-    <a href="{{ url('admin/imoveis/arquivos') }}">Arquivos</a>
+    <a href="{{ url('admin/'.$archive->product.'/arquivos') }}">Arquivos</a>
   </li>
   <li class="active">Novo</li>
 </ol>

@@ -14,16 +14,16 @@ class CreateUsersTable extends Migration
     public function up()
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('partner_id')->unsigned();
-            $table->foreign('partner_id')->references('id')->on('partners');
+            $table->increments('id')->unsigned();
+            $table->integer('partners_id')->unsigned();
+            $table->foreign('partners_id')->references('id')->on('partners');
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('image')->nullable();
+            $table->string('image')->default('default.jpg');;
             $table->date('date');
-            $table->char('level', 1)->default('U');
-            $table->char('status', 1)->default('A');
+            $table->char('level', 1)->default('U')->comment('Nivel de acesso | S:SuperAdmin - P:Parceiro - G:Gerente - U:Usuario');
+            $table->char('status', 1)->default('A')->nullable();;
             $table->string('contact')->nullable();
             $table->tinyInteger('is_permission');
             $table->rememberToken();

@@ -1,9 +1,9 @@
 $(document).ready(function () {
     // novo
-    $('form[name=novo_imovel] select[name=type]').change(function () {
-      var value = $(this).val();
-      console.log(value);
-    });
+    // $('form[name=novo_imovel] select[name=type]').change(function () {
+    //   var value = $(this).val();
+    //   console.log(value);
+    // });
     // Add phone
     $('.add_phone').click(function (e) {
       e.preventDefault();

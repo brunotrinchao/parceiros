@@ -31,13 +31,15 @@ class AdminComprarController extends AdminController
         'clients.n_officials',
         'clients.sex',
         'clients.type')
-        // ->selectRaw('GROUP_CONCAT(contacts.phone) AS phone')
-        ->join('users', 'users.id', '=', 'clients.user_id')
-        ->join('partners', 'partners.id', '=', 'users.partner_id')
-        // ->join('contacts', 'clients.id', '=', 'contacts.client_id')
-        ->where('users.id', '=', intval(auth()->user()->id))
-        // ->groupBy('contacts.client_id')
-        // ->toSql();
+        ->when(auth()->user()->level == "S" || auth()->user()->level == "A" || auth()->user()->level == "G", function ($query) {
+            $query->where('partners.id', '=', intval(auth()->user()->partners_id));
+            return $query;
+        })
+        ->when(auth()->user()->level == "U", function ($query) {
+            $query->where('users.id', '=', intval(auth()->user()->id))
+                ->where('partners.id', '=', intval(auth()->user()->partners_id));
+            return $query;
+        })
         ->get();
 
         return view('admin.imoveis.comprar', compact('clients'));

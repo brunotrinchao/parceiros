@@ -152,14 +152,15 @@ $(document).ready(function(){
           "endDate": end,
           "opens": "center",
           "endDate": end,
-          "maxDate": end,
           "autoUpdateInput": false,
           "alwaysShowCalendars": false,
       }, function(start, end, label) {
         if (start.format('DD/MM/YYYY') !== end.format('DD/MM/YYYY')) {
-            $('#data_cadastro').val(start.format('DD/MM/YYYY') + '-' + end.format('DD/MM/YYYY'));
+            $('.daterange').val(start.format('DD/MM/YYYY') + ' até ' + end.format('DD/MM/YYYY'));
+            $('.daterange_hidden').val(start.format('YYYY-MM-DD') + '|' + end.format('YYYY-MM-DD'));
         } else {
-            $('#data_cadastro').val(start.format('DD/MM/YYYY'));
+            $('.daterange').val(start.format('DD/MM/YYYY'));
+            $('.daterange_hidden').val(start.format('YYYY-MM-DD') + '|' + end.format('YYYY-MM-DD'));
         }
       });
   
@@ -208,7 +209,13 @@ $(document).ready(function(){
           }
         }
       });
-
+      if($('input[type=radio]').length > 0){
+        $('input[type=radio]').iCheck({
+            checkboxClass: 'icheckbox_minimal-blue',
+            radioClass   : 'iradio_minimal-blue',
+            increaseArea: '20%' // optional
+        });
+        }
       
 
 });

@@ -12,7 +12,9 @@
     'fixed' => 'fixed',
     'top-nav' => 'layout-top-nav'
 ][config('adminlte.layout')] : '') . (config('adminlte.collapse_sidebar') ? ' sidebar-collapse ' : ''))
-
+<?php 
+$session = session()->get('portalparceiros');
+?>
 @section('body')
     <div class="wrapper">
 
@@ -55,44 +57,62 @@
             @endif
                 <!-- Navbar Right Menu -->
                 <div class="navbar-custom-menu">
-
                     <ul class="nav navbar-nav">
+                        <li class="dropdown products product-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                                <span><strong>{!! $session['name_produto'] !!}</strong></span> <i class="fa fa-fw fa-angle-down"></i> 
+                            </a>
+
+                            <ul class="dropdown-menu">
+                                <?php foreach($session['lista_produto'][0] as $key => $produto){ 
+                                    if($key != $session['id_produto']){
+                                ?>
+                                <li class="user-body">
+                                    <a href="{{ url('admin/'.$produto['slug']) }}" class="">{{ $produto['nome'] }}</a>
+                                </li>
+                            <?php 
+                                    }
+                                } 
+                            ?>
+                            </ul>
+                        </li>
                         <li class="dropdown user user-menu">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-                                    <img src="{{url('imagens/user.jpeg')}}" class="user-image" alt="User Image">
-                                    <span class="hidden-xs">Alexander Pierce</span>
+                                    <img src="{{asset('storage/parceiros/' . auth()->user()->partners->image)}}" class="user-image" alt="User Image">
+                                    <span class="hidden-xs">{{auth()->user()->partners->name}}</span>
                                 </a>
                                 <ul class="dropdown-menu">
                                     <!-- User image -->
                                     <li class="user-header">
-                                    <img src="{{url('imagens/user.jpeg')}}" class="img-circle" alt="User Image">
+                                    <img src="{{asset('storage/parceiros/' . auth()->user()->partners->image)}}" class="img-circle" alt="User Image">
                                     <p>
-                                        Alexander Pierce - Web Developer
-                                        <small>Member since Nov. 2012</small>
+                                        {{auth()->user()->partners->name}}
+                                    <small>Cadastrado em {{date('m/Y', strtotime(auth()->user()->partners->date))}}</small>
                                     </p>
                                     </li>
-                                    <!-- Menu Body -->
-                                    <li class="user-body">
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                        <a href="#">Followers</a>
+                                    <?php if(auth()->user()->level != 'U'){ ?>
+                                        <!-- Menu Body -->
+                                        <li class="user-body">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                            <a href="{{ url('admin/parceiro/editar') }}" class="btn btn-link"><i class="fa fa-pencil"></i> Editar</a>
+                                            </div>
+                                            <div class="col-xs-12">
+                                            <a href="{{ url('admin/usuarios') }}" class="btn btn-link"><i class="fa fa-users"></i> Usuários</a>
+                                            </div>
                                         </div>
-                                        <div class="col-xs-12">
-                                        <a href="#">Sales</a>
-                                        </div>
-                                        <div class="col-xs-12">
-                                        <a href="#">Friends</a>
-                                        </div>
-                                    </div>
-                                    <!-- /.row -->
-                                    </li>
+                                        <!-- /.row -->
+                                        </li>
+                                    <?php } ?>
                                     <!-- Menu Footer-->
                                     <li class="user-footer">
-                                    <div class="pull-left">
-                                        <a href="#">
-                                            <i class="fa fa-flat"></i> Configurações
-                                        </a>
-                                    </div>
+                                    <?php if(auth()->user()->level != 'U'){ ?>
+                                        <div class="pull-left">
+                                            <a href="#">
+                                                <i class="fa fa-fw fa-sliders"></i> Configurações
+                                            </a>
+                                        </div>
+                                    <?php } ?>
                                     <div class="pull-right">
                                         @if(config('adminlte.logout_method') == 'GET' || !config('adminlte.logout_method') && version_compare(\Illuminate\Foundation\Application::VERSION, '5.3.0', '<'))
                                             <a href="{{ url(config('adminlte.logout_url', 'auth/logout')) }}">
@@ -130,10 +150,10 @@
             <section class="sidebar">
                 <div class="user-panel">
                     <div class="pull-left image">
-                        <img src="{{url('imagens/user.jpeg')}}" class="img-circle" alt="User Image">
+                        <img src="{{asset('storage/parceiros/' . auth()->user()->image)}}" class="img-circle" alt="User Image">
                     </div>
                 <div class="pull-left info">
-                    <p>Alexander Pierce</p>
+                <p>{{auth()->user()->name}}</p>
                     <a href="#"><i class="fa fa-pencil-square-o"></i> Editar perfil</a>
                 </div>
                 </div>
