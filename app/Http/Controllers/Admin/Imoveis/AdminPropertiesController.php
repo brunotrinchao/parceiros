@@ -14,7 +14,7 @@ use App\Models\Imovel\Properties_Buy_Status;
 
 class AdminPropertiesController extends Controller
 {
-    public function getPropertiesClient(Request $request, Response $response){
+    public function getPropertiesClient(Request $request, Response $response, $id){
 
         $properties = DB::table('properties')
         ->select(
@@ -35,12 +35,12 @@ class AdminPropertiesController extends Controller
 		WHEN 'E' THEN  'Em andamento'    END) AS status_formatado")
         ->join('clients', 'clients.id', '=', 'properties.client_id')
         ->join('properties__buy__statuses', 'properties__buy__statuses.properties_id', '=', 'properties.id')
-        ->where('properties.client_id', '=', $request->id)
-        ->when($request->type, function ($query) {
+        ->where('properties.client_id', '=', $id)
+        ->when($request->type, function ($query) use ($request) {
             $query->where('properties.type', '=', $request->type);
             return $query;
         })
-        ->when($request->trade, function ($query) {
+        ->when($request->trade, function ($query) use ($request) {
             $query->where('properties.trade', '=', $request->trade);
             return $query;
         })
@@ -49,7 +49,6 @@ class AdminPropertiesController extends Controller
                     ->where('users.id', '=', auth()->user()->id);
             return $query;
         });
-
         if($properties->get()->count() > 0){
             $retorno['message'] = $properties->get()->count() . ' registros encontrados';
             $retorno['data'] = $properties->get(); 

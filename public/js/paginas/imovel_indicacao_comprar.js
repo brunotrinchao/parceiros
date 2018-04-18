@@ -55,9 +55,9 @@ $(document).ready(function () {
     });
 
     // Novo
-    $('.btn_novo').click(function (e) {
-      // $('#comprarModal .v_content_phones .clone_add_phone').remove();
-    });
+    // $('.btn_novo').click(function (e) {
+    //   $('form[name=novo_imovel]').append('<input name="type" value="'+ <?php echo $_GET['TYPE']; ?> +'"></input>');
+    // });
     $(document).on('submit', 'form[name=novo_imovel]', function (e) {
       e.preventDefault();
       var url = $(this).attr('action');
@@ -105,8 +105,11 @@ $(document).ready(function () {
     $(document).on('click', '.visualizarCompra', function (e) {
       e.preventDefault()
       var client_id = $(this).attr('data-id');
+      var type = $(this).attr('input[name=trade]');
+      var trade = $(this).attr('input[name=type]');
       $.get(_url+"/cliente/" + client_id, function (retorno) {
         if (retorno.success) {
+          $('#comprarEditarModal .modal-title span').text(retorno.clients.name);
           $('form[name=editClient] input, form[name=editClient] select').attr('readonly', 'readonly');
           $('form[name=editClient] input[name=id]').val(client_id);
           $('form[name=editClient] input[name=name]').val(retorno.clients.name);
@@ -134,7 +137,7 @@ $(document).ready(function () {
           $('#comprarEditarModal .v_content_phones').empty().append(v_phone);
 
           $('#comprarEditarModal').modal('show');
-          loadNegocios(client_id)
+          loadNegocios(client_id, type, trade)
           $('#comprarEditarModal #tab_negocios').attr('data-client-id',client_id);
         } else {
           $.gNotify.danger('', retorno.message);
@@ -276,8 +279,8 @@ $(document).ready(function () {
 });
     
     // Carrega negócios
-   function loadNegocios(id){
-    $.gAjax.load('./negocios/comprar/' + id, {type: 'T', trade: 'C'}, '.container_negocios', function(retorno){
+   function loadNegocios(id, type, trade){
+    $.gAjax.load('./negocios/comprar/' + id, {type: type, trade: trade}, '.container_negocios', function(retorno){
       if(retorno.success){
         var arrStatus = {
           A: 'Aguardando contato',
@@ -354,6 +357,7 @@ $(document).ready(function () {
           html += '</div>';
         });
         $('.container_negocios').append(html);
+        $('select[name=status]').select2();
       $('.valor').maskMoney({
           prefix: 'R$ ',
           decimal:",", 

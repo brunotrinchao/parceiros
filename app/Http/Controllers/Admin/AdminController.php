@@ -72,7 +72,7 @@ class AdminController extends Controller
                     'submenu' => [
                         [
                             'text'    => 'Comprar',
-                            'url'     => url('admin/'.$url_produto.'/indicacao/comprar'),
+                            'url'     => url('admin/'.$url_produto.'/indicacao/comprar?type=T&trade=C'),
                             'icon'     => 'circle'
                         ],
                         [
@@ -82,12 +82,12 @@ class AdminController extends Controller
                             'submenu' => [
                                 [
                                     'text' => 'Vender',
-                                    'url'  => '#',
+                                    'url'  => url('admin/'.$url_produto.'/indicacao/proprietario-vender?type=P&trade=V'),
                                     'icon'     => 'angle-double-right'
                                 ],
                                 [
                                     'text' => 'Alugar',
-                                    'url'  => url('#'),
+                                    'url'  => url('admin/'.$url_produto.'/indicacao/proprietario-alugar?type=P&trade=A'),
                                     'icon'     => 'angle-double-right'
                                 ]
                             ],
@@ -99,7 +99,7 @@ class AdminController extends Controller
                             'submenu' => [
                                 [
                                     'text' => 'Alugar',
-                                    'url'  => url('#'),
+                                    'url'  => url('admin/'.$url_produto.'/indicacao/interessado-alugar?type=I&trade=A'),
                                     'icon'     => 'angle-double-right'
                                 ]
                             ],

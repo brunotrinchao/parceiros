@@ -48,9 +48,9 @@ $this->group(['middleware' => ['auth'], 'namespace' => 'Admin\Imoveis'], functio
     // dashboard
     $this->get('admin/imoveis', 'AdminImoveisController@index')->name('admin.imoveis.home');
     // Indicações -> Proprietário
-    $this->get('admin/imoveis/indicacao/comprar', 'Indicacao\AdminComprarController@index')->name('admin.imoveis.indicacao.comprar');
+    $this->get('admin/imoveis/indicacao/{slug}', 'Indicacao\AdminComprarController@index')->name('admin.imoveis.indicacao.comprar');
     // $this->get('admin/imoveis/indicacao/comprar/{id}', 'Indicacao\AdminComprarController@getClient')->name('admin.imoveis.indicacao.comprar');
-    $this->post('admin/imoveis/indicacao/comprar', 'Indicacao\AdminComprarController@insertBuy')->name('admin.imoveis.indicacao.comprar');
+    $this->post('admin/imoveis/indicacao/{slug}', 'Indicacao\AdminComprarController@insertBuy')->name('admin.imoveis.indicacao.comprar');
     // $this->post('admin/imoveis/indicacao/filtro', 'Indicacao\AdminComprarController@search')->name('admin.imoveis.indicacao.comprar.filtro');
     // middleware('check-permission:usuario|superadmin|admin|gerente')->
     // Negocios

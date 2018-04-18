@@ -17,7 +17,7 @@ class AdminComprarController extends AdminController
 
     private $totalPage = 2;
 
-    public function index(){
+    public function index(Request $request){
         
         $clients = DB::table('clients')
         ->select('clients.id',
@@ -32,17 +32,34 @@ class AdminComprarController extends AdminController
         'clients.sex',
         'clients.type')
         ->when(auth()->user()->level == "S" || auth()->user()->level == "A" || auth()->user()->level == "G", function ($query) {
-            $query->where('partners.id', '=', intval(auth()->user()->partners_id));
+            $query->where('partners_id', '=', intval(auth()->user()->partners_id));
             return $query;
         })
         ->when(auth()->user()->level == "U", function ($query) {
-            $query->where('users.id', '=', intval(auth()->user()->id))
-                ->where('partners.id', '=', intval(auth()->user()->partners_id));
+            $query->where('users_id', '=', intval(auth()->user()->id))
+                ->where('partners_id', '=', intval(auth()->user()->partners_id));
             return $query;
         })
         ->get();
+        $trade = [
+            'V' => 'Vender',
+            'A' => 'Alugar',
+            'C' => 'Comprar'
+        ];
 
-        return view('admin.imoveis.comprar', compact('clients'));
+        $type = [
+            'P' => 'Proprietário - ',
+            'I' => 'Interessado - ',
+            'T' => ''
+        ];
+
+        $arr = [
+            'titulo' => $type[$request->type] . $trade[$request->trade],
+            'type' => $request->type,
+            'trade' => $request->trade
+        ];
+
+        return view('admin.imoveis.comprar', compact('clients', 'arr'));
     }
 
     public function insertBuy(Request $request, Response $response,Client $client, Properties $propertie, Contact $contact){
@@ -54,6 +71,7 @@ class AdminComprarController extends AdminController
         ]);
         // Cliente
         $client->user_id = auth()->user()->id;
+        $client->partners_id = auth()->user()->partners->id;
         $client->name = $request->name;
         $client->email = $request->email;
         $client->birth = date('Y-m-d', strtotime(str_replace('/','-',$request->birth)));
