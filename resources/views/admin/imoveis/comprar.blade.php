@@ -12,7 +12,6 @@
   <li>
     <a href="#">Indicação</a>
   </li>
-<li class="active">{{ $arr['titulo']}}</li>
 </ol>
 @stop @section('content')
 
@@ -27,7 +26,7 @@
 
 <div class="box box-solid">
   <div class="box-header with-border">
-    <h3 class="box-title">{{ $arr['titulo']}}</h3>
+    <h3 class="box-title">Lista</h3>
   </div>
   <div class="box-body">
     <table class="table table-striped table-bordered dt-responsive nowrap datatables" width="100%">
@@ -46,7 +45,7 @@
 
         <tr>
           <td>
-            <a href="#" data-id="{{ $client->id }}" class="btn-link visualizarCompra">{{ $client->name }}</a>
+          <a href="{{ url('admin/imoveis/indicacao/negocios/' . $client->id) }}" data-id="{{ $client->id }}" class="btn-link visualizarCompra">{{ $client->name }}</a>
           </td>
           <td class="hidden-sm">{{ $client->email }}</td>
           <td class="hidden-sm"></td>
@@ -82,16 +81,19 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title">{{ $arr['titulo']}}</h4>
+        <h4 class="modal-title">Nova indicação</h4>
       </div>
-      <form action="./comprar" name="novo_imovel">
+      <form action="{{ url('admin/imoveis/indicacao/novo') }}" name="novo_imovel">
         {!! csrf_field() !!}
         <input type="hidden" name="birth" class="form-control daterange" placeholder="Data de nascimento">
-        <input type="hidden" name="trade" value="<?php echo $_GET['trade'] ?>">
-        <input type="hidden" name="type" value="<?php echo $_GET['type'] ?>">
         <div class="modal-body">
           <div class="row">
             <div class="col-md-12 v_content_msg"></div>
+            <div class="col-md-12">
+              <h4 style="background-color:#f7f7f7; font-size: 18px; text-align: center; padding: 7px 10px; margin-top: 0;">
+                Informações do cliente
+              </h4>
+            </div>
             <div class="col-md-6">
               <div class="form-group">
                 <label>Nome</label>
@@ -156,9 +158,21 @@
             </div>
             <div class="col-md-12">
               <h4 style="background-color:#f7f7f7; font-size: 18px; text-align: center; padding: 7px 10px; margin-top: 0;">
-                Informações do negocio
+                Informações do negócio
               </h4>
             </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                  <label>Tipo</label>
+                  <select class="form-control selected" name="type" style="width: 100%">
+                    <option value="" selected>.: Selecione :.</option>
+                    <option value="C-I">Comprar</option>
+                    <option value="A-I">Alugar</option>
+                    <option value="A-P">Alugar - Proprietário</option>
+                    <option value="V-P">Vender - Proprietário</option>
+                  </select>
+                </div>
+              </div>
             <div class="col-md-6">
               <div class="form-group">
                 <label>Valor do imóvel</label>
@@ -311,7 +325,7 @@
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title">Comprar</h4>
+          <h4 class="modal-title">Novo negócio</h4>
         </div>
         <form action="" name="novo_negocio">
           <input type="hidden" name="id">
@@ -359,6 +373,18 @@
                   Informações do negocio
                 </h4>
               </div>
+              <div class="col-md-6">
+                  <div class="form-group">
+                    <label>Tipo</label>
+                    <select class="form-control selected" name="type" style="width: 100%">
+                        <option value="" selected>.: Selecione :.</option>
+                        <option value="C-I">Comprar</option>
+                        <option value="A-I">Alugar</option>
+                        <option value="A-P">Alugar - Proprietário</option>
+                        <option value="V-P">Vender - Proprietário</option>
+                      </select>
+                  </div>
+                </div>
               <div class="col-md-6">
                 <div class="form-group">
                   <label>Valor do imóvel</label>

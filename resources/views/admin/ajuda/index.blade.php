@@ -53,7 +53,7 @@
                 <div class="col-md-12">
                     <?php
                         $session = session()->get('portalparceiros');
-                        $product_url = $session['url_produto'];    
+                        $product_url = $session['produtos']['url_produto'];    
                     ?>
                     <ul class="list-unstyled">
                         @forelse($categories as $category)

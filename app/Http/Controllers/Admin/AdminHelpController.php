@@ -33,7 +33,7 @@ class AdminHelpController extends AdminController
     public function indexUser(Request $request, $produto, $categoria = null){
         $helps = null;
         $session = session()->get('portalparceiros');
-        $product_id = $session['id_produto'];
+        $product_id = $session['produtos']['id_produto'];
         if($categoria){
             $helps = DB::table('helps')
                 ->select(

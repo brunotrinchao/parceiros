@@ -78,16 +78,15 @@ $(document).ready(function () {
           $('.loader').fadeOut('fast', function () {
             var tipo = (data.success) ? 'success' : 'danger';
             var titulo = (data.success) ? 'Sucesso' : 'Erro';
-            $.gNotify.tipo('<strong>' + titulo + '</strong> ', data.message);
+           ;
             // $('.v_content_msg').append(html);
             $(this).remove();
           });
           if (data.success) {
-            $('form[name=novo_imovel] input').val('');
-            $('form[name=novo_imovel] textarea').val('');
-            $('form[name=novo_imovel] select').val('');
-            $('.v_content_phones').empty();
-
+            $.gNotify.success('<strong>Sucesso</strong> ', data.message)
+            location.reload();
+          }else{
+            $.gNotify.danger('<strong>Erro</strong> ', data.message)
           }
         },
         error: function (data) {
@@ -105,8 +104,7 @@ $(document).ready(function () {
     $(document).on('click', '.visualizarCompra', function (e) {
       e.preventDefault()
       var client_id = $(this).attr('data-id');
-      var type = $(this).attr('input[name=trade]');
-      var trade = $(this).attr('input[name=type]');
+      var url = $(this).attr('href');
       $.get(_url+"/cliente/" + client_id, function (retorno) {
         if (retorno.success) {
           $('#comprarEditarModal .modal-title span').text(retorno.clients.name);
@@ -137,7 +135,7 @@ $(document).ready(function () {
           $('#comprarEditarModal .v_content_phones').empty().append(v_phone);
 
           $('#comprarEditarModal').modal('show');
-          loadNegocios(client_id, type, trade)
+          loadNegocios(url);
           $('#comprarEditarModal #tab_negocios').attr('data-client-id',client_id);
         } else {
           $.gNotify.danger('', retorno.message);
@@ -279,8 +277,10 @@ $(document).ready(function () {
 });
     
     // Carrega negócios
-   function loadNegocios(id, type, trade){
-    $.gAjax.load('./negocios/comprar/' + id, {type: type, trade: trade}, '.container_negocios', function(retorno){
+   function loadNegocios(url){
+     console.log(url);
+    $.gAjax.load(url, {}, '.container_negocios', function(retorno){
+      
       if(retorno.success){
         var arrStatus = {
           A: 'Aguardando contato',
@@ -289,6 +289,16 @@ $(document).ready(function () {
           D: 'Négocio fechado',
           E: 'Em andamento'
         }
+       var trade = {
+          'V': 'Vender',
+          'A': 'Alugar',
+          'C': 'Comprar'
+       }
+
+      var type = {
+          'P': 'Proprietário - ',
+          'I': ''
+      }
         var html = '';
         var selectHtml = [];
         $.each(retorno.data, function(i, e){
@@ -298,7 +308,7 @@ $(document).ready(function () {
             html += '<div class="box-header with-border">';
               html += ' <h4 class="box-title" style="display:block">';
                 html += '<a data-toggle="collapse" data-parent="#accordion" href="#collapse'+e.id+'">';
-                  html += '<i class="fa fa-exchange"></i> <span class="titulo-negocio">'+e.type_propertie+'</span>';
+                  html += '<i class="fa fa-exchange"></i> <span class="titulo-negocio">'+e.type_propertie+' | '+ type[e.type] + trade[e.trade] +'</span>';
                   html += '<span class="time pull-right"><i class="fa fa-calendar"></i> '+moment(e.date).format('DD/MM/YY H:mm:ss')+'</span>';
                 html += '</a>';
               html += '</h4>';

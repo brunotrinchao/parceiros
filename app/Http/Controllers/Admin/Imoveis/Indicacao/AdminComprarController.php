@@ -11,6 +11,7 @@ use App\Models\Client;
 use App\Models\Imovel\Properties;
 use App\Models\Contact;
 use App\User;
+use Validator;
 
 class AdminComprarController extends AdminController
 {
@@ -31,6 +32,7 @@ class AdminComprarController extends AdminController
         'clients.n_officials',
         'clients.sex',
         'clients.type')
+        ->join('contacts', 'clients.id', '=', 'contacts.client_id')
         ->when(auth()->user()->level == "S" || auth()->user()->level == "A" || auth()->user()->level == "G", function ($query) {
             $query->where('partners_id', '=', intval(auth()->user()->partners_id));
             return $query;
@@ -41,34 +43,42 @@ class AdminComprarController extends AdminController
             return $query;
         })
         ->get();
-        $trade = [
-            'V' => 'Vender',
-            'A' => 'Alugar',
-            'C' => 'Comprar'
-        ];
 
-        $type = [
-            'P' => 'Proprietário - ',
-            'I' => 'Interessado - ',
-            'T' => ''
-        ];
-
-        $arr = [
-            'titulo' => $type[$request->type] . $trade[$request->trade],
-            'type' => $request->type,
-            'trade' => $request->trade
-        ];
-
-        return view('admin.imoveis.comprar', compact('clients', 'arr'));
+        return view('admin.imoveis.comprar', compact('clients'));
     }
 
     public function insertBuy(Request $request, Response $response,Client $client, Properties $propertie, Contact $contact){
-        $validatedData = $request->validate([
+        $messagesRule = [
+            'name.required' => 'Nome do cliente é obrigatório',
+            'email.required' => 'E-mail é obrigatório',
+            'cpf_cnpj.required' => 'CPF é obrigatório',
+            'birth.required' => 'Data de nascimento é obrigatório',
+            'type.required' => 'Tipo de negócio é obrigatório',
+            'amount.required' => 'Valor do imóvel é obrigatório',
+            'type_propertie.required' => 'Tipo do imóvel é obrigatório',
+            'neighborhood.required' => 'Bairro é obrigatório'
+        ];
+        $validatedData = Validator::make($request->all(), [
             'name' => 'required|max:255',
             'email' => 'required|email|unique:clients,email',
             'cpf_cnpj' => 'required|unique:clients,cpf_cnpj',
-            'birth' => 'required'
-        ]);
+            'birth' => 'required',
+            'type' => 'required',
+            'amount' => 'required',
+            'type_propertie' => 'required',
+            'neighborhood' => 'required'
+        ], $messagesRule);
+
+        if($validatedData->fails()){
+            $arrMsg;
+            foreach(json_decode($validatedData->messages()) as $t){
+                $arrMsg[] = '- '. $t[0];
+            }
+            $retorno['message'] = implode('<br>', $arrMsg);
+            $retorno['success'] = false; 
+            return response()->json($retorno);
+        }
+       
         // Cliente
         $client->user_id = auth()->user()->id;
         $client->partners_id = auth()->user()->partners->id;
@@ -83,13 +93,14 @@ class AdminComprarController extends AdminController
         $clientInsert = $client->insert($client);
         if($clientInsert['success']){
             // Imovel
+            $exp = explode('-',$request->type);
             $propertie->client_id = $clientInsert['last_insert_id'];
             $propertie->amount = number_format($this->numberUnformat($request->amount), 2, '.', '');     
             $propertie->note = $request->note;
             $propertie->type_propertie = $request->type_propertie;
             $propertie->neighborhood = $request->neighborhood;
-            $propertie->type = 'T';
-            $propertie->trade = 'C';
+            $propertie->type = $exp[1];
+            $propertie->trade = $exp[0];
             $propertieInsert = $propertie->insert($propertie);
             // Contato
             $contactInsert = $contact->insert($clientInsert['last_insert_id'], $request->phone);

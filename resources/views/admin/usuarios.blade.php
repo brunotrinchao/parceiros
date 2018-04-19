@@ -114,7 +114,7 @@
           <a href="#" class="btn_usuario" data-id="{{ $user->id }}"  data-toggle="modal" data-target="#usuarioModal">{{ $user->name }}</a>
           </td>
           <?php if(auth()->user()->level == 'S'){ ?>
-            <td class="hidden-sm">{{ $user->partner_name }}</td>
+            <td>{{ $user->partner_name }}</td>
           <?php } ?>
           <td class="hidden-sm">{{ $user->level_format }}</td>
           <td class="hidden-sm">{{ $user->status_format }}</td>

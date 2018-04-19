@@ -15,7 +15,7 @@ use App\Models\Imovel\Properties_Buy_Status;
 class AdminPropertiesController extends Controller
 {
     public function getPropertiesClient(Request $request, Response $response, $id){
-
+        
         $properties = DB::table('properties')
         ->select(
             'properties.id',
@@ -36,14 +36,6 @@ class AdminPropertiesController extends Controller
         ->join('clients', 'clients.id', '=', 'properties.client_id')
         ->join('properties__buy__statuses', 'properties__buy__statuses.properties_id', '=', 'properties.id')
         ->where('properties.client_id', '=', $id)
-        ->when($request->type, function ($query) use ($request) {
-            $query->where('properties.type', '=', $request->type);
-            return $query;
-        })
-        ->when($request->trade, function ($query) use ($request) {
-            $query->where('properties.trade', '=', $request->trade);
-            return $query;
-        })
         ->when(auth()->user()->level == 'U', function ($query) {
             $query->join('users', 'users.id', '=', 'clients.user_id')
                     ->where('users.id', '=', auth()->user()->id);

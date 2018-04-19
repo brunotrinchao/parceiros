@@ -1,14 +1,14 @@
 <?php
 if (!defined('RDS_HOSTNAME')) {
-  define('RDS_HOSTNAME', $_SERVER['RDS_HOSTNAME']);
-  define('RDS_USERNAME', $_SERVER['RDS_USERNAME']);
-  define('RDS_PASSWORD', $_SERVER['RDS_PASSWORD']);
-  define('RDS_DB_NAME', $_SERVER['RDS_DB_NAME']);
+    define('RDS_HOSTNAME', $_SERVER['RDS_HOSTNAME']);
+    define('RDS_USERNAME', $_SERVER['RDS_USERNAME']);
+    define('RDS_PASSWORD', $_SERVER['RDS_PASSWORD']);
+    define('RDS_DB_NAME', $_SERVER['RDS_DB_NAME']);
 }else{
     define('RDS_HOSTNAME', env('DB_HOST', '127.0.0.1'));
-  define('RDS_USERNAME', env('DB_USERNAME', 'forge'));
-  define('RDS_PASSWORD', env('DB_PASSWORD', ''));
-  define('RDS_DB_NAME', env('DB_DATABASE', 'forge'));
+    define('RDS_USERNAME', env('DB_USERNAME', 'forge'));
+    define('RDS_PASSWORD', env('DB_PASSWORD', ''));
+    define('RDS_DB_NAME', env('DB_DATABASE', 'forge'));
 }
 return [
 
@@ -48,14 +48,14 @@ return [
             'database' => env('DB_DATABASE', database_path('database.sqlite')),
             'prefix' => '',
         ],
-        
+
         'mysql' => [
             'driver' => 'mysql',
-            'host' => RDS_HOSTNAME,
             'port' => env('DB_PORT', '3306'),
-            'database' => RDS_DB_NAME,
-            'username' => RDS_USERNAME,
-            'password' => RDS_PASSWORD,
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'database' => env('DB_DATABASE', 'forge'),
+            'username' => env('DB_USERNAME', 'forge'),
+            'password' => env('DB_PASSWORD', ''),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',

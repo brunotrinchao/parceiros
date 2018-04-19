@@ -14,11 +14,11 @@ class AdminController extends Controller
     {
         $this->middleware('auth');
         
-
         $events->listen(BuildingMenu::class, function (BuildingMenu $event) {
             $session = session()->get('portalparceiros');
-            $url_produto = $session['url_produto'];
-            $event->menu->add(strtoupper($session['name_produto']));
+            $url_produto = $session['produtos']['url_produto'];
+            
+            $event->menu->add(strtoupper($session['produtos']['name_produto']));
             $event->menu->add(
                 [
                     'text'    => 'Dashboard',
@@ -28,6 +28,12 @@ class AdminController extends Controller
             foreach($this->menuProduto($url_produto) as $menu){
                 $event->menu->add($menu); 
             }
+            $event->menu->add(
+            [
+                'text'    => 'Relatórios',
+                'icon'    => 'pie-chart',
+                'url'     => url('admin/'.$url_produto.'/relatorios')
+            ]);
             $event->menu->add(
                 [
                     'text'    => 'Material promocional',
@@ -60,7 +66,6 @@ class AdminController extends Controller
                 );
             }
         });
-
     }
 
     private function menuProduto($url_produto){
@@ -69,48 +74,97 @@ class AdminController extends Controller
                 return [[
                     'text'    => 'Indicação',
                     'icon'    => 'pencil-square',
+                    'url'     => url('admin/'.$url_produto.'/indicacao')
+                    ]];
+                break;
+            case 'oi':
+                return [[
+                        'text'    => 'Sobre',
+                        'icon'    => 'info-circle',
+                        'url'     => url(''),
+                    ],[
+                    'text'    => 'Indicação',
+                    'icon'    => 'pencil-square',
                     'submenu' => [
                         [
-                            'text'    => 'Comprar',
-                            'url'     => url('admin/'.$url_produto.'/indicacao/comprar?type=T&trade=C'),
-                            'icon'     => 'circle'
+                            'text'    => 'Fechar contrato',
+                            'icon'    => 'circle',
+                            'url'     => url(''),
                         ],
                         [
-                            'text'    => 'Proprietário',
-                            'url'     => url('#'),
-                            'icon'     => 'circle',
-                            'submenu' => [
-                                [
-                                    'text' => 'Vender',
-                                    'url'  => url('admin/'.$url_produto.'/indicacao/proprietario-vender?type=P&trade=V'),
-                                    'icon'     => 'angle-double-right'
-                                ],
-                                [
-                                    'text' => 'Alugar',
-                                    'url'  => url('admin/'.$url_produto.'/indicacao/proprietario-alugar?type=P&trade=A'),
-                                    'icon'     => 'angle-double-right'
-                                ]
-                            ],
-                        ],
-                        [
-                            'text'    => 'Interessado',
-                            'url'     => url('#'),
-                            'icon'     => 'circle',
-                            'submenu' => [
-                                [
-                                    'text' => 'Alugar',
-                                    'url'  => url('admin/'.$url_produto.'/indicacao/interessado-alugar?type=I&trade=A'),
-                                    'icon'     => 'angle-double-right'
-                                ]
-                            ],
+                            'text'    => 'Solicitar atendimento',
+                            'icon'    => 'circle',
+                            'url'     => url(''),
                         ]
                     ]
-                    ],
-                    [
-                        'text'    => 'Relatórios',
-                        'icon'    => 'pie-chart',
-                        'url'     => url('admin/'.$url_produto.'/relatorios')
                     ]];
+                break;
+            case 'financiamento':
+                return [[
+                    'text'    => 'Sobre',
+                    'icon'    => 'info-circle',
+                    'url'     => url(''),
+                ],[
+                    'text'    => 'Indicação',
+                    'icon'    => 'pencil-square',
+                    'url'     => url(''),
+                    'submenu' => [
+                        [
+                            'text' => 'Tradicional',
+                            'icon'    => 'circle',
+                            'url'     => url('#'),
+                        ],
+                        [
+                            'text' => 'Refinanciamento',
+                            'icon'    => 'circle',
+                            'url'     => url('#'),
+                        ]
+                    ]
+                    ]];
+                break;
+            case 'consultoria-de-credito':
+                return [[
+                    'text'    => 'Sobre',
+                    'icon'    => 'info-circle',
+                    'url'     => url(''),
+                ],
+                [
+                    'text'    => 'Imóveis',
+                    'icon'    => 'home',
+                    'submenu' => [
+                        [
+                            'text' => 'Indicação',
+                            'icon'    => 'circle',
+                            'url'     => url('#'),
+                        ],
+                        [
+                            'text' => 'Parceiros',
+                            'icon'    => 'circle',
+                            'url'     => url('#'),
+                        ]
+                    ]
+                ],
+                [
+                    'text'    => 'Veículos',
+                    'icon'    => 'car',
+                    'submenu' => [
+                        [
+                            'text' => 'Indicação',
+                            'icon'    => 'circle',
+                            'url'     => url('#'),
+                        ],
+                        [
+                            'text' => 'Parceiros',
+                            'icon'    => 'circle',
+                            'url'     => url('#'),
+                        ]
+                    ]
+                    ]
+                ];
+                break;
+
+                default:
+                return [];
                 break;
         }
     }

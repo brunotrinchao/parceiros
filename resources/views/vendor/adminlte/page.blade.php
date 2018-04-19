@@ -60,12 +60,12 @@ $session = session()->get('portalparceiros');
                     <ul class="nav navbar-nav">
                         <li class="dropdown products product-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-                                <span><strong>{!! $session['name_produto'] !!}</strong></span> <i class="fa fa-fw fa-angle-down"></i> 
+                                <span><strong>{!! $session['produtos']['name_produto'] !!}</strong></span> <i class="fa fa-fw fa-angle-down"></i> 
                             </a>
-
+                            
                             <ul class="dropdown-menu">
                                 <?php foreach($session['lista_produto'][0] as $key => $produto){ 
-                                    if($key != $session['id_produto']){
+                                    if($key != $session['produtos']['id_produto']){
                                 ?>
                                 <li class="user-body">
                                     <a href="{{ url('admin/'.$produto['slug']) }}" class="">{{ $produto['nome'] }}</a>

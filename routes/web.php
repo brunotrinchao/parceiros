@@ -38,23 +38,21 @@ $this->group(['middleware' => ['auth'], 'namespace' => 'Admin'], function(){
     $this->get('cliente/{id}', 'ClientController@get')->name('cliente.get');
     $this->post('cliente/editar', 'ClientController@edit')->name('cliente.editar');
 });
+// Dashboard
+$this->group(['middleware' => ['auth'], 'namespace' => 'Admin'], function(){
+    $this->get('admin/{produto}', 'AdminProdutoController@index')->name('admin.{produto}');
+});
 // Imóveis
 $this->group(['middleware' => ['auth'], 'namespace' => 'Admin\Imoveis'], function(){
-    session()->put('portalparceiros', [
-        'url_produto' => 'imoveis',
-        'name_produto' => 'Imóveis',
-        'id_produto' => 1
-    ]);
-    // dashboard
-    $this->get('admin/imoveis', 'AdminImoveisController@index')->name('admin.imoveis.home');
+
     // Indicações -> Proprietário
-    $this->get('admin/imoveis/indicacao/{slug}', 'Indicacao\AdminComprarController@index')->name('admin.imoveis.indicacao.comprar');
+    $this->get('admin/imoveis/indicacao', 'Indicacao\AdminComprarController@index')->name('admin.imoveis.indicacao');
     // $this->get('admin/imoveis/indicacao/comprar/{id}', 'Indicacao\AdminComprarController@getClient')->name('admin.imoveis.indicacao.comprar');
-    $this->post('admin/imoveis/indicacao/{slug}', 'Indicacao\AdminComprarController@insertBuy')->name('admin.imoveis.indicacao.comprar');
+    $this->post('admin/imoveis/indicacao/novo', 'Indicacao\AdminComprarController@insertBuy')->name('admin.imoveis.indicacao.novo');
     // $this->post('admin/imoveis/indicacao/filtro', 'Indicacao\AdminComprarController@search')->name('admin.imoveis.indicacao.comprar.filtro');
     // middleware('check-permission:usuario|superadmin|admin|gerente')->
     // Negocios
-    $this->get('admin/imoveis/indicacao/negocios/comprar/{id}', 'AdminPropertiesController@getPropertiesClient')->name('admin.imoveis.indicacao.negocios.comprar');
+    $this->get('admin/imoveis/indicacao/negocios/{id}', 'AdminPropertiesController@getPropertiesClient')->name('admin.imoveis.indicacao.negocios.{id}');
     $this->post('admin/imoveis/indicacao/negocios/comprar', 'AdminPropertiesController@create')->name('admin.imoveis.indicacao.negocios.comprar');
     $this->post('admin/imoveis/indicacao/negocios/comprar/editar', 'AdminPropertiesController@update')->name('admin.imoveis.indicacao.negocios.comprar.editar');
 });
@@ -112,7 +110,8 @@ $this->group(['middleware' => ['auth'], 'namespace' => 'Admin'], function(){
 
 // Relatório
 $this->group(['middleware' => ['auth'], 'namespace' => 'Admin'], function(){
-    $this->any('admin/{produto}/relatorios', 'AdminReportController@index')->name('admin.{produto}.relatorio');
+    $this->get('admin/{produto}/relatorios', 'AdminReportController@index')->name('admin.{produto}.relatorio');
+    $this->post('admin/{produto}/relatorios/resultado', 'AdminReportController@search')->name('admin.{produto}.relatorio.resultado');
 });
 
 
