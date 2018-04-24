@@ -54,22 +54,22 @@
     <div class="container" id="menu">
         <div class="row">
             <div class="col">
-                <a href="admin/imoveis" rel="IMOVEIS" class="btn btn_imovel btn_produto">
+                <a href="admin/imoveis/dashboard" rel="IMOVEIS" class="btn btn_imovel btn_produto">
                     <h2>Imóvel</h2>
                 </a>
             </div>
             <div class="col">
-                <a href="admin/oi" rel="OI" class="btn btn_oi btn_produto">
+                <a href="admin/oi/dashboard" rel="OI" class="btn btn_oi btn_produto">
                     <h2>Oi</h2>
                 </a>
             </div>
             <div class="col">
-                <a href="admin/financiamento" rel="FINANCIAMENTO" class="btn btn_financiamento btn_produto">
+                <a href="admin/financiamento/dashboard" rel="FINANCIAMENTO" class="btn btn_financiamento btn_produto">
                     <h2>Financiamento</h2>
                 </a>
             </div>
             <div class="col">
-                <a href="admin/consultoria" rel="CONSULTORIA" class="btn btn_consultoria btn_produto">
+                <a href="admin/consultoria/dashboard" rel="CONSULTORIA" class="btn btn_consultoria btn_produto">
                     <h2>Consultoria de crédito</h2>
                 </a>
             </div>

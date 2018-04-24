@@ -33,7 +33,7 @@ class AdminProdutoController extends AdminController
         ];
         session()->put('portalparceiros.produtos', $produtos[$produto]);
         
-        return view('admin.'.$produtos[$produto]['url_produto'].'.home.index');
+        return view('admin.'.$produtos[$produto]['url_produto'].'.dashboard.index');
     }
     
 }

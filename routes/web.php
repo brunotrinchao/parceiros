@@ -40,7 +40,7 @@ $this->group(['middleware' => ['auth'], 'namespace' => 'Admin'], function(){
 });
 // Dashboard
 $this->group(['middleware' => ['auth'], 'namespace' => 'Admin'], function(){
-    $this->get('admin/{produto}', 'AdminProdutoController@index')->name('admin.{produto}');
+    $this->get('admin/{produto}/dashboard', 'AdminProdutoController@index')->name('admin.{produto}');
 });
 // Imóveis
 $this->group(['middleware' => ['auth'], 'namespace' => 'Admin\Imoveis'], function(){
@@ -111,7 +111,7 @@ $this->group(['middleware' => ['auth'], 'namespace' => 'Admin'], function(){
 // Relatório
 $this->group(['middleware' => ['auth'], 'namespace' => 'Admin'], function(){
     $this->get('admin/{produto}/relatorios', 'AdminReportController@index')->name('admin.{produto}.relatorio');
-    $this->post('admin/{produto}/relatorios/resultado', 'AdminReportController@search')->name('admin.{produto}.relatorio.resultado');
+    $this->any('admin/{produto}/relatorios/resultado', 'AdminReportController@search')->name('admin.{produto}.relatorio.resultado');
 });
 
 

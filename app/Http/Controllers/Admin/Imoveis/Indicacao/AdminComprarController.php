@@ -16,10 +16,7 @@ use Validator;
 class AdminComprarController extends AdminController
 {
 
-    private $totalPage = 2;
-
     public function index(Request $request){
-        
         $clients = DB::table('clients')
         ->select('clients.id',
         'clients.user_id',
@@ -32,7 +29,7 @@ class AdminComprarController extends AdminController
         'clients.n_officials',
         'clients.sex',
         'clients.type')
-        ->join('contacts', 'clients.id', '=', 'contacts.client_id')
+        // ->join('contacts', 'clients.id', '=', 'contacts.client_id')
         ->when(auth()->user()->level == "S" || auth()->user()->level == "A" || auth()->user()->level == "G", function ($query) {
             $query->where('partners_id', '=', intval(auth()->user()->partners_id));
             return $query;
@@ -43,7 +40,7 @@ class AdminComprarController extends AdminController
             return $query;
         })
         ->get();
-
+        
         return view('admin.imoveis.comprar', compact('clients'));
     }
 
@@ -93,14 +90,13 @@ class AdminComprarController extends AdminController
         $clientInsert = $client->insert($client);
         if($clientInsert['success']){
             // Imovel
-            $exp = explode('-',$request->type);
             $propertie->client_id = $clientInsert['last_insert_id'];
             $propertie->amount = number_format($this->numberUnformat($request->amount), 2, '.', '');     
             $propertie->note = $request->note;
             $propertie->type_propertie = $request->type_propertie;
             $propertie->neighborhood = $request->neighborhood;
-            $propertie->type = $exp[1];
-            $propertie->trade = $exp[0];
+            $propertie->type = $request->type;
+            $propertie->trade = $request->trade;
             $propertieInsert = $propertie->insert($propertie);
             // Contato
             $contactInsert = $contact->insert($clientInsert['last_insert_id'], $request->phone);

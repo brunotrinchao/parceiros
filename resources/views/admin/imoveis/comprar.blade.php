@@ -23,7 +23,6 @@
   </div>
 </div>
 
-
 <div class="box box-solid">
   <div class="box-header with-border">
     <h3 class="box-title">Lista</h3>
@@ -86,6 +85,8 @@
       <form action="{{ url('admin/imoveis/indicacao/novo') }}" name="novo_imovel">
         {!! csrf_field() !!}
         <input type="hidden" name="birth" class="form-control daterange" placeholder="Data de nascimento">
+        <input type="hidden" name="type" value="{{ $_GET['type']}}">
+        <input type="hidden" name="trade" value="{{ $_GET['trade']}}">
         <div class="modal-body">
           <div class="row">
             <div class="col-md-12 v_content_msg"></div>
@@ -161,18 +162,6 @@
                 Informações do negócio
               </h4>
             </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                  <label>Tipo</label>
-                  <select class="form-control selected" name="type" style="width: 100%">
-                    <option value="" selected>.: Selecione :.</option>
-                    <option value="C-I">Comprar</option>
-                    <option value="A-I">Alugar</option>
-                    <option value="A-P">Alugar - Proprietário</option>
-                    <option value="V-P">Vender - Proprietário</option>
-                  </select>
-                </div>
-              </div>
             <div class="col-md-6">
               <div class="form-group">
                 <label>Valor do imóvel</label>

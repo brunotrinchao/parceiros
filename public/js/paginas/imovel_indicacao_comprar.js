@@ -278,9 +278,9 @@ $(document).ready(function () {
     
     // Carrega negócios
    function loadNegocios(url){
-     console.log(url);
+     
     $.gAjax.load(url, {}, '.container_negocios', function(retorno){
-      
+      console.log(retorno);
       if(retorno.success){
         var arrStatus = {
           A: 'Aguardando contato',

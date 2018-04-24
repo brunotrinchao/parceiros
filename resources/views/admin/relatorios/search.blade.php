@@ -1,6 +1,9 @@
-@extends('adminlte::page') @section('title_prefix', 'Indicação | Comprar') @section('js')
+@extends('adminlte::page') @section('title_prefix', 'Relatório') @section('js')
 @section('js')
 <script>
+  $(document).ready(function(){
+    $('body').addClass('sidebar-collapse');
+  });
 </script>
 @stop
 @stop @section('content_header')
@@ -30,11 +33,12 @@
         <div class="col-md-12">
           <div class="form-group">
               <label>Período </label>
-              <input type="text" name="periodo_range" class="form-control daterange" placeholder="Período" value="{{ date('d/m/Y') }}" style="width:200px">
-              <input type="hidden" name="periodo" class="daterange_hidden" value="{{ date('Y-m-m|Y-m-d') }}">
+              <input type="text" name="periodo_range" class="form-control daterange" placeholder="Período" value="{{ $title['periodo_range'] }}" style="width:200px">
+              <input type="hidden" name="periodo" class="daterange_hidden" value="{{ $title['periodo'] }}">
           </div>
           <div class="form-group">
             <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
+          <a href="{{ url('admin/imoveis/relatorios') }}"class="btn bg-gray"><i class="fa fa-undo"></i></a>
           </div>
         </div>
     </form>
@@ -43,7 +47,9 @@
 </div>
 
 <h3>{{ $title['titulo'] }}</h3>
-
+<?php
+  if(count($relatorios) > 0){
+?>
 <div class="row">
 
   <div class="col-md-3 col-sm-6 col-xs-12">
@@ -84,9 +90,7 @@
   </div>
 </div>
 
-<?php
-  // if(count($properties) > 0){
-?>
+
 
 <div class="box box-solid">
   <div class="box-body">
@@ -95,32 +99,32 @@
         <tr>
           <th data-priority="1">Imóvel</th>
           <th class="hidden-sm">Cliente</th>
-          <th class="hidden-sm">Contato</th>
-          <th class="hidden-sm">Prospector</th>
-          <th class="hidden-sm">Cidade</th>
+          <th class="hidden-sm">Usuário</th>
+          <th class="hidden-sm">Valor</th>
+          <th class="hidden-sm">Negócio</th>
           <th class="hidden-sm">Data</th>
         </tr>
       </thead>
       <tbody>
-         {{--  @forelse($properties as $propertie)  --}}
+          @forelse($relatorios as $relatorio) 
         <tr>
-          <td>gghfhgfh</td>
-          <td class="hidden-sm">gfhfgj</td>
-          <td class="hidden-sm">hjghjk</td>
-          <td class="hidden-sm">hjghjk</td>
-          <td class="hidden-sm">hjghjk</td>
-          <td class="hidden-sm">hjghjk</td>
+          <td>{{ $relatorio->imovel }}</td>
+          <td class="hidden-sm">{{ $relatorio->cliente }}</td>
+          <td class="hidden-sm">{{ $relatorio->usuario }}</td>
+          <td class="hidden-sm">{{ $relatorio->preco }}</td>
+          <td class="hidden-sm">{{ $relatorio->negocio }}</td>
+          <td class="hidden-sm">{{ date('d/m/Y', strtotime($relatorio->data)) }}</td>
         </tr>
-        {{--  @empty @endforelse  --}}
+         @empty @endforelse 
       </tbody>
     </table>
   </div>
   <!-- /.box-body -->
 </div>
 <?php
-  // }else{
-  //   echo '<p>Nenhum resultado encontrado.</p>';
-  // }
+  }else{
+    echo '<p>Nenhum resultado encontrado.</p>';
+  }
 ?>
 
 @stop

@@ -22,7 +22,7 @@ class AdminController extends Controller
             $event->menu->add(
                 [
                     'text'    => 'Dashboard',
-                    'url'     => url('admin/' . $url_produto),
+                    'url'     => url('admin/' . $url_produto . '/dashboard'),
                     'icon'     => 'dashboard'
                 ]);
             foreach($this->menuProduto($url_produto) as $menu){
@@ -74,7 +74,41 @@ class AdminController extends Controller
                 return [[
                     'text'    => 'Indicação',
                     'icon'    => 'pencil-square',
-                    'url'     => url('admin/'.$url_produto.'/indicacao')
+                    'submenu' => [
+
+                        [
+                            'text'    => 'Interessado',
+                            'icon'     => 'circle',
+                            'submenu' => [
+                                [
+                                    'text'    => 'Comprar',
+                                    'url'     => url('admin/'.$url_produto.'/indicacao?type=I&trade=C'),
+                                    'icon'     => 'angle-double-right'
+                                ],
+                                [
+                                    'text' => 'Alugar',
+                                    'url'  => url('admin/'.$url_produto.'/indicacao?type=I&trade=A'),
+                                    'icon'     => 'angle-double-right'
+                                ]
+                            ]    
+                        ],
+                            [
+                                'text'    => 'Proprietário',
+                                'icon'     => 'circle',
+                                'submenu' => [
+                                    [
+                                        'text' => 'Vender',
+                                        'url'  => url('admin/'.$url_produto.'/indicacao?type=P&trade=V'),
+                                        'icon'     => 'angle-double-right'
+                                    ],
+                                    [
+                                        'text' => 'Alugar',
+                                        'url'  => url('admin/'.$url_produto.'/indicacao?type=P&trade=A'),
+                                        'icon'     => 'angle-double-right'
+                                    ]
+                                ],
+                            ]
+                        ]
                     ]];
                 break;
             case 'oi':
