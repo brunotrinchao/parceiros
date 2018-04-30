@@ -40,7 +40,8 @@ class AdminPropertiesController extends Controller
             $query->join('users', 'users.id', '=', 'clients.user_id')
                     ->where('users.id', '=', auth()->user()->id);
             return $query;
-        });
+        })
+        ->get();
         if($properties->get()->count() > 0){
             $retorno['message'] = $properties->get()->count() . ' registros encontrados';
             $retorno['data'] = $properties->get(); 

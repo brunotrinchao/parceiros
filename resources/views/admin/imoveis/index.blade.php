@@ -199,7 +199,6 @@
 </div>
 <!-- /.modal -->
 
-
 <!-- MODAL | Comprar (Editar - Vizualizar) -->
 <div id="comprarEditarModal" class="modal fade" tabindex="-2" role="dialog">
   <div class="modal-dialog modal-lg" role="document">
@@ -305,7 +304,9 @@
   <!-- /.modal-dialog -->
 </div>
 <!-- /.modal -->
-
+<?php
+  $tipo = $_GET['trade'].'-'.$_GET['type'];
+?>
 <!-- MODAL | Novo negócio -->
 <div id="novoNegocioModal" class="modal fade" tabindex="-3" role="dialog">
     <div class="modal-dialog" role="document">
@@ -338,7 +339,7 @@
               <div class="col-md-4">
                 <div class="form-group">
                   <label>Sexo</label>
-                  <select class="form-control selected" name="sex" style="width: 100%">
+                  <select class="form-control" name="sex" style="width: 100%">
                     <option value="" selected>.: Selecione :.</option>
                     <option value="M">Masculino</option>
                     <option value="F">Feminino</option>
@@ -354,7 +355,7 @@
               <div class="col-md-4">
                 <div class="form-group">
                     <label>Data de nascimento</label>
-                    <input type="text" name="birth" class="form-control cpf" placeholder="Aniversário" readonly>
+                    <input type="text" name="birth" class="form-control calendario" placeholder="Aniversário" readonly>
                   </div>
               </div>
               <div class="col-md-12">
@@ -365,12 +366,12 @@
               <div class="col-md-6">
                   <div class="form-group">
                     <label>Tipo</label>
-                    <select class="form-control selected" name="type" style="width: 100%">
+                    <select class="form-control" name="type" style="width: 100%">
                         <option value="" selected>.: Selecione :.</option>
-                        <option value="C-I">Comprar</option>
-                        <option value="A-I">Alugar</option>
-                        <option value="A-P">Alugar - Proprietário</option>
-                        <option value="V-P">Vender - Proprietário</option>
+                        <option value="C-I" <?php if($tipo == 'C-I'){echo ' selected';} ?>>Comprar</option>
+                        <option value="A-I" <?php if($tipo == 'A-I'){echo ' selected';} ?>>Alugar</option>
+                        <option value="A-P" <?php if($tipo == 'A-P'){echo ' selected';} ?>>Alugar - Proprietário</option>
+                        <option value="V-P" <?php if($tipo == 'V-P'){echo ' selected';} ?>>Vender - Proprietário</option>
                       </select>
                   </div>
                 </div>

@@ -1,9 +1,9 @@
 $(document).ready(function(){
     inputFile();
-        // Select
-        $('select').select2();
-        var start = moment().subtract(29, 'days');
-        var end = moment();
+    // Select
+    // $('select').select2();
+    var start = moment().subtract(29, 'days');
+    var end = moment();
        //Date picker
        $('.datetimepicker').daterangepicker({
           "singleDatePicker": true,
@@ -163,6 +163,11 @@ $(document).ready(function(){
             $('.daterange_hidden').val(start.format('YYYY-MM-DD') + '|' + end.format('YYYY-MM-DD'));
         }
       });
+      // Calendário
+      $( ".calendario" ).datepicker(
+        $.datepicker.regional[ "pt-BR" ],{
+
+        });
   
       // Mascaras
       $('.cpf').mask('999.999.999-99', { 'placeholder': '__.___.___-__' });
@@ -216,7 +221,9 @@ $(document).ready(function(){
             increaseArea: '20%' // optional
         });
         }
-      
+        $('.input-tags').tagsinput({
+            tagClass: 'big'
+          });
 
 });
 function numberToReal(numero) {

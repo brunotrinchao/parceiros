@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Events\Dispatcher;
 use JeroenNoten\LaravelAdminLte\Events\BuildingMenu;
+use App\Models\Oi\PlanosCategoria;
+use App\Helpers\Helper;
 
 
 class AdminController extends Controller
@@ -60,6 +62,11 @@ class AdminController extends Controller
                                 'text'    => 'Parceiros',
                                 'url'     => url('admin/administracao/parceiros'),
                                 'icon'     => 'circle'
+                            ],
+                            [
+                                'text'    => 'Planos',
+                                'url'     => url('admin/administracao/planos'),
+                                'icon'     => 'circle'
                             ]
                         ]
                     ]
@@ -112,26 +119,35 @@ class AdminController extends Controller
                     ]];
                 break;
             case 'oi':
-                return [[
+                return [
+                    [
                         'text'    => 'Sobre',
                         'icon'    => 'info-circle',
-                        'url'     => url(''),
-                    ],[
+                        'url'     => url('admin/'.$url_produto.'/sobre'),
+                    ],
+                    [
                     'text'    => 'Indicação',
                     'icon'    => 'pencil-square',
                     'submenu' => [
-                        [
-                            'text'    => 'Fechar contrato',
-                            'icon'    => 'circle',
-                            'url'     => url(''),
-                        ],
-                        [
-                            'text'    => 'Solicitar atendimento',
-                            'icon'    => 'circle',
-                            'url'     => url(''),
+                            [
+                                'text'    => 'Fechar contrato',
+                                'icon'    => 'angle-double-right',
+                                'url'     => url('admin/'.$url_produto.'/indicacao/fechar-contrato'),
+                            ],
+                            [
+                                'text'    => 'Solicitar atendimento',
+                                'icon'    => 'angle-double-right',
+                                'url'     => url('admin/'.$url_produto.'/indicacao/solicitar-atendimento'),
+                            ]
                         ]
-                    ]
-                    ]];
+                    ],
+                    [
+                        'text'    => 'Planos',
+                        'icon'    => 'paypal',
+                        'submenu' => $this->planosList()
+                    ],
+                ];
+                
                 break;
             case 'financiamento':
                 return [[
@@ -141,17 +157,16 @@ class AdminController extends Controller
                 ],[
                     'text'    => 'Indicação',
                     'icon'    => 'pencil-square',
-                    'url'     => url(''),
                     'submenu' => [
                         [
                             'text' => 'Tradicional',
-                            'icon'    => 'circle',
-                            'url'     => url('#'),
+                            'icon'    => 'angle-double-right',
+                            'url'     => url('admin/'.$url_produto.'/indicacao/tradicional'),
                         ],
                         [
                             'text' => 'Refinanciamento',
-                            'icon'    => 'circle',
-                            'url'     => url('#'),
+                            'icon'    => 'angle-double-right',
+                            'url'     => url('admin/'.$url_produto.'/indicacao/refinanciamento'),
                         ]
                     ]
                     ]];
@@ -201,5 +216,18 @@ class AdminController extends Controller
                 return [];
                 break;
         }
+    }
+
+    private function planosList(){
+        $category = PlanosCategoria::orderBy('name')->get();
+        $retorno = [];
+        foreach($category as $key => $value){
+            array_push($retorno, [
+                'text'    => $value['name'],
+                'icon'    => 'angle-double-right',
+                'url'     => url('admin/oi/planos/'.$value['url']),
+            ]);
+        }
+        return $retorno;
     }
 }

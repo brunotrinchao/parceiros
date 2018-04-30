@@ -1,9 +1,4 @@
 $(document).ready(function () {
-    // novo
-    // $('form[name=novo_imovel] select[name=type]').change(function () {
-    //   var value = $(this).val();
-    //   console.log(value);
-    // });
     // Add phone
     $('.add_phone').click(function (e) {
       e.preventDefault();
@@ -55,9 +50,6 @@ $(document).ready(function () {
     });
 
     // Novo
-    // $('.btn_novo').click(function (e) {
-    //   $('form[name=novo_imovel]').append('<input name="type" value="'+ <?php echo $_GET['TYPE']; ?> +'"></input>');
-    // });
     $(document).on('submit', 'form[name=novo_imovel]', function (e) {
       e.preventDefault();
       var url = $(this).attr('action');
@@ -116,8 +108,6 @@ $(document).ready(function () {
           $('form[name=editClient] input[name=contact]').val(retorno.clients.contact);
           $('form[name=editClient] input[name=birth]').val(moment(retorno.clients.birth).format('DD/MM/YYYY'));
           $('form[name=editClient] select[name=sex]').val(retorno.clients.sex);
-        //   $('form[name=editClient] .select2-selection__rendered').html((retorno.clients.sex == 'M') ? 'Masculino' : 'Feminino');
-        //   $('form[name=editClient] .select2').attr("disabled", true);
           var v_phone = '';
           $.each(retorno.clients.contacts, function (i, e) {
             v_phone += '<div class="col-md-4 clone_add_phone">';
@@ -210,8 +200,7 @@ $(document).ready(function () {
       $('#comprarEditarModal form[name=edita_negocio_'+id+'] textarea').removeAttr('readonly');
       $('#comprarEditarModal form[name=edita_negocio_'+id+'] select').removeAttr('disabled');
       $(this).hide();
-      $('#comprarEditarModal form[name=edita_negocio_'+id+'] .btn_salva_negocio, #comprarEditarModal form[name=edita_negocio_'+id+'] .btn_cancela_negocio').css('display', 'inline-block');
-      
+      $('#comprarEditarModal form[name=edita_negocio_'+id+'] .btn_salva_negocio, #comprarEditarModal form[name=edita_negocio_'+id+'] .btn_cancela_negocio').css('display', 'inline-block');     
     });
 
     // Desabilita edição do negocio
@@ -407,18 +396,14 @@ $(document).ready(function () {
                 'type': 'success', 
                 'message': retorno.message, 
                 'progress': 100});
-                
-                $('#novoNegocioModal input[name=id]').val(retorno.clients.id);
-                $('#novoNegocioModal input[name=name]').val(retorno.clients.name).attr('readonly', 'readonly');
-                $('#novoNegocioModal input[name=email]').val(retorno.clients.email).attr('readonly', 'readonly');
-                $('#novoNegocioModal input[name=cpf_cnpj]').val(retorno.clients.cpf_cnpj).attr('readonly', 'readonly');
-                $('#novoNegocioModal input[name=birth]').val(moment(retorno.clients.birth).format('DD/MM/YYYY'));
-                $('#novoNegocioModal select[name=sex]').val(retorno.clients.sex);
-                // $('#novoNegocioModal .select2').attr("disabled", true);
-                // $('#novoNegocioModal .select2-selection__rendered').html((retorno.clients.sex == 'M') ? 'Masculino' : 'Feminino');
-
+            $('#novoNegocioModal input[name=id]').val(retorno.clients.id);
+            $('#novoNegocioModal input[name=name]').val(retorno.clients.name).attr('readonly', 'readonly');
+            $('#novoNegocioModal input[name=email]').val(retorno.clients.email).attr('readonly', 'readonly');
+            $('#novoNegocioModal input[name=cpf_cnpj]').val(retorno.clients.cpf_cnpj).attr('readonly', 'readonly');
+            $('#novoNegocioModal input[name=birth]').val(moment(retorno.clients.birth).format('DD/MM/YYYY'));
+            $('#novoNegocioModal select[name=sex]').val(retorno.clients.sex).attr('readonly', 'readonly').attr('disabled', 'disabled');
+            $('#novoNegocioModal select[name=type]').attr('readonly', 'readonly').attr('disabled', 'disabled');
             $('#novoNegocioModal').modal('show');
-            
         }else{
             notify.update({
                 'type': 'danger', 

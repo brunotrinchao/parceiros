@@ -9,6 +9,8 @@
 @yield('title_postfix', config('adminlte.title_postfix', ''))</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Jquery UI -->
+    <link rel="stylesheet" href="{{ asset('js/plugins/jquery-ui/jquery-ui.min.css')}}">
     <!-- Bootstrap 3.3.7 -->
     <link rel="stylesheet" href="{{ asset('vendor/adminlte/vendor/bootstrap/dist/css/bootstrap.min.css') }}">
     <!-- Font Awesome -->
@@ -24,7 +26,8 @@
     <link rel="stylesheet" href="{{asset('js/plugins/datatable/responsive.bootstrap.min.css')}}"> 
     <!-- select -->
     <link rel="stylesheet" href="{{asset('js/plugins/select/bootstrap-select.css')}}"> 
-
+    <!-- input tags -->
+    <link rel="stylesheet" href="{{asset('js/plugins/input-tags/bootstrap-tagsinput.css')}}"> 
     @if(config('adminlte.plugins.select2'))
     <!-- Select2 -->
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.css">
@@ -57,6 +60,7 @@
 @yield('body')
 
 <script src="{{ asset('vendor/adminlte/vendor/jquery/dist/jquery.min.js') }}"></script>
+<script src="{{ asset('js/plugins/jquery-ui/jquery-ui.min.js')}}"></script>
 <script src="{{ asset('vendor/adminlte/vendor/jquery/dist/jquery.slimscroll.min.js') }}"></script>
 <script src="{{ asset('vendor/adminlte/vendor/bootstrap/dist/js/bootstrap.min.js') }}"></script>
 
@@ -75,9 +79,10 @@
 <script type="text/javascript" src="{{asset('js/plugins/notify/bootstrap-notify.min.js')}}"></script>
 <!-- select -->
 <script type="text/javascript" src="{{asset('js/plugins/select/bootstrap-select.min.js')}}"></script>
+<!-- input tags -->
+<script type="text/javascript" src="{{asset('js/plugins/input-tags/bootstrap-tagsinput.js')}}"></script>
 <script src="{{ asset('js/gNotify.js')}}"></script>
 <script src="{{ asset('js/gAjax.js')}}"></script>
-
 <script src="{{ asset('js/geral.js')}}"></script>
 
 @if(config('adminlte.plugins.select2'))

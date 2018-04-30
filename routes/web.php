@@ -44,17 +44,23 @@ $this->group(['middleware' => ['auth'], 'namespace' => 'Admin'], function(){
 });
 // Imóveis
 $this->group(['middleware' => ['auth'], 'namespace' => 'Admin\Imoveis'], function(){
-
     // Indicações -> Proprietário
     $this->get('admin/imoveis/indicacao', 'Indicacao\AdminComprarController@index')->name('admin.imoveis.indicacao');
-    // $this->get('admin/imoveis/indicacao/comprar/{id}', 'Indicacao\AdminComprarController@getClient')->name('admin.imoveis.indicacao.comprar');
     $this->post('admin/imoveis/indicacao/novo', 'Indicacao\AdminComprarController@insertBuy')->name('admin.imoveis.indicacao.novo');
-    // $this->post('admin/imoveis/indicacao/filtro', 'Indicacao\AdminComprarController@search')->name('admin.imoveis.indicacao.comprar.filtro');
-    // middleware('check-permission:usuario|superadmin|admin|gerente')->
     // Negocios
     $this->get('admin/imoveis/indicacao/negocios/{id}', 'AdminPropertiesController@getPropertiesClient')->name('admin.imoveis.indicacao.negocios.{id}');
     $this->post('admin/imoveis/indicacao/negocios/comprar', 'AdminPropertiesController@create')->name('admin.imoveis.indicacao.negocios.comprar');
     $this->post('admin/imoveis/indicacao/negocios/comprar/editar', 'AdminPropertiesController@update')->name('admin.imoveis.indicacao.negocios.comprar.editar');
+});
+// Oi
+$this->group(['middleware' => ['auth'], 'namespace' => 'Admin\Oi'], function(){
+    $this->get('admin/oi/indicacao/solicitar-atendimento', 'AdminAtendimentoController@index')->name('admin.oi.indicacao.atendimento');
+    $this->post('admin/oi/indicacao/solicitar-atendimento', 'AdminAtendimentoController@create')->name('admin.oi.indicacao.atendimento');
+    $this->get('admin/oi/planos/{plano}', 'AdminPlanosController@planos')->name('admin.oi.planos.{plano}');
+});
+// Financiamento
+$this->group(['middleware' => ['auth'], 'namespace' => 'Admin\Financiamento'], function(){
+    $this->get('admin/financiamento/indicacao/{type}', 'AdminFinanciamentoController@index')->name('admin.oi.indicacao.atendimento');
 });
 
 // Arquivos | Ajuda
@@ -74,6 +80,7 @@ $this->group(['middleware' => ['auth'], 'namespace' => 'Admin'], function(){
 
 // Administracao
 $this->group(['middleware' => ['auth'], 'namespace' => 'Admin'], function(){
+    // Ajuda
     $this->middleware('check-permission:superadmin')
          ->get('admin/administracao/ajuda', 'AdminHelpController@index')->name('admin.administracao.ajuda');
     $this->middleware('check-permission:superadmin')
@@ -86,6 +93,11 @@ $this->group(['middleware' => ['auth'], 'namespace' => 'Admin'], function(){
          ->post('admin/administracao/ajuda/update', 'AdminHelpController@update')->name('admin.administracao.ajuda.update');
     $this->middleware('check-permission:superadmin')
         ->any('admin/administracao/ajuda/ordenar', 'AdminHelpController@order')->name('admin.administracao.ajuda.ordenar');
+    // Categoria
+    $this->middleware('check-permission:superadmin')
+            ->get('admin/administracao/ajuda/categoria', 'AdminCategoryController@list');
+    $this->middleware('check-permission:superadmin')
+            ->post('admin/administracao/ajuda/categoria', 'AdminCategoryController@add');
     // Parceiros
     $this->middleware('auth', 'check-permission:superadmin')
         ->get('admin/administracao/parceiros', 'AdminPartnerController@index')->name('admin.administracao.parceiros');
@@ -95,11 +107,23 @@ $this->group(['middleware' => ['auth'], 'namespace' => 'Admin'], function(){
         ->post('admin/administracao/parceiros/editar', 'AdminPartnerController@edit')->name('admin.administracao.parceiros.editar');
     $this->middleware('auth', 'check-permission:superadmin')
         ->post('admin/administracao/parceiros/novo', 'AdminPartnerController@create')->name('admin.administracao.parceiros.novo');
-    // Categoria
+    // Panos
     $this->middleware('check-permission:superadmin')
-         ->get('admin/administracao/ajuda/categoria', 'AdminCategoryController@list');
+         ->get('admin/administracao/planos', 'AdminPlanosController@index')->name('admin.administracao.planos');
     $this->middleware('check-permission:superadmin')
-         ->post('admin/administracao/ajuda/categoria', 'AdminCategoryController@add');
+        ->any('admin/administracao/planos/novo', 'AdminPlanosController@create')->name('admin.administracao.planos.novo');
+    $this->middleware('check-permission:superadmin')
+        ->get('admin/administracao/planos/editar/{id}', 'AdminPlanosController@edit')->name('admin.administracao.planos.editar.{id}');
+    $this->middleware('check-permission:superadmin')
+        ->post('admin/administracao/planos/update', 'AdminPlanosController@update')->name('admin.administracao.ajuda.update');
+    // Categoria Planos
+    $this->middleware('check-permission:superadmin')
+    ->get('admin/administracao/planos/categorias', 'AdminPlanosCategoriaController@index')->name('admin.administracao.planos.categorias');
+    $this->middleware('check-permission:superadmin')
+        ->get('admin/administracao/planos/categoria', 'AdminPlanosCategoriaController@list');
+    $this->middleware('check-permission:superadmin')
+        ->post('admin/administracao/planos/categoria', 'AdminPlanosCategoriaController@add');
+
 });
 
 // Ajuda
@@ -112,6 +136,11 @@ $this->group(['middleware' => ['auth'], 'namespace' => 'Admin'], function(){
 $this->group(['middleware' => ['auth'], 'namespace' => 'Admin'], function(){
     $this->get('admin/{produto}/relatorios', 'AdminReportController@index')->name('admin.{produto}.relatorio');
     $this->any('admin/{produto}/relatorios/resultado', 'AdminReportController@search')->name('admin.{produto}.relatorio.resultado');
+});
+
+// Cliente
+$this->group(['middleware' => ['auth'], 'namespace' => 'Admin'], function(){
+    $this->get('/admin/clientes', 'AdminClienteController@get');
 });
 
 

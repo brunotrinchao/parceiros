@@ -68,7 +68,7 @@ $session = session()->get('portalparceiros');
                                     if($key != $session['produtos']['id_produto']){
                                 ?>
                                 <li class="user-body">
-                                    <a href="{{ url('admin/'.$produto['slug']) }}" class="">{{ $produto['nome'] }}</a>
+                                    <a href="{{ url('admin/'.$produto['slug'].'/dashboard') }}" class="">{{ $produto['nome'] }}</a>
                                 </li>
                             <?php 
                                     }

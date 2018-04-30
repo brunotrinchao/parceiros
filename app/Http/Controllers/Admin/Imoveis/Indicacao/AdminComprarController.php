@@ -41,7 +41,7 @@ class AdminComprarController extends AdminController
         })
         ->get();
         
-        return view('admin.imoveis.comprar', compact('clients'));
+        return view('admin.imoveis.index', compact('clients'));
     }
 
     public function insertBuy(Request $request, Response $response,Client $client, Properties $propertie, Contact $contact){
