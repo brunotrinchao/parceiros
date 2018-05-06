@@ -20,8 +20,6 @@ var notify;
         e.preventDefault();
         var dados = $(this).serializeArray();
         var token = $('input[name="_token"]').val();
-        console.log(dados);
-        console.log(token);
         jQuery.ajax({
             headers: {
                 'X-CSRF-Token': token
@@ -43,6 +41,9 @@ var notify;
                 });
             },
             error: function(error, payload, msg) {
+                console.log(error);
+                console.log(payload);
+                console.log(msg);
                 notify.update({
                     'type': 'danger', 
                     'icon': "fa fa-ban",

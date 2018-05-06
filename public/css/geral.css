@@ -125,3 +125,8 @@ select:disabled{
   background-color: #f4f4f4;
 }
 
+
+.skin-blue .main-header .navbar .dropdown-menu li a:hover{
+  background-color: #fff;
+}
+

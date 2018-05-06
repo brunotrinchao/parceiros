@@ -32,6 +32,7 @@
       <thead>
         <tr>
           <th data-priority="1">Nome</th>
+          <th class="hidden-sm" width="15%">Produto</th>
           <th class="hidden-sm" width="15%">Tipo</th>
           <th class="hidden-sm" width="15%">Válido até</th>
         </tr>
@@ -40,8 +41,9 @@
             @forelse($archives as $archive)
         <tr>
           <td>
-          <a href="{{ url('admin/'.$archive->product.'/arquivos/' . $archive->id) }}" class="btn_arquivo" data-id="{{ $archive->id}}"><i class="fa fa-{!! App\Helpers\Helper::getIcon('teste/teste_teste.zip')!!}"></i> {{ $archive->name }}</a>
+          <a href="{{ url('admin/'.$archive->product_slug.'/arquivos/' . $archive->id) }}" class="btn_arquivo" data-id="{{ $archive->id}}"><i class="fa fa-{!! App\Helpers\Helper::getIcon($archive->file)!!}"></i> {{ $archive->name }}</a>
           </td>
+        <td>{{ $archive->product_name }}</td>
         <td class="hidden-sm">{!! App\Helpers\Helper::getExtension($archive->file)!!}</td>
           <td class="hidden-sm">{{ date('d/m/Y', strtotime($archive->date)) }}</td>
         </tr>

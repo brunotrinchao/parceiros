@@ -8,23 +8,24 @@ use App\Http\Controllers\Controller;
 use Auth;
 use App\Models\Product;
 use App\Helpers\Helper;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use App\User;
 
 class CustonLoginController extends Controller
 {
 
-    
-
     public function  loginUser(Request $request){
+        
         $email          = $request->email;
         $password       = $request->password;
-
-        $credenciais = $request->only('email', 'password');
-        if(Auth::attempt($credenciais)){
-            $produtoModel = Product::list();
+        $credentials = $request->only('email', 'password');
         
+        if(Auth::attempt(['email'=> $email, 'password'=> $password])){
+            $produtoModel = Product::list();
             foreach($produtoModel as $produto){
                 $produtoLista[$produto->id]['nome'] = $produto->name;
-                $produtoLista[$produto->id]['slug'] = Helper::createSlug($produto->name);
+                $produtoLista[$produto->id]['slug'] = $produto->slug;
             }
             session()->push('portalparceiros.lista_produto', $produtoLista);
             // dd(session()->get('portalparceiros'));
@@ -40,8 +41,8 @@ class CustonLoginController extends Controller
                 'success' => false,
                 'message' => 'Erro ao tentar logar.'
             ];
+            return response()->json($retorno);
         }
-        return response()->json($retorno);
 
     }
 }

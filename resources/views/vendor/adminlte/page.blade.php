@@ -68,7 +68,7 @@ $session = session()->get('portalparceiros');
                                     if($key != $session['produtos']['id_produto']){
                                 ?>
                                 <li class="user-body">
-                                    <a href="{{ url('admin/'.$produto['slug'].'/dashboard') }}" class="">{{ $produto['nome'] }}</a>
+                                    <a href="{{ url('admin/'.$produto['slug'].'/dashboard') }}" style="color:#777;">{{ $produto['nome'] }}</a>
                                 </li>
                             <?php 
                                     }
@@ -76,15 +76,19 @@ $session = session()->get('portalparceiros');
                             ?>
                             </ul>
                         </li>
+                        <?php
+                                            $imagem = (isset(auth()->user()->partners->image))? auth()->user()->partners->image: 'default.jpg';
+                                        ?>
                         <li class="dropdown user user-menu">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-                                    <img src="{{asset('storage/parceiros/' . auth()->user()->partners->image)}}" class="user-image" alt="User Image">
+                                    <img src="{{asset('storage/parceiros/' . $imagem)}}" class="user-image" alt="User Image">
                                     <span class="hidden-xs">{{auth()->user()->partners->name}}</span>
                                 </a>
                                 <ul class="dropdown-menu">
                                     <!-- User image -->
                                     <li class="user-header">
-                                    <img src="{{asset('storage/parceiros/' . auth()->user()->partners->image)}}" class="img-circle" alt="User Image">
+                                        
+                                    <img src="{{asset('storage/parceiros/' . $imagem)}}" class="img-circle" alt="User Image">
                                     <p>
                                         {{auth()->user()->partners->name}}
                                     <small>Cadastrado em {{date('m/Y', strtotime(auth()->user()->partners->date))}}</small>
@@ -95,7 +99,7 @@ $session = session()->get('portalparceiros');
                                         <li class="user-body">
                                         <div class="row">
                                             <div class="col-xs-12">
-                                            <a href="{{ url('admin/parceiro/editar') }}" class="btn btn-link"><i class="fa fa-pencil"></i> Editar</a>
+                                            <a href="{{ url('admin/parceiros/editar/' . auth()->user()->partners->id) }}" class="btn btn-link"><i class="fa fa-pencil"></i> Editar</a>
                                             </div>
                                             <div class="col-xs-12">
                                             <a href="{{ url('admin/usuarios') }}" class="btn btn-link"><i class="fa fa-users"></i> Usuários</a>
@@ -106,21 +110,14 @@ $session = session()->get('portalparceiros');
                                     <?php } ?>
                                     <!-- Menu Footer-->
                                     <li class="user-footer">
-                                    <?php if(auth()->user()->level != 'U'){ ?>
-                                        <div class="pull-left">
-                                            <a href="#">
-                                                <i class="fa fa-fw fa-sliders"></i> Configurações
-                                            </a>
-                                        </div>
-                                    <?php } ?>
                                     <div class="pull-right">
                                         @if(config('adminlte.logout_method') == 'GET' || !config('adminlte.logout_method') && version_compare(\Illuminate\Foundation\Application::VERSION, '5.3.0', '<'))
                                             <a href="{{ url(config('adminlte.logout_url', 'auth/logout')) }}">
-                                                <i class="fa fa-fw fa-power-off"></i> {{ trans('adminlte::adminlte.log_out') }}
+                                                <i class="fa fa-fw fa-power-off"></i> Sair
                                             </a>
                                         @else
                                             <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                                <i class="fa fa-fw fa-power-off"></i> {{ trans('adminlte::adminlte.log_out') }}
+                                                <i class="fa fa-fw fa-power-off"></i> Sair
                                             </a>
                                             <form id="logout-form" action="{{ url(config('adminlte.logout_url', 'auth/logout')) }}" method="POST" style="display: none;">
                                                 @if(config('adminlte.logout_method'))
@@ -154,7 +151,7 @@ $session = session()->get('portalparceiros');
                     </div>
                 <div class="pull-left info">
                 <p>{{auth()->user()->name}}</p>
-                    <a href="#"><i class="fa fa-pencil-square-o"></i> Editar perfil</a>
+                    <a href="{{url('admin/usuario/editar/'. Auth::id())}}"><i class="fa fa-pencil-square-o"></i> Editar perfil</a>
                 </div>
                 </div>
                 <!-- Sidebar Menu -->
@@ -194,6 +191,68 @@ $session = session()->get('portalparceiros');
 
     </div>
     <!-- ./wrapper -->
+    <div id="novoClienteModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Novo cliente</h4>
+            </div>
+            <form action="{{ url('admin/cliente/novo') }}" method="post" name="novo_cliente">
+                {!! csrf_field() !!}
+                <div class="modal-body">
+                    <div class="row">
+                    <div class="col-md-6 v_cpf_cnpj">
+                        <label style="display:block">CPF</label>
+                        <div class="input-group">
+                        <input type="text" name="cpf_cnpj" class="form-control cpf" placeholder="CPF">
+                        <span class="input-group-btn">
+                            <a href="#" class="btn btn-default consulta_cpf"><i class="fa fa-search"></i></a>
+                        </span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Tipo</label>
+                        <div class="input-group">
+                            <input type="radio" name="client_type" value="F" checked> Pessoa Física
+                            <input type="radio" name="client_type" value="J"> Pessoa Jurídica
+                        </div>
+                    </div>
+                    <div class="load_cliente" style="clear:both"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                
+                </div>
+            </form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <div id="informacoesModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">Informações</h4>
+                </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12 content-note"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
 @stop
 
 @section('adminlte_js')

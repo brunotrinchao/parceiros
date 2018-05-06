@@ -149,6 +149,10 @@ class AdminUserController extends AdminController
         return $data;
     }
 
+    public function userEdit(Request $request){
+        return view('admin.usuario.editar');
+    }
+
     private function petfilFormatado($perfil){
         switch ($perfil) {
             case 'S':

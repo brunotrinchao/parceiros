@@ -88,16 +88,16 @@
 <div class="box box-solid">
     <div class="box-body">
         <div class="row">
-            <div class="col-md-3">
-                <select name="product_id"  style="width:200px">
+            <div class="col-md-4">
+                <select name="product_id"  style="width:100%">
                     <option value="" selected>.: Selecione o produto :.</option>
                     @forelse($produtos as $produto)
                         <option value="{{$produto->id}}" {{ (!isset($help->product_id))? '': ($help->product_id == $produto->id)? ' selected':''}}>{{$produto->name}}</option>
                     @empty @endforelse
                 </select>
             </div>
-            <div class="col-md-3">
-                <select name="category_id"  style="width:200px">
+            <div class="col-md-4">
+                <select name="category_id"  style="width:100%">
                     <option value="" selected>.: Selecione a categoria :.</option>
                     @forelse($categories as $categorie)
                         <option value="{{$categorie->id}}" {{ (!isset($help->category_id))? '': ($help->category_id == $categorie->id)? ' selected':''}}>{{$categorie->name}}</option>

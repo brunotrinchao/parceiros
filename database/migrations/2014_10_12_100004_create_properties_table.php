@@ -23,6 +23,7 @@ class CreatePropertiesTable extends Migration
             $table->string('neighborhood')->comment('Bairro pretendido');
             $table->char('type', 1)->comment('P:Proprietário | I:Interessado | T:Todos');
             $table->text('note')->comment('Observação');
+            $table->string('status')->comment('Status');
             $table->timestamps();
         });
     }

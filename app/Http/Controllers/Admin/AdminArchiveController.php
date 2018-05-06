@@ -15,31 +15,36 @@ class AdminArchiveController extends AdminController
     public function list($produto){
         $products = DB::table('products')
         ->select('id', 'name')
-        ->get();
-        $product_id = null;
-        $list = [];
-        foreach($products as $product){
-            $list[$product->id] = Helper::createSlug($product->name);
-            if(Helper::createSlug($product->name) == $produto){
-                $product_id = $product->id;
-            }
-        } 
+        ->where('slug', $produto)
+        ->first();
+        $produto = json_decode(json_encode($products), true);
+        // $product_id = null;
+        // $list = [];
+        // foreach($products as $product){
+        //     $list[$product->id] = Helper::createSlug($product->name);
+        //     if(Helper::createSlug($product->name) == $produto){
+        //         $product_id = $product->id;
+        //     }
+        // } 
 
-        if($product_id){
+        if($produto['id']){
             $archives = DB::table('archives')
-            ->select('id',
-            'name',
-            'product_id',
-            'file',
-            'text',
-            'date')
-            ->when(auth()->user()->level != "S", function ($query) {
-                return $query->where('product_id', $product_id);
+            ->select('archives.id',
+            'archives.name',
+            'archives.product_id',
+            'archives.file',
+            'archives.text',
+            'archives.date',
+            'products.id as product_id',
+            'products.name as product_name',
+            'products.slug as product_slug')
+            ->when(auth()->user()->level != "S", function ($query) use ($produto) {
+                 $query->where('product_id', $produto['id']);
+                 return $query;
             })
+            ->join('products', 'products.id', '=', 'archives.product_id')
+            ->orderBy('date', 'desc')
             ->get();
-            foreach($archives as $key => $archive){
-                $archives[$key]->product = $list[$archive->product_id];
-            }
             return view('admin.arquivos.index', compact('archives'));
         }
         return redirect()->route('admin.imoveis.home');
@@ -55,7 +60,7 @@ class AdminArchiveController extends AdminController
         $products = DB::table('products')
         ->select('id', 'name')
         ->get();
-        return view('admin.arquivos.add', compact('products'));
+        return view('admin.administracao.arquivos.novo', compact('products'));
     }
 
     public function item($produto, $id){

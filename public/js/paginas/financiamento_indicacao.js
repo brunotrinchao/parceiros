@@ -1,154 +1,103 @@
 $(document).ready(function () {
-  $('input[name=client_type]').change(function() {
-    console.log($(this).val());
-    if($(this).prop('checked')){
-      $('input[name=cpf_cnpj]').attr('placeholder', 'CPF');
-      $('.v_cpf_cnpj label').text('CPF');
-    }else{
-      $('input[name=cpf_cnpj]').attr('placeholder', 'CNPJ');
-      $('.v_cpf_cnpj label').text('CNPJ');
-    }
+  $('.valor').maskMoney({
+    prefix: 'R$ ',
+    decimal:",", 
+    thousands:"."
+  });
 
-  })
-    // Add phone
-    $(document).on('click','.add_phone',function (e) {
-      e.preventDefault();
-      var col = ($(this).attr('data-col').length > 0) ? $(this).attr('data-col') : 6;
-      console.log(col);
-      var numPhone = $('.clone_add_phone').length;
-      var html = '<div class="col-md-' + col + ' clone_add_phone">';
-      html +='<div class="input-group">';
-      html +=
-        '<input type="text" name="phone[]" class="form-control telefone" placeholder="Telefone">';
-      html +='<span class="input-group-btn">';
-      html +='<a class="btn btn-danger remove_phone" href="#"><i class="fa fa-minus"></i></a>';
-      html +='</span>';
-      html +='</div>';
-      html +='<br>';
-      html +='</div>';
-      $('.v_content_phones').append(html);
-      $('.telefone').mask("(99) 9999-9999?9", {
-          'placeholder': '(  ) _____-____)'
-        })
-        .focusout(function (event) {
-          var target, phone, element;
-          target = (event.currentTarget) ? event.currentTarget : event.srcElement;
-          phone = target.value.replace(/\D/g, '');
-          element = $(target);
-          element.unmask();
-          if (phone.length > 10) {
-            element.mask("(99) 99999-999?9");
-          } else {
-            element.mask("(99) 9999-9999?9");
-          }
+  // Novo negócio
+  $(document).on('click','.btn_novo_negocio',function(e){
+    e.preventDefault();
+    $('#financiamentoModal .box-status').hide();
+    $('#financiamentoModal .box-status').find('select').attr('disabled','disabled').attr('readonly','readonly');
+    $('#financiamentoModal form[name=novo_financiamento]').find('input[name=financiamento_id]').val('');
+    $('#financiamentoModal form[name=novo_financiamento]').attr('method', 'POST');
+    $('#financiamentoModal form[name=novo_financiamento]').find('button').text('Cadastrar').removeClass('btn-success').addClass('btn-primary');
+    $('#financiamentoModal').modal('show');
+  });
+
+  // Cria novo negócio
+  // $('form[name=novo_negocio]').submit(function(e){
+  //   e.preventDefault();
+  //   var url = $(this).attr('action');
+  //   var param = $(this).serialize();
+  //   $.gAjax.execCallback(url, param, false, function(retorno){
+  //       if(retorno.success){
+  //           $.gNotify.success(null, retorno.message);
+  //           $('#novoNegocioModal input[name=renda_comprovada]').val('');
+  //           $('#novoNegocioModal input[name=valor_bem]').val('');
+  //           $('#novoNegocioModal input[name=valor_financiamento]').val('');
+  //           $('#novoNegocioModal').modal('hide');
+  //         }else{
+  //           $.gNotify.danger(null, retorno.message);
+  //         }
+  //   }, true, false, false, function(erro, payload, msg){
+  //       console.log(erro);
+  //       console.log(payload);
+  //       console.log(msg);
+  //     });
+  // });
+
+  // Edita negócio
+  $(document).on('click','.btn_edita_negocio',function(e){
+    e.preventDefault();
+    var id = $(this).attr('href');
+    var renda_comprovada = $('#negocio-'+id).attr('data-renda');
+    var valor_bem = $('#negocio-'+id).attr('data-bem');
+    var valor_financiamento = $('#negocio-'+id).attr('data-financiamento');
+    var status = $('#negocio-'+id).attr('data-status');
+    
+    $('#financiamentoModal form[name=novo_financiamento]').find('input[name=renda_comprovada]').val(renda_comprovada);
+    $('#financiamentoModal form[name=novo_financiamento]').find('input[name=valor_bem]').val(valor_bem);
+    $('#financiamentoModal form[name=novo_financiamento]').find('input[name=valor_financiamento]').val(valor_financiamento);
+    $('#financiamentoModal form[name=novo_financiamento]').find('select[name=status]').val(status);
+    $('#financiamentoModal form[name=novo_financiamento]').find('input[name=financiamento_id]').val(id);
+    $('#financiamentoModal .box-status').show();
+    $('#financiamentoModal .box-status').find('select').removeAttr('disabled').removeAttr('readonly');
+    $('#financiamentoModal form[name=novo_financiamento]').attr('method', 'PUT');
+    $('#financiamentoModal form[name=novo_financiamento]').find('button').text('Salvar').removeClass('btn-primary').addClass('btn-success');
+
+    $('#financiamentoModal').modal('show');
+    
+  });
+
+  // Edita negócio
+  $(document).on('submit', '#financiamentoModal form[name=novo_financiamento]', function (e) {
+    e.preventDefault();
+    var url = $(this).attr('action');
+    var method = $(this).attr('method');
+    // console.log($(this).serialize());
+    $.ajax({
+      type: method,
+      url: url,
+      data: $(this).serialize(),
+      dataType: 'json',
+      beforeSend: function () {
+        $('.v_content_msg').empty();
+        $('body').append('<div class="loader"><img src="'+_url+'/imagens/ajax-loader.gif"></div>');
+        $('.loader').fadeIn('fast')
+      },
+      success: function (data) {
+        $('.loader').fadeOut('fast', function () {
+          $(this).remove();
         });
-    });
-
-    // Remove phone
-    $(document).on('click', '.remove_phone', function (e) {
-      e.preventDefault();
-      var container_phone = $(this).parents().eq(3);
-      var total = $('#' + container_phone[0].id).find('.clone_add_phone').length;
-      var disabled = $('#' + container_phone[0].id).find('input').attr('readonly');
-
-      if(disabled != 'readonly'){
-        if (total == 1) {
-          $.gNotify.warning('<strong>Atenção</strong> ', 'É obrigatório um telefone de contato.');
-          return
+        if (data.success) {
+          $.gNotify.success('<strong>Sucesso</strong> ', data.message)
+          location.reload();
+        }else{
+          $.gNotify.danger('<strong>Erro</strong> ', data.message)
         }
-        $(this).parent().parent().parent().remove();
+      },
+      error: function (data) {
+        $('.loader').fadeOut('fast', function () {
+          $.each(data.responseJSON.errors, function (i, e) {
+            $.gNotify.danger('<strong>Erro</strong> ', e[0]);
+          });
+        });
       }
     });
-
-    // Add - Edit
-    $(document).on('submit', 'form[name=novo_financiamento]', function (e) {
-      e.preventDefault();
-      var url = $(this).attr('action');
-      var method = $(this).attr('method');
-      $.ajax({
-        headers: {
-          'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-        },
-        type: method,
-        url: url,
-        data: $(this).serialize(),
-        dataType: 'json',
-        beforeSend: function () {
-          $('.v_content_msg').empty();
-          $('body').append('<div class="loader"><img src="'+_url+'/imagens/ajax-loader.gif"></div>');
-          $('.loader').fadeIn('fast')
-        },
-        success: function (data) {
-
-          $('.loader').fadeOut('fast', function () {
-            $(this).remove();
-          });
-          if (data.success) {
-            $.gNotify.success('<strong>Sucesso</strong> ', data.message)
-            location.reload();
-          }else{
-            $.gNotify.danger('<strong>Erro</strong> ', data.message)
-          }
-        },
-        error: function (data) {
-          console.log(data.responseJSON.errors);
-          $('.loader').fadeOut('fast', function () {
-            $.each(data.responseJSON.errors, function (i, e) {
-              $.gNotify.danger('<strong>Erro</strong> ', e[0]);
-            });
-          });
-        }
-      });
-    });
-
-    // Consulta CPF
-    $('.consulta_cpf').click(function(e){
-      e.preventDefault();
-      var _cpf = $('input[name=cpf_cnpj]').val();
-      var _client_type = $('input[name=client_type]').val();
-      console.log(_client_type);
-      $('.load_cliente').empty();
-      $('#financiamentoModal .modal-footer').empty()
-      $.gAjax.load(_url+'/admin/clientes', {cpf: _cpf, client_type: _client_type}, null, function(retorno){
-        console.log(retorno);
-        if(!retorno.success){
-          $.gNotify.danger('<strong>Erro</strong> ', retorno.message);
-          return;
-        }
-        if(retorno.data.length > 0){
-          $('.load_cliente').empty().html(loadFormCliente(true));          if(retorno.data[0].phone){
-            var _phones = retorno.data[0].phone.split(',');
-            var i = 0;
-            $.each(_phones, function(i, e){
-              remover = (i == 0)? false: true;
-              $('.v_content_phones').append(htmlPhone(e, false, remover));
-              i++;
-            });
-          }
-          $('.telefone').mask("(99) 9999-9999?9", {
-            'placeholder': '(  ) _____-____)'
-          })
-          var data = new Date();
-          $('.calendario').datepicker($.extend({}, $.datepicker.regional['pt-BR'], {
-              changeMonth: true,
-              changeYear: true,
-              yearRange: "1960:" + data.getFullYear(),
-              maxDate: "0m"
-          }));
-
-          $('form[name=novo_financiamento]').find('input[name=name]').val(retorno.data[0].name);
-          $('form[name=novo_financiamento]').find('input[name=email]').val(retorno.data[0].email);
-          $('form[name=novo_financiamento]').find('select[name=sex]').val(retorno.data[0].sex);
-          $('form[name=novo_financiamento]').find('input[name=birth]').val(retorno.data[0].birth_formatada);
-          $('form[name=novo_financiamento]').find('input[name=client_id]').val(retorno.data[0].id);
-        }else{
-          $('.load_cliente').empty().html(loadFormCliente(false));
-          $('.v_content_phones').append(htmlPhone('', true, false));
-        }
-        $('#financiamentoModal .modal-footer').html('<button type="submit" class="btn btn-primary">Cadastrar</button>');
-
-      }, true, false);
-    });
+  });
+  
 });
 
 function loadFormCliente(disable){
@@ -192,12 +141,6 @@ function loadFormCliente(disable){
   html +='</div>';
   html +='<div class="v_content_phones" id="container_novo">';
   html +='</div>';
-  html +='<div class="col-md-12">';
-    html +='<h4 style="background-color:#f7f7f7; font-size: 18px; text-align: center; padding: 7px 10px; margin-top: 0;">';
-      html +='Informações do negócio';
-    html +='</h4>';
-  html +='</div>';
-  
 
   return html;
 }
@@ -224,3 +167,48 @@ function htmlPhone(telefone, disable, remover){
   return html;
 }
 
+function loadCliente(id){
+  $.notifyDefaults({
+      z_index: 99999999,
+      animate:{
+              enter: "animated fadeInUp",
+              exit: "animated fadeOutDown"
+      },
+      offset: {
+          x: 50,
+          y: 100
+      },
+      placement: {
+          align: 'center'
+      }
+  });
+  var notify = notify = $.notify({
+      message: 'Obtendo dados, aguarde...'
+  },{
+      type: 'info',
+      allow_dismiss: false,
+      showProgressbar: true
+  });
+  $.gAjax.load(_url+'/cliente/'+id, {}, null, function(retorno){
+    console.log(retorno);
+      if(retorno.success){
+          notify.update({
+              'type': 'success', 
+              'message': retorno.message, 
+              'progress': 100});
+          $('#novoNegocioModal input[name=client_id]').val(retorno.clients.id);
+          $('#novoNegocioModal input[name=name]').val(retorno.clients.name).attr('readonly', 'readonly').attr('disabled', 'disabled');
+          $('#novoNegocioModal input[name=email]').val(retorno.clients.email).attr('readonly', 'readonly').attr('disabled', 'disabled');
+          $('#novoNegocioModal input[name=cpf_cnpj]').val(retorno.clients.cpf_cnpj).attr('readonly', 'readonly').attr('disabled', 'disabled');
+          $('#novoNegocioModal input[name=birth]').val(moment(retorno.clients.birth).format('DD/MM/YYYY')).attr('disabled', 'disabled');
+          $('#novoNegocioModal select[name=sex]').val(retorno.clients.sex).attr('readonly', 'readonly').attr('disabled', 'disabled').attr('disabled', 'disabled');
+          $('#novoNegocioModal select[name=type]').attr('readonly', 'readonly');
+          $('#novoNegocioModal').modal('show');
+      }else{
+          notify.update({
+              'type': 'danger', 
+              'message': retorno.message, 
+              'progress': 100});
+      }
+  }, true, true);
+ }

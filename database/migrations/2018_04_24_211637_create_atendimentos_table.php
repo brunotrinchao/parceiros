@@ -18,6 +18,7 @@ class CreateAtendimentosTable extends Migration
             $table->integer('client_id')->unsigned();
             $table->foreign('client_id')->references('id')->on('clients');
             $table->text('note')->comment('Informações');
+            $table->string('status')->comment('Status');
             $table->timestamps();
         });
     }

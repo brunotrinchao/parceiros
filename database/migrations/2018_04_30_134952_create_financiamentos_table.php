@@ -22,6 +22,7 @@ class CreateFinanciamentosTable extends Migration
             $table->decimal('renda_comprovada', 10, 2)->comment('Valor da renda');
             $table->decimal('valor_financiamento', 10, 2)->comment('Valor do financiamento');
             $table->date('date');
+            $table->string('status')->comment('Status');
             $table->timestamps();
         });
     }

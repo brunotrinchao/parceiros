@@ -10,7 +10,7 @@ class Contact extends Model
         $count = 0;
         $this->client_id = $client_id;
         foreach($data as $phone){
-            $this->phone = $this->removeMask($phone);
+            $this->phone = $phone;
             if($this->save()){
                 $count++;
             }

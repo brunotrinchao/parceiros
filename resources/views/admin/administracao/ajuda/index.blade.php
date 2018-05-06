@@ -31,9 +31,10 @@
     <table class="table table-striped table-bordered dt-responsive nowrap datatables" width="100%">
       <thead>
         <tr>
-          <th data-priority="1">Título</th>
+          <th data-priority="1" width="20%">Título</th>
+          <th class="hidden-sm">Produto</th>
           <th class="hidden-sm">Categoria</th>
-          <th class="hidden-sm">Cadastrado</th>
+          {{-- <th class="hidden-sm">Cadastrado</th> --}}
           <th class="hidden-sm">Status</th>
         </tr>
       </thead>
@@ -43,10 +44,11 @@
             <td>
             <a href="{{ url('admin/administracao/ajuda/editar/' . $help->id) }}" class="btn_usuario">{{ $help->name }}</a>
             </td>
-          <td class="">{{$help->name_category}}</td>
-            <td class="hidden-sm">{{ date('d/m/Y', strtotime($help->date))}}</td>
-            <td class="hidden-sm">{{ ($help->status == 'A')? 'Ativo': 'Inativo'}}</td>
-          </tr>
+            <td>{{ $help->name_product }}</td>
+            <td class="">{{$help->name_category}}</td>
+              {{-- <td class="hidden-sm">{{ date('d/m/Y', strtotime($help->date))}}</td> --}}
+              <td class="hidden-sm">{{ ($help->status == 'A')? 'Ativo': 'Inativo'}}</td>
+            </tr>
         @empty @endforelse
       </tbody>
     </table>

@@ -18,7 +18,7 @@ class AdminPartnerController extends AdminController
             foreach($partners as $key => $partner){
                 $partners[$key]->status_format = ($partner->status == 'A')? 'Ativo' : 'Inativo';
             }
-            return view('admin.parceiros', compact('partners'));
+            return view('admin.administracao.parceiros.index', compact('partners'));
     }
 
     public function getPartner(Request $request){
@@ -32,11 +32,11 @@ class AdminPartnerController extends AdminController
             }
             $data['success'] = false; 
             $data['message'] = 'Parceiro não encontrado.'; 
-            return $data;
+            return response()->json($data);
         }
         $data['success'] = false; 
         $data['message'] = 'Erro ao recuperar parceiro.'; 
-        return $data;
+        return response()->json($data);
     }
 
     public function edit(Request $request){
@@ -144,4 +144,9 @@ class AdminPartnerController extends AdminController
         }
         return response()->json(['error'=> $validator->errors()]);
     }
+
+    public function partnerEdit(Request $request){
+        return view('admin.parceiros.editar');
+    }
+
 }

@@ -17,13 +17,17 @@ class AdminHelpController extends AdminController
             ->select(
                 'helps.id',
                 'helps.category_id',
+                'helps.product_id',
                 'helps.name',
                 'helps.description',
                 'helps.status',
                 'helps.created_at as date',
-                'categories.name as name_category'
+                'categories.name as name_category',
+                'products.name as name_product',
+                'products.slug as slug_product'
             )
             ->join('categories', 'categories.id', '=', 'helps.category_id')
+            ->join('products', 'products.id', '=', 'helps.product_id')
             ->orderby('categories.name')
             ->orderby('helps.created_at')
             ->get();
@@ -110,14 +114,14 @@ class AdminHelpController extends AdminController
             return response()->json($dados);
         }
         $categories = Category::get();
-        $produtos = Product::get();
+        $produtos = Product::orderBy('name')->get();
         $help = null;
         return view('admin.administracao.ajuda.novo', compact('categories', 'help', 'produtos'));
     }
 
     public function edit($id){
         $help = Help::find($id);
-        $produtos = Product::get();
+        $produtos = Product::orderBy('name')->get();
         $categories = Category::get();
         return view('admin.administracao.ajuda.novo', compact('categories', 'help', 'produtos'));
     }
@@ -178,7 +182,7 @@ class AdminHelpController extends AdminController
                         ->update(['order' => $i]);
             }
         }
-        $produtos = Product::get();
+        $produtos = Product::orderBy('name')->get();
         $categories = Category::get();
         return view('admin.administracao.ajuda.ordenar', compact('categories', 'produtos'));
     }

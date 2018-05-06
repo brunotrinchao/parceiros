@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     public static function list(){
-        $products = Product::get();
+        $products = Product::orderBy('name')->get();
         return $products;
     }
 }

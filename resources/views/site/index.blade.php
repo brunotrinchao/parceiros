@@ -69,7 +69,7 @@
                 </a>
             </div>
             <div class="col">
-                <a href="admin/consultoria/dashboard" rel="CONSULTORIA" class="btn btn_consultoria btn_produto">
+                <a href="admin/consultoria-de-credito/dashboard" rel="CONSULTORIA" class="btn btn_consultoria btn_produto">
                     <h2>Consultoria de crédito</h2>
                 </a>
             </div>

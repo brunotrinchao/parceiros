@@ -27,12 +27,20 @@ class AdminPropertiesController extends Controller
             'properties.note',
             'properties__buy__statuses.status  AS status',
             'properties.created_at as date')
+        ->selectRaw("DATE_FORMAT(properties.created_at,'%d/%m/%Y' ) as date_formatado")
         ->selectRaw("(CASE properties__buy__statuses.status 
 		WHEN 'A' THEN  'Aguardando contato'
         WHEN 'B' THEN  'Telefone errado'
         WHEN 'C' THEN  'Desistiu contato'
         WHEN 'D' THEN  'Négocio fechado'
-		WHEN 'E' THEN  'Em andamento'    END) AS status_formatado")
+        WHEN 'E' THEN  'Em andamento'    END) AS status_formatado")
+        ->selectRaw("(CASE properties.trade 
+		WHEN 'A' THEN  'Alugar'
+        WHEN 'C' THEN  'Comprar'
+        WHEN 'V' THEN  'Vender' END) AS trade_formatado")
+        ->selectRaw("(CASE properties.type 
+		WHEN 'I' THEN  'Interessado'
+        WHEN 'P' THEN  'Proprietário'    END) AS type_formatado")
         ->join('clients', 'clients.id', '=', 'properties.client_id')
         ->join('properties__buy__statuses', 'properties__buy__statuses.properties_id', '=', 'properties.id')
         ->where('properties.client_id', '=', $id)
@@ -41,7 +49,7 @@ class AdminPropertiesController extends Controller
                     ->where('users.id', '=', auth()->user()->id);
             return $query;
         })
-        ->get();
+        ->orderBy('properties.created_at', 'desc');
         if($properties->get()->count() > 0){
             $retorno['message'] = $properties->get()->count() . ' registros encontrados';
             $retorno['data'] = $properties->get(); 
@@ -54,13 +62,45 @@ class AdminPropertiesController extends Controller
     }
 
     public function create(Request $request, Response $response, Properties $propertie){
+        
+        $messagesRule = [
+            'type.required' => 'Tipo de negócio é obrigatório',
+            'amount.required' => 'Valor do imóvel é obrigatório',
+            'type_propertie.required' => 'Tipo do imóvel é obrigatório',
+            'neighborhood.required' => 'Bairro é obrigatório'
+        ];
+        $validatedData = Validator::make($request->all(), [
+            'type' => 'required',
+            'amount' => 'required',
+            'type_propertie' => 'required',
+            'neighborhood' => 'required'
+        ], $messagesRule);
+
+        if($validatedData->fails()){
+            $arrMsg;
+            foreach(json_decode($validatedData->messages()) as $t){
+                $arrMsg[] = '- '. $t[0];
+            }
+            $retorno['message'] = implode('<br>', $arrMsg);
+            $retorno['success'] = false; 
+            return response()->json($retorno);
+        }
+        
+        $type = null;
+        $trade = null;
+        
+        if(isset($request->type)){
+            $exp = explode('-',$request->type);
+            $type = $exp[1];
+            $trade = $exp[0];
+        }
         $propertie->client_id = $request->id;
         $propertie->amount = number_format(Helper::numberUnformat($request->amount), 2, '.', '');     
         $propertie->note = $request->note;
         $propertie->type_propertie = $request->type_propertie;
         $propertie->neighborhood = $request->neighborhood;
-        $propertie->type = $request->type;
-        $propertie->trade = $request->trade;
+        $propertie->type = $type;
+        $propertie->trade = $trade;
         $propertieInsert = $propertie->insert($propertie);
         if($propertieInsert){
             $retorno['success'] = true;
@@ -73,7 +113,7 @@ class AdminPropertiesController extends Controller
     }
 
     public function update(Request $request, Properties_Buy_Status $status){
-
+            
         // Valida campos
         $messagesRule = [
             'amount.required' => 'Valor do imóvel é obrigatório',
@@ -96,23 +136,21 @@ class AdminPropertiesController extends Controller
 
         $propertie = Properties::find($request->get('id'));
         $propertie->amount = number_format(Helper::numberUnformat($request->amount), 2, '.', ''); 
-        $propertie->type_propertie = $request->get('type_propertie');
-        $propertie->neighborhood = $request->get('neighborhood');
-        $propertie->note = $request->get('note');
-        
+        $propertie->type_propertie = $request->type_propertie;
+        $propertie->neighborhood = $request->neighborhood;
+        $propertie->note = $request->note;
         
         if($propertie->save()){
             $retorno['message'] = 'Negócio atualizado com sucesso.';
             $retorno['success'] = true;
-            if($request->get('status') != $propertie->status){
                 $status = $propertie->properties_status;
-                $status->status = $request->get('status');
-            }
+                $status->status = $request->status;
+                $status->save();
             return response()->json($retorno);
         }
 
         $retorno['message'] = 'Erro ao atualizar negócio.';
-        $retorno['success'] = true;
+        $retorno['success'] = false;
         return response()->json($retorno);
         // dd($propertie);
     }

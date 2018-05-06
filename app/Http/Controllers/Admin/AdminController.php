@@ -67,6 +67,16 @@ class AdminController extends Controller
                                 'text'    => 'Planos',
                                 'url'     => url('admin/administracao/planos'),
                                 'icon'     => 'circle'
+                            ],
+                            [
+                                'text'    => 'Bancos Parceiros',
+                                'url'     => url('admin/administracao/bancos-parceiros'),
+                                'icon'     => 'circle'
+                            ],
+                            [
+                                'text'    => 'Material promocional',
+                                'url'     => url('admin/administracao/material-promocional/novo'),
+                                'icon'     => 'archive'
                             ]
                         ]
                     ]
@@ -153,7 +163,7 @@ class AdminController extends Controller
                 return [[
                     'text'    => 'Sobre',
                     'icon'    => 'info-circle',
-                    'url'     => url(''),
+                    'url'     => url('admin/'.$url_produto.'/sobre'),
                 ],[
                     'text'    => 'Indicação',
                     'icon'    => 'pencil-square',
@@ -175,40 +185,29 @@ class AdminController extends Controller
                 return [[
                     'text'    => 'Sobre',
                     'icon'    => 'info-circle',
-                    'url'     => url(''),
+                    'url'     => url('admin/'.$url_produto.'/sobre'),
                 ],
                 [
-                    'text'    => 'Imóveis',
-                    'icon'    => 'home',
+                    'text'    => 'Indicação',
+                    'icon'    => 'pencil-square',
                     'submenu' => [
                         [
-                            'text' => 'Indicação',
-                            'icon'    => 'circle',
-                            'url'     => url('#'),
+                            'text' => 'Imóvel',
+                            'icon'    => 'angle-double-right',
+                            'url'     => url('admin/'.$url_produto.'/indicacao/imovel'),
                         ],
                         [
-                            'text' => 'Parceiros',
-                            'icon'    => 'circle',
-                            'url'     => url('#'),
+                            'text' => 'Veículo',
+                            'icon'    => 'angle-double-right',
+                            'url'     => url('admin/'.$url_produto.'/indicacao/veiculo'),
                         ]
                     ]
                 ],
                 [
-                    'text'    => 'Veículos',
-                    'icon'    => 'car',
-                    'submenu' => [
-                        [
-                            'text' => 'Indicação',
-                            'icon'    => 'circle',
-                            'url'     => url('#'),
-                        ],
-                        [
-                            'text' => 'Parceiros',
-                            'icon'    => 'circle',
-                            'url'     => url('#'),
-                        ]
-                    ]
-                    ]
+                    'text'    => 'Bancos parceiro',
+                    'icon'    => 'university',
+                    'url'     => url('admin/'.$url_produto.'/bancos-parceiro'),
+                ]
                 ];
                 break;
 

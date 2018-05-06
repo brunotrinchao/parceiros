@@ -215,15 +215,21 @@ $(document).ready(function(){
         }
       });
       if($('input[type=radio]').length > 0){
-        $('input[type=radio]').iCheck({
-            checkboxClass: 'icheckbox_minimal-blue',
-            radioClass   : 'iradio_minimal-blue',
-            increaseArea: '20%' // optional
-        });
+            $('input[type=radio]').iCheck({
+                checkboxClass: 'icheckbox_minimal-blue',
+                radioClass   : 'iradio_minimal-blue',
+                increaseArea: '20%' // optional
+            });
         }
-        $('.input-tags').tagsinput({
-            tagClass: 'big'
-          });
+    $('.input-tags').tagsinput({
+        tagClass: 'big'
+    });
+
+    // Novo cliente
+    $('#novo_cliente').click(function(e){
+        e.preventDefault();
+        $('#novoCLienteModal').modal('show');
+    });
 
 });
 function numberToReal(numero) {

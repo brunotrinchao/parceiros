@@ -10,19 +10,22 @@
       <i class="fa fa-dashboard"></i> Home</a>
   </li>
   <li>
+    Consultoria de crédito
+  </li>
+  <li>
     Indicação
   </li>
   <li>
-    Solicitar indicação
+    {{$array['type_name']}}
   </li>
 </ol>
 @stop @section('content')
 
 <div class="box box-solid">
   <div class="box-body">
-    <a href="#" class="btn btn-primary pull-right btn_novo" data-toggle="modal" data-target="#solicitarModal">
-      <i class="fa fa-plus"></i> Novo</a>
-
+      <a href="#" data-toggle="modal" data-target="#novoClienteModal" class="btn btn-primary pull-right novo_cliente" data-toggle="modal" data-target="#financiamentoModal">
+          <i class="fa fa-plus"></i> Novo cliente</a>
+    
   </div>
 </div>
 
@@ -39,7 +42,6 @@
           <th class="hidden-sm">Telefone</th>
           <th class="hidden-sm">CPF</th>
           <th>Cadastrado em</th>
-          <th style="width: 40px"></th>
         </tr>
       </thead>
       <tbody>
@@ -47,25 +49,12 @@
 
         <tr>
           <td>
-          <a href="{{ url('admin/imoveis/indicacao/negocios/' . $client->id) }}" data-id="{{ $client->id }}" class="btn-link visualizarCompra">{{ $client->name }}</a>
+          <a href="{{ url('admin/consultoria-de-credito/indicacao/'. $array['type_slug'] .'/' . $client->id) }}" data-id="{{ $client->id }}" class="btn-link visualizarCompra">{{ $client->name }}</a>
           </td>
           <td class="hidden-sm">{{ $client->email }}</td>
           <td class="hidden-sm">{{ $client->phone }}</td>
           <td class="hidden-sm">{{ $client->cpf_cnpj }}</td>
           <td clss="hidden-sm">{{ date('d/m/Y', strtotime($client->date)) }}</td>
-          <td width="50px">
-            <div class="btn-group">
-              <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="caret"></span>
-              </button>
-              <ul class="dropdown-menu dropdown-menu-right" style="left: auto">
-                <li>
-                  <a href="{{ $client->id }}" class="btn_novo_negocio">
-                    <i class="fa fa-dollar"></i> Gerar novo negócio</a>
-                </li>
-              </ul>
-            </div>
-          </td>
         </tr>
         @empty @endforelse
       </tbody>
@@ -85,7 +74,7 @@
           </button>
           <h4 class="modal-title">Nova indicação</h4>
         </div>
-        <form action="{{ url('admin/oi/indicacao/solicitar-atendimento') }}" method="post" name="novo_atendimento">
+        <form action="{{ url('admin/consultoria-de-credito/indicacao/novo') }}" method="post" name="novo_atendimento">
           {!! csrf_field() !!}
           <div class="modal-body">
               <div class="row">

@@ -17,12 +17,14 @@ class CreateClientsTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
+            $table->integer('partner_id')->unsigned();
+            $table->foreign('partner_id')->references('id')->on('partners');
             $table->string('name')->comment('Nome');
             $table->string('email')->comment('E-mail')->nullable();
             $table->date('birth')->comment('Data de aniversário');
             $table->char('sex', 1)->comment('Sexo=M:Masculino|F:Feminino')->nullable();
             $table->char('type', 1)->comment('Tipo=F:Física|J:Juridica');
-            $table->string('cpf_cnpj')->comment('CPF | CNPJ')->unique();
+            $table->string('cpf_cnpj')->comment('CPF | CNPJ');
             $table->string('contact')->comment('Nome do contato')->nullable();
             $table->integer('n_officials')->comment('Número de funcionários')->nullable();
             $table->date('date')->comment('Data de cadastro');

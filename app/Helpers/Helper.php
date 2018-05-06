@@ -2,6 +2,9 @@
 
 namespace App\Helpers;
 
+use PHPUnit\Framework\Constraint\IsTrue;
+
+
 class Helper{
  
     /* Validador de CPF */
@@ -27,6 +30,45 @@ class Helper{
                 }
             }
 
+            return true;
+        }
+    }
+
+    public static function validaCNPJ($cnpj) {
+        $cnpj = preg_replace('/[^0-9]/', '', (string) $cnpj);
+
+        if ($cnpj == "00000000000000" || 
+        cnpj == "11111111111111" || 
+        cnpj == "22222222222222" || 
+        cnpj == "33333333333333" || 
+        cnpj == "44444444444444" || 
+        cnpj == "55555555555555" || 
+        cnpj == "66666666666666" || 
+        cnpj == "77777777777777" || 
+        cnpj == "88888888888888" || 
+        cnpj == "99999999999999"){
+            return false;
+        }
+        // Valida tamanho
+        if (strlen($cnpj) != 14)
+            return false;
+        // Valida primeiro dígito verificador
+        for ($i = 0, $j = 5, $soma = 0; $i < 12; $i++)
+        {
+            $soma += $cnpj{$i} * $j;
+            $j = ($j == 2) ? 9 : $j - 1;
+        }
+        $resto = $soma % 11;
+        if ($cnpj{12} != ($resto < 2 ? 0 : 11 - $resto))
+            return false;
+        // Valida segundo dígito verificador
+        for ($i = 0, $j = 6, $soma = 0; $i < 13; $i++)
+        {
+            $soma += $cnpj{$i} * $j;
+            $j = ($j == 2) ? 9 : $j - 1;
+        }
+        $resto = $soma % 11;
+        if($cnpj{13} == ($resto < 2 ? 0 : 11 - $resto)){
             return true;
         }
     }
@@ -144,6 +186,14 @@ class Helper{
         }
         return $ret;
     }
+    public static function numberFormat($number)
+    {
+        $ret = null;
+        if (!empty($number)) {
+            $ret = number_format($number, 2, ',', '.');
+        }
+        return $ret;
+    }
 
     public static function getIcon($ext){
         $ext = Helper::getExtension($ext);
@@ -200,5 +250,61 @@ class Helper{
     
     } 
 
+    public static function shortText($text, $chars_limit, $url = null){
+        if (strlen($text) > $chars_limit){
+            // If so, cut the string at the character limit
+            $new_text = substr($text, 0, $chars_limit);
+            // Trim off white space
+            $new_text = trim($new_text);
+            // Add at end of text ...
+            $texto =  $new_text . '... <i class="fa fa-external-link"></i>';
+            
+            echo '<a href="'.$url.'" class="btn_ver_informacoes">'.$texto.'</a>';
+        }
+        // If not just return the text as is
+        else
+        {
+        return $text;
+        }
+    }
+
+    public static function listaStatus(){
+        $array = [
+            'A' => 'Aguardando contato',
+            'C' => 'Contactado',
+            'E' => 'Em negociação',
+            'I' => 'Incosistente',
+            'V' => 'Visitado'
+        ];
+        return $array;
+    }
+
+    public function listaTipoImoveis(){
+        $array = [
+            'Apartamento' => [
+                'Padrão',
+                'Kitnet/Studio',
+                'Loft',
+                'Flat',
+                'Cobertura',
+                'Duplex',
+                'Triplex',
+                'Quarto',
+            ],
+            'Casa' => [
+                'Padrão',
+                'Casa de Condomínio',
+                'Casa de Vila',
+                'Sobrado',
+                'Quarto',
+            ],
+            'Outros'=> [
+                'Terreno',
+                'Rural',
+                'Comercial',
+            ]
+        ];
+        return $array;
+    }
 
 }

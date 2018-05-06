@@ -11,6 +11,9 @@
       <i class="fa fa-dashboard"></i> Home</a>
   </li>
   <li>
+      Oi
+  </li>
+  <li>
       Planos
   </li>
   <li>

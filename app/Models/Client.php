@@ -9,24 +9,34 @@ use App\Models\Address;
 use App\Models\Contact;
 use App\Models\Imovel\Properties;
 use App\User;
+use App\Helpers\Helper;
 
 class Client extends Model
 {
     public function insert($data){
-        if($this->validaCPF($this->cpf_cnpj)){
-            if($this->save()) {
-                return [
-                    'success' => true, 
-                    'message' => 'Cliente cadastrado com sucesso',
-                    'last_insert_id' => $this->id];
+        if(strlen($this->cpf_cnpj) == 14 && $this->type == 'F'){
+            if(!Helper::validaCPF($this->cpf_cnpj)){
+                $retorno['message'] = 'CPF inválido.';
+                $retorno['success'] = false; 
+                return response()->json($retorno);
             }
+        }else if(strlen($this->cpf) == 18 && $this->type == 'J'){
+            if(!Helper::validaCNPJ($this->cpf_cnpj)){
+                $retorno['message'] = 'CNPJ inválido.';
+                $retorno['success'] = false; 
+                return response()->json($retorno);
+            }
+        }
+        if($this->save()) {
             return [
-                'success' => false, 
-                'message' => 'Erro ao cadastrar cliente'];
+                'success' => true, 
+                'message' => 'Cliente cadastrado com sucesso',
+                'last_insert_id' => $this->id];
         }
         return [
             'success' => false, 
-            'message' => 'CPF inválido.'];
+            'message' => 'Erro ao cadastrar cliente'];
+
     }
 
     public function search(Array $data, $totalPage){

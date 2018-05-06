@@ -1,140 +1,227 @@
 $(document).ready(function () {
-    // Add phone
-    $(document).on('click','.add_phone',function (e) {
-      e.preventDefault();
-      var col = ($(this).attr('data-col').length > 0) ? $(this).attr('data-col') : 6;
-      console.log(col);
-      var numPhone = $('.clone_add_phone').length;
-      var html = '<div class="col-md-' + col + ' clone_add_phone">';
-      html +='<div class="input-group">';
-      html +=
-        '<input type="text" name="phone[]" class="form-control telefone" placeholder="Telefone">';
-      html +='<span class="input-group-btn">';
-      html +='<a class="btn btn-danger remove_phone" href="#"><i class="fa fa-minus"></i></a>';
-      html +='</span>';
-      html +='</div>';
-      html +='<br>';
-      html +='</div>';
-      $('.v_content_phones').append(html);
-      $('.telefone').mask("(99) 9999-9999?9", {
-          'placeholder': '(  ) _____-____)'
-        })
-        .focusout(function (event) {
-          var target, phone, element;
-          target = (event.currentTarget) ? event.currentTarget : event.srcElement;
-          phone = target.value.replace(/\D/g, '');
-          element = $(target);
-          element.unmask();
-          if (phone.length > 10) {
-            element.mask("(99) 99999-999?9");
-          } else {
-            element.mask("(99) 9999-9999?9");
-          }
+    // // Add phone
+    // $(document).on('click','.add_phone',function (e) {
+    //   e.preventDefault();
+    //   var col = ($(this).attr('data-col').length > 0) ? $(this).attr('data-col') : 6;
+    //   console.log(col);
+    //   var numPhone = $('.clone_add_phone').length;
+    //   var html = '<div class="col-md-' + col + ' clone_add_phone">';
+    //   html +='<div class="input-group">';
+    //   html +=
+    //     '<input type="text" name="phone[]" class="form-control telefone" placeholder="Telefone">';
+    //   html +='<span class="input-group-btn">';
+    //   html +='<a class="btn btn-danger remove_phone" href="#"><i class="fa fa-minus"></i></a>';
+    //   html +='</span>';
+    //   html +='</div>';
+    //   html +='<br>';
+    //   html +='</div>';
+    //   $('.v_content_phones').append(html);
+    //   $('.telefone').mask("(99) 9999-9999?9", {
+    //       'placeholder': '(  ) _____-____)'
+    //     })
+    //     .focusout(function (event) {
+    //       var target, phone, element;
+    //       target = (event.currentTarget) ? event.currentTarget : event.srcElement;
+    //       phone = target.value.replace(/\D/g, '');
+    //       element = $(target);
+    //       element.unmask();
+    //       if (phone.length > 10) {
+    //         element.mask("(99) 99999-999?9");
+    //       } else {
+    //         element.mask("(99) 9999-9999?9");
+    //       }
+    //     });
+    // });
+
+    // // Remove phone
+    // $(document).on('click', '.remove_phone', function (e) {
+    //   e.preventDefault();
+    //   var container_phone = $(this).parents().eq(3);
+    //   var total = $('#' + container_phone[0].id).find('.clone_add_phone').length;
+    //   var disabled = $('#' + container_phone[0].id).find('input').attr('readonly');
+
+    //   if(disabled != 'readonly'){
+    //     if (total == 1) {
+    //       $.gNotify.warning('<strong>Atenção</strong> ', 'É obrigatório um telefone de contato.');
+    //       return
+    //     }
+    //     $(this).parent().parent().parent().remove();
+    //   }
+    // });
+
+    // // Add - Edit
+    // $(document).on('submit', 'form[name=novo_atendimento]', function (e) {
+    //   e.preventDefault();
+    //   var url = $(this).attr('action');
+    //   var method = $(this).attr('method');
+    //   $.ajax({
+    //     headers: {
+    //       'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+    //     },
+    //     type: method,
+    //     url: url,
+    //     data: $(this).serialize(),
+    //     dataType: 'json',
+    //     beforeSend: function () {
+    //       $('.v_content_msg').empty();
+    //       $('body').append('<div class="loader"><img src="'+_url+'/imagens/ajax-loader.gif"></div>');
+    //       $('.loader').fadeIn('fast')
+    //     },
+    //     success: function (data) {
+
+    //       $('.loader').fadeOut('fast', function () {
+    //         $(this).remove();
+    //       });
+    //       if (data.success) {
+    //         $.gNotify.success('<strong>Sucesso</strong> ', data.message)
+    //         location.reload();
+    //       }else{
+    //         $.gNotify.danger('<strong>Erro</strong> ', data.message)
+    //       }
+    //     },
+    //     error: function (data) {
+    //       console.log(data.responseJSON.errors);
+    //       $('.loader').fadeOut('fast', function () {
+    //         $.each(data.responseJSON.errors, function (i, e) {
+    //           $.gNotify.danger('<strong>Erro</strong> ', e[0]);
+    //         });
+    //       });
+    //     }
+    //   });
+    // });
+
+    // // Consulta CPF
+    // $('.consulta_cpf').click(function(e){
+    //   e.preventDefault();
+    //   var _cpf = $('input[name=cpf_cnpj]').val();
+    //   $('.load_cliente').empty();
+    //   $('#solicitarModal .modal-footer').empty()
+    //   $.gAjax.load(_url+'/admin/clientes', {cpf: _cpf}, null, function(retorno){
+    //     if(!retorno.success){
+    //       $.gNotify.danger('<strong>Erro</strong> ', retorno.message);
+    //       return;
+    //     }
+    //     if(retorno.data.length > 0){
+    //       $('.load_cliente').empty().html(loadFormCliente(true));          if(retorno.data[0].phone){
+    //         var _phones = retorno.data[0].phone.split(',');
+    //         var i = 0;
+    //         $.each(_phones, function(i, e){
+    //           remover = (i == 0)? false: true;
+    //           $('.v_content_phones').append(htmlPhone(e, false, remover));
+    //           i++;
+    //         });
+    //       }
+    //       $('.telefone').mask("(99) 9999-9999?9", {
+    //         'placeholder': '(  ) _____-____)'
+    //       })
+    //       var data = new Date();
+    //       $('.calendario').datepicker($.extend({}, $.datepicker.regional['pt-BR'], {
+    //           changeMonth: true,
+    //           changeYear: true,
+    //           yearRange: "1960:" + data.getFullYear(),
+    //           maxDate: "0m"
+    //       }));
+
+    //       $('form[name=novo_atendimento]').find('input[name=name]').val(retorno.data[0].name);
+    //       $('form[name=novo_atendimento]').find('input[name=email]').val(retorno.data[0].email);
+    //       $('form[name=novo_atendimento]').find('select[name=sex]').val(retorno.data[0].sex);
+    //       $('form[name=novo_atendimento]').find('input[name=birth]').val(retorno.data[0].birth_formatada);
+    //       $('form[name=novo_atendimento]').find('input[name=client_id]').val(retorno.data[0].id);
+    //     }else{
+    //       $('.load_cliente').empty().html(loadFormCliente(false));
+    //       $('.v_content_phones').append(htmlPhone('', true, false));
+    //     }
+    //     $('#solicitarModal .modal-footer').html('<button type="submit" class="btn btn-primary">Cadastrar</button>');
+
+    //   }, true, false);
+    // });
+
+    // Novo negócio
+  $(document).on('click','.btn_novo_negocio',function(e){
+    e.preventDefault();
+    $('#oiModal .box-status').hide();
+    $('#oiModal .box-status').find('select').attr('disabled','disabled').attr('readonly','readonly');
+    $('#oiModal form[name=novo_financiamento]').find('input[name=oi_id]').val('');
+    $('#oiModal form[name=novo_financiamento]').attr('method', 'POST');
+    $('#oiModal form[name=novo_financiamento]').find('button').text('Cadastrar').removeClass('btn-success').addClass('btn-primary');
+    $('#oiModal').modal('show');
+  });
+
+  // Cria novo negócio
+  // $('form[name=novo_negocio]').submit(function(e){
+  //   e.preventDefault();
+  //   var url = $(this).attr('action');
+  //   var param = $(this).serialize();
+  //   $.gAjax.execCallback(url, param, false, function(retorno){
+  //       if(retorno.success){
+  //           $.gNotify.success(null, retorno.message);
+  //           $('#novoNegocioModal textarea[name=note]').val('');
+  //           $('#novoNegocioModal').modal('hide');
+  //         }else{
+  //           $.gNotify.danger(null, retorno.message);
+  //         }
+  //   }, true, false, false, function(erro, payload, msg){
+  //       console.log(erro);
+  //       console.log(payload);
+  //       console.log(msg);
+  //     });
+  // });
+
+  // Edita negócio
+  $(document).on('click','.btn_edita_negocio',function(e){
+    e.preventDefault();
+    var id = $(this).attr('href');
+    var note = $('#negocio-'+id).attr('data-note');
+    var status = $('#negocio-'+id).attr('data-status');
+    
+    $('#oiModal form[name=novo_oi]').find('textarea[name=note]').val(note);
+    $('#oiModal form[name=novo_oi]').find('select[name=status]').val(status);
+    $('#oiModal form[name=novo_oi]').find('input[name=oi_id]').val(id);
+    $('#oiModal .box-status').show();
+    $('#oiModal .box-status').find('select').removeAttr('disabled').removeAttr('readonly');
+    $('#oiModal form[name=novo_oi]').attr('method', 'PUT');
+    $('#oiModal form[name=novo_oi]').find('button').text('Salvar').removeClass('btn-primary').addClass('btn-success');
+
+    $('#oiModal').modal('show');
+    
+  });
+
+  // Edita negócio
+  $(document).on('submit', '#oiModal form[name=novo_oi]', function (e) {
+    e.preventDefault();
+    var url = $(this).attr('action');
+    var method = $(this).attr('method');
+    // console.log($(this).serialize());
+    $.ajax({
+      type: method,
+      url: url,
+      data: $(this).serialize(),
+      dataType: 'json',
+      beforeSend: function () {
+        $('.v_content_msg').empty();
+        $('body').append('<div class="loader"><img src="'+_url+'/imagens/ajax-loader.gif"></div>');
+        $('.loader').fadeIn('fast')
+      },
+      success: function (data) {
+        $('.loader').fadeOut('fast', function () {
+          $(this).remove();
         });
-    });
-
-    // Remove phone
-    $(document).on('click', '.remove_phone', function (e) {
-      e.preventDefault();
-      var container_phone = $(this).parents().eq(3);
-      var total = $('#' + container_phone[0].id).find('.clone_add_phone').length;
-      var disabled = $('#' + container_phone[0].id).find('input').attr('readonly');
-
-      if(disabled != 'readonly'){
-        if (total == 1) {
-          $.gNotify.warning('<strong>Atenção</strong> ', 'É obrigatório um telefone de contato.');
-          return
+        if (data.success) {
+          $.gNotify.success('<strong>Sucesso</strong> ', data.message)
+          location.reload();
+        }else{
+          $.gNotify.danger('<strong>Erro</strong> ', data.message)
         }
-        $(this).parent().parent().parent().remove();
+      },
+      error: function (data) {
+        $('.loader').fadeOut('fast', function () {
+          $.each(data.responseJSON.errors, function (i, e) {
+            $.gNotify.danger('<strong>Erro</strong> ', e[0]);
+          });
+        });
       }
     });
-
-    // Add - Edit
-    $(document).on('submit', 'form[name=novo_atendimento]', function (e) {
-      e.preventDefault();
-      var url = $(this).attr('action');
-      var method = $(this).attr('method');
-      $.ajax({
-        headers: {
-          'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-        },
-        type: method,
-        url: url,
-        data: $(this).serialize(),
-        dataType: 'json',
-        beforeSend: function () {
-          $('.v_content_msg').empty();
-          $('body').append('<div class="loader"><img src="'+_url+'/imagens/ajax-loader.gif"></div>');
-          $('.loader').fadeIn('fast')
-        },
-        success: function (data) {
-
-          $('.loader').fadeOut('fast', function () {
-            $(this).remove();
-          });
-          if (data.success) {
-            $.gNotify.success('<strong>Sucesso</strong> ', data.message)
-            location.reload();
-          }else{
-            $.gNotify.danger('<strong>Erro</strong> ', data.message)
-          }
-        },
-        error: function (data) {
-          console.log(data.responseJSON.errors);
-          $('.loader').fadeOut('fast', function () {
-            $.each(data.responseJSON.errors, function (i, e) {
-              $.gNotify.danger('<strong>Erro</strong> ', e[0]);
-            });
-          });
-        }
-      });
-    });
-
-    // Consulta CPF
-    $('.consulta_cpf').click(function(e){
-      e.preventDefault();
-      var _cpf = $('input[name=cpf_cnpj]').val();
-      $('.load_cliente').empty();
-      $('#solicitarModal .modal-footer').empty()
-      $.gAjax.load(_url+'/admin/clientes', {cpf: _cpf}, null, function(retorno){
-        if(!retorno.success){
-          $.gNotify.danger('<strong>Erro</strong> ', retorno.message);
-          return;
-        }
-        if(retorno.data.length > 0){
-          $('.load_cliente').empty().html(loadFormCliente(true));          if(retorno.data[0].phone){
-            var _phones = retorno.data[0].phone.split(',');
-            var i = 0;
-            $.each(_phones, function(i, e){
-              remover = (i == 0)? false: true;
-              $('.v_content_phones').append(htmlPhone(e, false, remover));
-              i++;
-            });
-          }
-          $('.telefone').mask("(99) 9999-9999?9", {
-            'placeholder': '(  ) _____-____)'
-          })
-          var data = new Date();
-          $('.calendario').datepicker($.extend({}, $.datepicker.regional['pt-BR'], {
-              changeMonth: true,
-              changeYear: true,
-              yearRange: "1960:" + data.getFullYear(),
-              maxDate: "0m"
-          }));
-
-          $('form[name=novo_atendimento]').find('input[name=name]').val(retorno.data[0].name);
-          $('form[name=novo_atendimento]').find('input[name=email]').val(retorno.data[0].email);
-          $('form[name=novo_atendimento]').find('select[name=sex]').val(retorno.data[0].sex);
-          $('form[name=novo_atendimento]').find('input[name=birth]').val(retorno.data[0].birth_formatada);
-          $('form[name=novo_atendimento]').find('input[name=client_id]').val(retorno.data[0].id);
-        }else{
-          $('.load_cliente').empty().html(loadFormCliente(false));
-          $('.v_content_phones').append(htmlPhone('', true, false));
-        }
-        $('#solicitarModal .modal-footer').html('<button type="submit" class="btn btn-primary">Cadastrar</button>');
-
-      }, true, false);
-    });
+  });
 });
 
 function loadFormCliente(disable){

@@ -32,7 +32,7 @@
                     </a>
                 </h4>
                 </div>
-                <div id="collapseContent-{{$help->id}}" class="panel-collapse collapse {{$in}}" role="tabpanel" aria-labelledby="collapse-{{$help->id}}">
+                <div id="collapseContent-{{$help->id}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="collapse-{{$help->id}}">
                 <div class="panel-body">
                         {!! $help->description !!}
                 </div>
