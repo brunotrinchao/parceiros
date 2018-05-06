@@ -55,6 +55,7 @@ $(document).ready(function(){
                 $('.datetimepicker input').val(start.format('DD/MM/YYYY'));
             }
       });
+
        $('.datecalendar').daterangepicker({
           "singleDatePicker": true,
           "autoApply": true,
@@ -148,10 +149,10 @@ $(document).ready(function(){
               ],
               "firstDay": 1
           },
-          "startDate": start,
-          "endDate": end,
+          "startDate": moment().subtract(29, 'days'),
+          "endDate": moment(),
+          "maxDate": moment(),
           "opens": "center",
-          "endDate": end,
           "autoUpdateInput": false,
           "alwaysShowCalendars": false,
       }, function(start, end, label) {

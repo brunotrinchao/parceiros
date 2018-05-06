@@ -165,7 +165,8 @@ $this->group(['middleware' => ['auth'], 'namespace' => 'Admin'], function(){
 // Relatório
 $this->group(['middleware' => ['auth'], 'namespace' => 'Admin'], function(){
     $this->get('admin/{produto}/relatorios', 'AdminReportController@index')->name('admin.{produto}.relatorio');
-    $this->any('admin/{produto}/relatorios/resultado', 'AdminReportController@search')->name('admin.{produto}.relatorio.resultado');
+    $this->post('admin/{produto}/relatorios/resultado', 'AdminReportController@index')->name('admin.{produto}.relatorio');
+    // $this->any('admin/{produto}/relatorios/resultado', 'AdminReportController@search')->name('admin.{produto}.relatorio.resultado');
 });
 // Sobre
 $this->group(['middleware' => ['auth'], 'namespace' => 'Admin'], function(){

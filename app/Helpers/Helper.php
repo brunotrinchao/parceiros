@@ -279,7 +279,7 @@ class Helper{
         return $array;
     }
 
-    public function listaTipoImoveis(){
+    public static function listaTipoImoveis(){
         $array = [
             'Apartamento' => [
                 'Padrão',
@@ -305,6 +305,86 @@ class Helper{
             ]
         ];
         return $array;
+    }
+
+    public static function styleWidget($i){
+        $retorno = 'bg-aqua';
+        switch ($i) {
+            case 0:
+            $retorno = ' bg-light-blue-active';
+                break;
+            case 1:
+            $retorno = ' bg-aqua-active';
+                break;
+            case 2:
+            $retorno = 'bg-green-active';
+                break;
+            case 3:
+            $retorno = 'bg-yellow-active';
+                break;
+            case 4:
+            $retorno = 'bg-red-active';
+                break;
+            case 5:
+            $retorno = 'bg-teal-active';
+                break;
+            case 6:
+            $retorno = 'bg-purple-active';
+                break;
+            case 7:
+            $retorno = 'bg-orange-active';
+                break;
+            case 8:
+            $retorno = 'bg-maroon-active';
+                break;
+
+        }
+    }
+
+    public static function filtroRelatorio($produto){
+        $html = '';
+        switch ($produto) {
+            case 'imoveis':
+                $html .= '<label>Tipo </label>';
+                $html .= '<select name="tipo" style="width:100%">';
+                $html .= '<option value="">.: Selecione :.</option>';
+                $html .= '<optgroup label="Interessado">';
+                $html .= '<option value="I-C">Comprar</option>';
+                $html .= '<option value="I-A">Alugar</option>';
+                $html .= '</optgroup>';
+                $html .= '<optgroup label="Proprietário">';
+                $html .= '<option value="P-V">Comprar</option>';
+                $html .= '<option value="P-A">Alugar</option>';
+                $html .= '</optgroup>';
+                $html .= '</select>';
+                break;
+            case 'oi':
+                $html .= '<label>Tipo </label>';
+                $html .= '<select name="tipo" style="width:100%">';
+                $html .= '<option value="">.: Selecione :.</option>';
+                $html .= '<option value="F">Fechar contrato</option>';
+                $html .= '<option value="A">Solicitar atendimento</option>';
+                $html .= '</select>';
+                break;
+            case 'financiamento':
+                $html .= '<label>Tipo </label>';
+                $html .= '<select name="tipo" style="width:100%">';
+                $html .= '<option value="">.: Selecione :.</option>';
+                $html .= '<option value="T">Tradicional</option>';
+                $html .= '<option value="R">Refinanciamento</option>';
+                $html .= '</select>';
+                break;
+            case 'consultoria-de-credito':
+                $html .= '<label>Tipo </label>';
+                $html .= '<select name="tipo" style="width:100%">';
+                $html .= '<option value="">.: Selecione :.</option>';
+                $html .= '<option value="I">Imóvel</option>';
+                $html .= '<option value="V">Veículo</option>';
+                $html .= '</select>';
+                break;
+
+        }
+        echo $html;
     }
 
 }

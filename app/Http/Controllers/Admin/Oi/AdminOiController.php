@@ -72,6 +72,7 @@ class AdminOiController extends AdminController
         $atendimento->client_id = $request->client_id;
         $atendimento->partner_id = auth()->user()->partners_id;
         $atendimento->note = $request->note;
+        $atendimento->date = date('Y-m-d');
         $last_id = $atendimento->insert($atendimento);
         if($last_id['success']){
             $retorno['success'] = true;
