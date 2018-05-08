@@ -112,11 +112,11 @@ $session = session()->get('portalparceiros');
                                     <li class="user-footer">
                                     <div class="pull-right">
                                         @if(config('adminlte.logout_method') == 'GET' || !config('adminlte.logout_method') && version_compare(\Illuminate\Foundation\Application::VERSION, '5.3.0', '<'))
-                                            <a href="{{ url(config('adminlte.logout_url', 'auth/logout')) }}">
+                                            <a href="{{ url(config('adminlte.logout_url', 'auth/logout')) }}" style="color:#333;">
                                                 <i class="fa fa-fw fa-power-off"></i> Sair
                                             </a>
                                         @else
-                                            <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                            <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" style="color:#333;">
                                                 <i class="fa fa-fw fa-power-off"></i> Sair
                                             </a>
                                             <form id="logout-form" action="{{ url(config('adminlte.logout_url', 'auth/logout')) }}" method="POST" style="display: none;">
@@ -147,11 +147,12 @@ $session = session()->get('portalparceiros');
             <section class="sidebar">
                 <div class="user-panel">
                     <div class="pull-left image">
-                        <img src="{{asset('storage/parceiros/' . auth()->user()->image)}}" class="img-circle" alt="User Image">
+                        <?php $imagemUser = (auth()->user()->image)? 'thumb-'.auth()->user()->image: 'default.jpg';?>
+                        <img src="{{asset('storage/parceiros/' . $imagemUser)}}" class="img-circle" alt="User Image">
                     </div>
                 <div class="pull-left info">
                 <p>{{auth()->user()->name}}</p>
-                    <a href="{{url('admin/usuario/editar/'. Auth::id())}}"><i class="fa fa-pencil-square-o"></i> Editar perfil</a>
+                    <a href="#" data-toggle="modal" data-target="#perfilModal"><i class="fa fa-pencil-square-o"></i> Editar perfil</a>
                 </div>
                 </div>
                 <!-- Sidebar Menu -->
@@ -253,9 +254,110 @@ $session = session()->get('portalparceiros');
         </div>
         <!-- /.modal-dialog -->
     </div>
+
+    {{-- Edita merfil --}}
+    <div id="perfilModal" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">Editar perfil</h4>
+                </div>
+                <form action="{{url('admin/usuario/perfil')}}" method="POST" name="edita_perfil">
+                    {!! csrf_field() !!}
+                    <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-2 hidden-sm hidden-xs">
+                                <img src="{{asset('storage/parceiros/' . $imagemUser)}}" width="100%" class="img-circle" alt="User Image">
+                        </div>
+                        <div class="col-md-10">
+                            <div class="form-group">
+                            <label>Foto <small>(máximo 2mb)</small></label>
+                            <div class="input-group input-file" name="file">
+                                <input type="text" class="form-control" placeholder='Selecionar arquivo...' />
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default btn-choose" type="button"><i class="fa fa-upload"></i></button>
+                                </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                              <label>Nome</label>
+                            <input type="text" name="name" class="form-control" placeholder="Nome" value="{{auth()->user()->name}}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                              <label>E-mail</label>
+                              <input type="text" name="email" class="form-control" placeholder="Nome" value="{{auth()->user()->email}}" readonly disabled>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                    <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Salvar</button>
+                    </div>
+                </form>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+        <!-- /.modal-dialog -->
+        </div>
 @stop
 
 @section('adminlte_js')
+<script src="{{url('js/plugins/jqueryform/jquery.form.min.js')}}"></script>
+<script>
+        $(document).ready(function(){
+          var bar = $('.bar');
+          var percent = $('.percent');
+          var progress = $('.progress');
+          var status = $('#status');
+            
+          $('form[name=edita_perfil]').ajaxForm({
+              beforeSend: function() {
+                  status.empty();
+                  progress.show();
+                  var percentVal = '0%';
+                  bar.width(percentVal)
+                  percent.html(percentVal);
+              },
+              uploadProgress: function(event, position, total, percentComplete) {
+                  var percentVal = percentComplete + '%';
+                  bar.width(percentVal)
+                  percent.html(percentVal);
+              },
+              success: function(responseText, statusText, xhr, $form) {
+                  var percentVal = '100%';
+                  bar.width(percentVal)
+                  percent.html(percentVal);
+                  if(responseText.success){
+                    $.gNotify.success('<strong>Sucesso</strong> ', responseText.message);
+                    setTimeout(function () { 
+                    location.reload();
+                    }, 600);
+                  }else if(responseText.success = false){
+                    $.gNotify.danger('<strong>Erro</strong> ', responseText.message);
+                  }else{
+                    var arr = [];
+                    $.each(responseText.error, function(index, element){
+                      arr.push(element);
+                    });
+                    
+                    $.gNotify.warning(null, arr.join('<br>'));
+                  }
+              },
+            complete: function(xhr) {
+              progress.hide();
+              // status.html(xhr.responseText);
+            }
+          }); 
+      
+        });
+      </script>
     <script src="{{ asset('vendor/adminlte/dist/js/adminlte.min.js') }}"></script>
     @stack('js')
     @yield('js')

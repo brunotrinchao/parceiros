@@ -27,4 +27,5 @@ class User extends Authenticatable
     public function partners(){
         return $this->belongsTo(Partner::class);
     }
+
 }

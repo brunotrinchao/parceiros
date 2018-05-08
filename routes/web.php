@@ -12,9 +12,6 @@
 */
 Config::set('debugbar.enabled', false);
 
-$this->get('/', 'Site\SiteController@index')->name('home');
-$this->get('/login', 'Site\SiteController@login')->name('login');
-
 // Parceiros
 $this->group(['middleware' => ['auth']], function(){
     $this->middleware('auth', 'check-permission:superadmin')
@@ -38,6 +35,8 @@ $this->group([], function(){
         ->get('admin/usuarios/{id}', 'Admin\AdminUserController@getUser')->name('admin.usuarios');
     $this->middleware('auth', 'check-permission:superadmin|admin|gerente')
         ->post('admin/usuarios/editar', 'Admin\AdminUserController@edit')->name('admin.usuarios.editar');
+    $this->middleware('auth', 'check-permission:superadmin|admin|gerente')
+        ->post('admin/usuario/perfil', 'Admin\AdminUserController@editarPerfil');
     $this->middleware('auth', 'check-permission:superadmin|admin|gerente')
         ->post('admin/usuarios/novo', 'Admin\AdminUserController@create')->name('admin.usuarios.novo');
     $this->post('usuario/login', 'Auth\CustonLoginController@loginUser')->name('usuario.login');
@@ -184,7 +183,8 @@ $this->group(['middleware' => ['auth'], 'namespace' => 'Admin'], function(){
 });
 
 
-
+$this->get('/', 'Site\SiteController@index')->name('home');
+$this->get('/login', 'Site\SiteController@index')->name('login');
 
 Auth::routes();
 

@@ -22,7 +22,7 @@ class CustonLoginController extends Controller
         $email          = $request->email;
         $password       = $request->password;
         $credentials = $request->only('email', 'password');
-        
+
         if(Auth::attempt(['email'=> $email, 'password'=> $password])){
             $produtoModel = Product::list();
             foreach($produtoModel as $produto){
@@ -30,7 +30,7 @@ class CustonLoginController extends Controller
                 $produtoLista[$produto->id]['slug'] = $produto->slug;
             }
             session()->push('portalparceiros.lista_produto', $produtoLista);
-            // dd(session()->get('portalparceiros'));
+            
             $retorno = [
                 'data' => auth()->user(),
                 'success' => true,

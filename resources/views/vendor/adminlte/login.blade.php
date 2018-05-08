@@ -1,86 +1,103 @@
 @extends('adminlte::master')
 
-@section('adminlte_css')
-    <link rel="stylesheet" href="{{ asset('vendor/adminlte/plugins/iCheck/square/blue.css') }}">
-    <link rel="stylesheet" href="{{ asset('vendor/adminlte/css/auth.css') }}">
-    @yield('css')
-@stop
+<!doctype html>
+<html lang="{{ app()->getLocale() }}">
 
-@section('body_class', 'login-page')
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-@section('body')
-    <div class="login-box">
-        <div class="login-logo">
-            <a href="{{ url(config('adminlte.dashboard_url', 'home')) }}">{!! config('adminlte.logo', '<b>Admin</b>LTE') !!}</a>
-        </div>
-        <!-- /.login-logo -->
-        <div class="login-box-body">
-            <p class="login-box-msg">{{ trans('adminlte::adminlte.login_message') }}</p>
-            <form action="{{ url(config('adminlte.login_url', 'login')) }}" method="post">
-                {!! csrf_field() !!}
+    <title>Laravel</title>
+    <link rel="stylesheet" href="{{ asset('vendor/adminlte/vendor/bootstrap/dist/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{asset('js/plugins/animate/animate.css')}}"> 
+    <link rel="stylesheet" href="{{ url('css/site/geral.min.css') }}">
+    <script src="{{ asset('vendor/adminlte/vendor/jquery/dist/jquery.min.js') }}"></script>
+</head>
 
-                <div class="form-group has-feedback {{ $errors->has('email') ? 'has-error' : '' }}">
-                    <input type="email" name="email" class="form-control" value="{{ old('email') }}"
-                           placeholder="{{ trans('adminlte::adminlte.email') }}">
-                    <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-                    @if ($errors->has('email'))
-                        <span class="help-block">
-                            <strong>{{ $errors->first('email') }}</strong>
-                        </span>
-                    @endif
-                </div>
-                <div class="form-group has-feedback {{ $errors->has('password') ? 'has-error' : '' }}">
-                    <input type="password" name="password" class="form-control"
-                           placeholder="{{ trans('adminlte::adminlte.password') }}">
-                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-                    @if ($errors->has('password'))
-                        <span class="help-block">
-                            <strong>{{ $errors->first('password') }}</strong>
-                        </span>
-                    @endif
-                </div>
-                <div class="row">
-                    <div class="col-xs-8">
-                        <div class="checkbox icheck">
-                            <label>
-                                <input type="checkbox" name="remember"> {{ trans('adminlte::adminlte.remember_me') }}
-                            </label>
+<body>
+    <div id="banner">
+        <h1 class="titulo_banner">Seja bem vindo ao portal do parceiro</h1>
+        <div class="container">
+            <div class="topo">
+                <img src="{{ url('img/logo_branca.png')}}" class="logo">
+                <div class="box_login">
+                    <form name="form_login">
+                        {!! csrf_field() !!}
+                        <div class="input_group">
+                            <label>Login</label>
+                            <input type="text" id="usu_var_email" name="email" require autocomplete="off">
                         </div>
+                        <div class="input_group">
+                            <label>Senha</label>
+                            <input type="password" id="usu_var_senha" name="password" require autocomplete="off">
+                            <a href="#" class="btn_recover">Esqueci a senha</a>
+                        </div>
+                        <div class="input_group input_group_button">
+                            <button type="submit">OK</button>
+                        </div>
+                    </form>
+                    <form name="form_recover" style="display:none">
+                            {!! csrf_field() !!}
+                            <div class="input_group">
+                                <label>E-mail</label>
+                                <input type="text" name="email" require autocomplete="off">
+                                <a href="#" class="btn_login">Fazer login</a>
+                            </div>
+                            <div class="input_group input_group_button">
+                                <button type="submit">OK</button>
+                            </div>
+                    </form>
+                    <div class="box_usuario" style="">
+                        <h3>Olá,
+                            <strong>{{(isset($user))?$user->name : ''}}</strong>
+                        </h3>
+                        <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Sair</a>
+                        <form id="logout-form" action="{{ url(config('adminlte.logout_url', 'auth/logout')) }}" method="POST" style="display: none;">
+                            @if(config('adminlte.logout_method'))
+                                {{ method_field(config('adminlte.logout_method')) }}
+                            @endif
+                            {{ csrf_field() }}
+                        </form>
                     </div>
-                    <!-- /.col -->
-                    <div class="col-xs-4">
-                        <button type="submit"
-                                class="btn btn-primary btn-block btn-flat">{{ trans('adminlte::adminlte.sign_in') }}</button>
-                    </div>
-                    <!-- /.col -->
                 </div>
-            </form>
-            <div class="auth-links">
-                <a href="{{ url(config('adminlte.password_reset_url', 'password/reset')) }}"
-                   class="text-center"
-                >{{ trans('adminlte::adminlte.i_forgot_my_password') }}</a>
-                <br>
-                @if (config('adminlte.register_url', 'register'))
-                    <a href="{{ url(config('adminlte.register_url', 'register')) }}"
-                       class="text-center"
-                    >{{ trans('adminlte::adminlte.register_a_new_membership') }}</a>
-                @endif
             </div>
         </div>
-        <!-- /.login-box-body -->
-    </div><!-- /.login-box -->
-@stop
+    </div>
+    <div class="container" id="menu">
+        <div class="row">
+            <div class="col">
+                <a href="admin/imoveis/dashboard" rel="IMOVEIS" class="btn btn_imovel btn_produto">
+                    <h2>Imóvel</h2>
+                </a>
+            </div>
+            <div class="col">
+                <a href="admin/oi/dashboard" rel="OI" class="btn btn_oi btn_produto">
+                    <h2>Oi</h2>
+                </a>
+            </div>
+            <div class="col">
+                <a href="admin/financiamento/dashboard" rel="FINANCIAMENTO" class="btn btn_financiamento btn_produto">
+                    <h2>Financiamento</h2>
+                </a>
+            </div>
+            <div class="col">
+                <a href="admin/consultoria-de-credito/dashboard" rel="CONSULTORIA" class="btn btn_consultoria btn_produto">
+                    <h2>Consultoria de crédito</h2>
+                </a>
+            </div>
+        </div>
+    </div>
+    <form name="goto">
+        <input type="hidden" name="acao" value="goto">
+        <input type="hidden" name="par_var_produto">
+        <input type="hidden" name="par_var_produto">
+    </form>
+    <div id="footer">
+        <p>Supercredito - Todos os direitos reservados 2018</p>
+    </div>
+    <script src="{{ asset('js/plugins/notify/bootstrap-notify.min.js') }}"></script>
+    <script src="{{ url('js/site/script.js') }}"></script>
+</body>
 
-@section('adminlte_js')
-    <script src="{{ asset('vendor/adminlte/plugins/iCheck/icheck.min.js') }}"></script>
-    <script>
-        $(function () {
-            $('input').iCheck({
-                checkboxClass: 'icheckbox_square-blue',
-                radioClass: 'iradio_square-blue',
-                increaseArea: '20%' // optional
-            });
-        });
-    </script>
-    @yield('js')
-@stop
+</html>

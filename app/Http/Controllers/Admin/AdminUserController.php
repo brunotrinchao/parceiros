@@ -11,6 +11,7 @@ use Validator;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\EnviaEmail;
 use App\Helpers\Helper;
+use Image;
 
 class AdminUserController extends AdminController
 {
@@ -172,6 +173,60 @@ class AdminUserController extends AdminController
 
     public function userEdit(Request $request){
         return view('admin.usuario.editar');
+    }
+
+
+    public function editarPerfil(Request $request){
+        
+        $messagesRule = [
+            'name.required' => 'Nome do parceiro é obrigatório.'
+        ];
+        $validatedData = Validator::make($request->all(), [
+            'name' => 'required',
+            'file' => 'max:1024',
+            'file.*' => 'mimes:jpeg,png,jpg',
+        ], $messagesRule);
+
+        if($validatedData->fails()){
+            $arrMsg;
+            foreach(json_decode($validatedData->messages()) as $t){
+                $arrMsg[] = '- '. $t[0];
+            }
+            $retorno['message'] = implode('<br>', $arrMsg);
+            $retorno['success'] = false; 
+            return response()->json($retorno);
+        }
+        $user = User::find(auth()->user()->id);
+        $user->name = $request->name;
+
+        $image = $request->file;
+
+        if($image){
+            $fileExp = explode('.', $image->getClientOriginalName());
+            $name = auth()->user()->id.time().'-foto-'.Helper::createSlug($request->name);
+            $nameFile = "{$name}.{$fileExp[1]}";
+            $upload = $image->storeAs('public/parceiros', $nameFile);
+            
+            if($upload){
+                // thumb
+                $destinationPath = storage_path('app/public/parceiros');
+                if($user->image){
+                    unlink($destinationPath. '/'.$user->image);
+                    unlink($destinationPath. '/thumb-'.$user->image);
+                }
+                $img = Image::make($image->getRealPath());
+                $img->fit(100)->save($destinationPath.'/thumb-'.$nameFile);
+                
+                
+                    $user->image = $nameFile;            
+            }
+        }
+        
+        if($user->save()){
+            $retorno['message'] = 'Perfil atualizado com sucesso.';
+            $retorno['success'] = true; 
+            return response()->json($retorno);
+        }
     }
 
     private function petfilFormatado($perfil){

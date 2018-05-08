@@ -1305,10 +1305,14 @@ a {
   width: 100%;
   flex-wrap: wrap;
 }
+#menu .row:before, #menu .row:after{
+  display: none !important;
+}
 @media only screen and (max-width: 768px) {
   #menu .row {
     margin: 10px 0px;
   }
+  
 }
 #menu .row .col {
   -webkit-border-radius: 3px;

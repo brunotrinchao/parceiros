@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use PHPUnit\Framework\Constraint\IsTrue;
+use App\Models\Product;
 
 
 class Helper{
@@ -404,6 +405,11 @@ class Helper{
             $retorno .= $caracteres[$rand-1];
         }
         return $retorno;
+    }
+
+    public static function listaProdutos(){
+        $produtos = Product::all();
+        dd($produtos);
     }
 
 }
