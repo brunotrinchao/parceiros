@@ -12,7 +12,6 @@
 @section('content')
     <div class="row">
         <div class="col-md-9">
-            
         </div>
         <div class="col-md-3">
             <?php
@@ -46,13 +45,13 @@
                     "value" => 5
                 ],
         ];
-            foreach($arr as $item){
+            foreach($indicador[0] as $key => $item){
             ?>
                 <div class="small-box bg-primary">
                     <div class="inner">
-                    <h3>{{ $item['value']}}</h3>
+                    <h3>{{ value($item) }}</h3>
 
-                        <p>{{ $item['name']}}</p>
+                        <p>{{ $key}}</p>
                     </div>
                     <div class="icon">
                         <i class="fa fa-signal"></i>

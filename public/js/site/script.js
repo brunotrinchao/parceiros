@@ -97,6 +97,75 @@ var notify;
               }, 500, "linear");
           });
     });
+    
+    // Recover
+    $('form[name=form_recover]').submit(function(e){
+        e.preventDefault();
+        var dados = $(this).serializeArray();
+        var token = $('input[name="_token"]').val();
+        jQuery.ajax({
+            headers: {
+                'X-CSRF-Token': token
+            },
+            type: "POST",
+            url: 'usuario/recover',
+            data: dados,
+            dataType: 'json',
+            async: true,
+            beforeSend: function() {
+                notify = $.notify({
+                    icon: "fa fa-check",
+                    title: '',
+                    message: 'Aguarde...'
+                },{
+                    type: 'info',
+                    allow_dismiss: false,
+	                showProgressbar: true
+                });
+            },
+            error: function(error, payload, msg) {
+                console.log(error);
+                console.log(payload);
+                console.log(msg);
+                notify.update({
+                    'type': 'danger', 
+                    'icon': "fa fa-ban",
+                    'message': msg, 
+                    'progress': 100});
+            },
+            success: function(json) {
+                notify.update({
+                    'type': 'success', 
+                    'icon': "fa fa-check",
+                    'message': json.message, 
+                    'progress': 100});
+                console.log(json);
+                if(json.success){
+                    $('input[type=text]').val('');
+                    $('form[name=form_recover]').fadeOut(400, function(){
+                        $('form[name=form_login]').fadeIn(400)
+                    });
+                }
+            }
+        });
+        
+    });
+
+    $('.btn_recover').click(function(e){
+        e.preventDefault();
+        $('input[type=text]').val('');
+        $('form[name=form_login]').fadeOut(400, function(){
+            $('form[name=form_recover]').fadeIn(400)
+        });
+    });
+    // Logar
+    $('.btn_login').click(function(e){
+        e.preventDefault();
+        $('input[type=text]').val('');
+        $('form[name=form_recover]').fadeOut(400, function(){
+            $('form[name=form_login]').fadeIn(400)
+        });
+    });
 
 });
 

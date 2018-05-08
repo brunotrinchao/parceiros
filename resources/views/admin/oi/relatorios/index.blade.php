@@ -23,8 +23,8 @@
 <li class="active">Relatórios</li>
 </ol>
 @stop @section('content')
-
-<div class="box box-solid">
+<h1 class="show-print">Relatórios - OI</h1>
+<div class="box box-solid hidde-print">
   <div class="box-body">
     <div class="row">
     <form action="{{ url('admin/'.$url_produto.'/relatorios/resultado') }}" method="post">
@@ -76,6 +76,9 @@
 
 
 <div class="box box-solid">
+  <div class="box-header hidde-print">
+      <a href="#" class="btn btn-primary pull-right btn-imprimir-dpf"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Exportar PDF</a>
+  </div>
   <div class="box-body">
     <table class="table table-striped table-bordered dt-responsive nowrap" width="100%">
       <thead>
@@ -88,9 +91,9 @@
           }
           ?>
           <th data-priority="1">Cliente</th>
-          <th class="hidden-sm">Informações</th>
-          <th class="hidden-sm">Status</th>
-          <th class="hidden-sm">Data</th>
+          <th>Informações</th>
+          <th>Status</th>
+          <th>Data</th>
         </tr>
       </thead>
       <tbody>
@@ -99,14 +102,14 @@
           <?php 
           if(auth()->user()->level == 'S'){
           ?>
-          <td>{{ $relatorio['partner_name'] }}</td>
+          <td data-label="Parceiro">{{ $relatorio['partner_name'] }}</td>
           <?php 
             }
           ?>
-          <td>{{ $relatorio['client_name'] }}</td>
-          <td class="hidden-sm">{{ $relatorio['note'] }}</td>
-          <td class="hidden-sm">{{ $relatorio['status_formatado'] }}</td>
-          <td class="hidden-sm">{{ $relatorio['date_formatada'] }}</td>
+          <td data-label="Cliente">{{ $relatorio['client_name'] }}</td>
+          <td data-label="Informações">{{ $relatorio['note'] }}</td>
+          <td data-label="Status">{{ $relatorio['status_formatado'] }}</td>
+          <td data-label="Data">{{ $relatorio['date_formatada'] }}</td>
         </tr>
          @empty @endforelse 
       </tbody>

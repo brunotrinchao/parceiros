@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Partner;
 use App\User;
 use Validator;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\EnviaEmail;
+use App\Helpers\Helper;
 
 class AdminUserController extends AdminController
 {
@@ -47,6 +50,7 @@ class AdminUserController extends AdminController
     }
 
     public function create(Request $request, User $user){
+        
         $messagesRule = [
             'name.required' => 'Nome do usuário é obrigatório.',
             'email.required' => 'E-mail do usuário é obrigatório.',
@@ -67,7 +71,7 @@ class AdminUserController extends AdminController
             $retorno['success'] = false; 
             return response()->json($retorno);
         }
-
+        $novaSenha = Helper::geraSenha();
         $user->name = $request->name;
         $user->email = $request->email;
         $user->partners_id = $request->partners_id;
@@ -76,7 +80,24 @@ class AdminUserController extends AdminController
         $user->date = date('Y-m-d');
         
         if($user->save()){
-            $retorno['message'] = 'Parceiro cadastrado com sucesso.';
+            $parceiro = Partner::find($request->partners_id);
+
+            $html = "<h3>Dados de acesso ao sistema de parceiros da SUPERCRÉDITO</h3>";
+            $html .= "<p>Olá $request->name, esses são seus dados de acesso ao portal do parceiro SUPERCRÉDITO.</p>";
+            $html .= "<p><strong>Parceiro: </strong> $parceiro->name</p>";
+            $html .= "<p><strong>Login: </strong> $request->email</p>";
+            $html .= "<p><strong>Senha: </strong> $novaSenha</p>";
+
+            
+            $obj = (object)[];
+            $obj->html = $html;
+            $obj->nome = $request->name;
+            $obj->email = $request->email;
+            $obj->assunto = 'Parceiro SUPERCRÉDITO';
+
+            $sendMail = Mail::to('brunotrinchao@gmail.com')->send(new EnviaEmail($obj));
+
+            $retorno['message'] = 'Usuário cadastrado para o parceiro <b>'.$parceiro->name.'</b> com sucesso.<br>Um email com od dados de acesso foram enviado para <b>' .$request->email.'</b>.';
             $retorno['success'] = true; 
             return response()->json($retorno);
         }

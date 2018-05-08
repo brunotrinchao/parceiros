@@ -246,6 +246,7 @@ class AdminReportController extends AdminController
 
         if(auth()->user()->level == "U" || auth()->user()->level == "A" || auth()->user()->level == "G"){
             $sql .= 'AND partners.id = '. intval(auth()->user()->partners_id);
+            $sqlIndicadores .= 'AND partners.id = '. intval(auth()->user()->partners_id);
         }
 
         if(auth()->user()->level == 'U') {
@@ -310,7 +311,7 @@ class AdminReportController extends AdminController
         return  $html;
     }
 
-    // Financiamento
+    // Consultorias
     public function getConsultorias(){
         $sqlIndicadores = '
             SELECT COUNT(*) as indicadores,

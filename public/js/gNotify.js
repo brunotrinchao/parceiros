@@ -57,7 +57,7 @@
                         dataType: 'json',
                         beforeSend: function () {
                           $('.v_content_msg').empty();
-                          $('body').append('<div class="loader"><img src="{{ url("imagens/ajax-loader.gif")}}"></div>');
+                          $('body').append('<div class="loader"><img src="{{ url("../../../imagens/ajax-loader.gif")}}"></div>');
                           $('.loader').fadeIn('fast')
                         },
                         success: function (data) {

@@ -29,11 +29,22 @@
                         <div class="input_group">
                             <label>Senha</label>
                             <input type="password" id="usu_var_senha" name="password" require autocomplete="off">
-                            <a href="#">Esqueci a senha</a>
+                            <a href="#" class="btn_recover">Esqueci a senha</a>
                         </div>
                         <div class="input_group input_group_button">
                             <button type="submit">OK</button>
                         </div>
+                    </form>
+                    <form name="form_recover" style="display:none">
+                            {!! csrf_field() !!}
+                            <div class="input_group">
+                                <label>E-mail</label>
+                                <input type="text" name="email" require autocomplete="off">
+                                <a href="#" class="btn_login">Fazer login</a>
+                            </div>
+                            <div class="input_group input_group_button">
+                                <button type="submit">OK</button>
+                            </div>
                     </form>
                     <div class="box_usuario" style="{{($user)? 'display:block': 'display:none'}}">
                         <h3>Olá,

@@ -41,11 +41,11 @@
         $.gAjax.execCallback(_url + "/admin/usuarios/editar", $('form[name=novo_usuario]').serialize(), false, function(retorno){
           if(retorno.success){
             $.gNotify.success(null, retorno.message);
-            setTimeout(location.reload(), 500);
+            // setTimeout(location.reload(), 500);
           }else{
             $.gNotify.danger(null, retorno.message);
           }
-        }, true, false, false, function(erro, payload, msg){
+        }, true, true, false, function(erro, payload, msg){
           console.log(erro);
           console.log(payload);
           console.log(msg);
@@ -55,11 +55,11 @@
         $.gAjax.execCallback(_url + "/admin/usuarios/novo", $('form[name=novo_usuario]').serialize(), false, function(retorno){
           if(retorno.success){
             $.gNotify.success(null, retorno.message);
-            setTimeout(location.reload(), 500);
+            // setTimeout(location.reload(), 500);
           }else{
             $.gNotify.danger(null, retorno.message);
           }
-        }, true, false, false, function(erro, payload, msg){
+        }, true, true, false, function(erro, payload, msg){
           console.log(erro);
           console.log(payload);
           console.log(msg);

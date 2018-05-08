@@ -23,8 +23,8 @@
 <li class="active">Relatórios</li>
 </ol>
 @stop @section('content')
-
-<div class="box box-solid">
+<h1 class="show-print">Relatórios - Imóveis</h1>
+<div class="box box-solid hidde-print">
   <div class="box-body">
     <div class="row">
     <form action="{{ url('admin/'.$url_produto.'/relatorios/resultado') }}" method="post">
@@ -75,27 +75,30 @@
 
 
 <div class="box box-solid">
+    <div class="box-header hidde-print">
+        <a href="#" class="btn btn-primary pull-right btn-imprimir-dpf"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Exportar PDF</a>
+    </div>
   <div class="box-body">
     <table class="table table-striped table-bordered dt-responsive nowrap" width="100%">
       <thead>
         <tr>
           <th data-priority="1">Imóvel</th>
-          <th class="hidden-sm">Cliente</th>
-          <th class="hidden-sm">Usuário</th>
-          <th class="hidden-sm">Valor</th>
-          <th class="hidden-sm">Negócio</th>
-          <th class="hidden-sm">Data</th>
+          <th>Cliente</th>
+          <th>Usuário</th>
+          <th>Valor</th>
+          <th>Negócio</th>
+          <th>Data</th>
         </tr>
       </thead>
       <tbody>
           @forelse($relatorios as $relatorio) 
         <tr>
-          <td>{{ $relatorio->imovel }}</td>
-          <td class="hidden-sm">{{ $relatorio->cliente }}</td>
-          <td class="hidden-sm">{{ $relatorio->usuario }}</td>
-          <td class="hidden-sm">{{ $relatorio->preco }}</td>
-          <td class="hidden-sm">{{ $relatorio->negocio }}</td>
-          <td class="hidden-sm">{{ date('d/m/Y', strtotime($relatorio->data)) }}</td>
+          <td data-label="Imóvel">{{ $relatorio->imovel }}</td>
+          <td data-label="Cliente">{{ $relatorio->cliente }}</td>
+          <td data-label="Usuário">{{ $relatorio->usuario }}</td>
+          <td data-label="Valor">{{ $relatorio->preco }}</td>
+          <td data-label="Negócio">{{ $relatorio->negocio }}</td>
+          <td data-label="Data">{{ date('d/m/Y', strtotime($relatorio->data)) }}</td>
         </tr>
          @empty @endforelse 
       </tbody>

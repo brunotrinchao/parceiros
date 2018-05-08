@@ -129,4 +129,58 @@ select:disabled{
 .skin-blue .main-header .navbar .dropdown-menu li a:hover{
   background-color: #fff;
 }
+.show-print{
+  display:none;
+}
+@media print {
+  .hidde-print {
+    display: none;
+  }
+  .show-print {
+    display: block;
+  }
+  .hidden-sm{
+    display: block !important;
+  }
+}
+
+@media screen and (max-width: 980px) {
+  
+  table thead {
+    border: none;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+  }
+  
+  table tr {
+    border-bottom: 3px solid #ddd;
+    display: block;
+  }
+  
+  table td {
+    border-bottom: 1px solid #ddd;
+    display: block;
+    text-align: right;
+  }
+  
+  table td::before {
+    /*
+    * aria-label has no advantage, it won't be read inside a table
+    content: attr(aria-label);
+    */
+    content: attr(data-label);
+    float: left;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+  
+  table td:last-child {
+    border-bottom: 0;
+  }
+}
 

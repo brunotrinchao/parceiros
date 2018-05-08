@@ -28,6 +28,8 @@
     <link rel="stylesheet" href="{{asset('js/plugins/select/bootstrap-select.css')}}"> 
     <!-- input tags -->
     <link rel="stylesheet" href="{{asset('js/plugins/input-tags/bootstrap-tagsinput.css')}}"> 
+    <!-- Table responsive -->
+    {{-- <link rel="stylesheet" href="{{asset('js/plugins/table-responsive/tablesaw.stackonly.css')}}">  --}}
     @if(config('adminlte.plugins.select2'))
     <!-- Select2 -->
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.css">
@@ -87,6 +89,8 @@
 <script src="{{url('js/plugins/toggle/bootstrap-toggle-master/js/bootstrap-toggle.min.js')}}"></script>
 <!-- input icheck -->
 <script src="{{url('js/plugins/icheck/icheck.min.js')}}"></script>
+<!-- Table Responsive -->
+{{-- <script src="{{url('js/plugins/table-responsive/tablesaw.stackonly.js')}}"></script> --}}
 <script src="{{ asset('js/gNotify.js')}}"></script>
 <script src="{{ asset('js/gAjax.js')}}"></script>
 <script src="{{ asset('js/geral.js')}}"></script>
@@ -267,6 +271,11 @@ $(document).on('click','.add_phone',function (e) {
     $('#informacoesModal').find('.content-note').empty().text(info);
     $('#informacoesModal').modal('show');
 
+  });
+
+  $('.btn-imprimir-dpf').click(function(e){
+    e.preventDefault();
+    window.print();
   });
 });
 

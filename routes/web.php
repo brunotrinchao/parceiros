@@ -11,6 +11,10 @@
 |
 */
 Config::set('debugbar.enabled', false);
+
+$this->get('/', 'Site\SiteController@index')->name('home');
+$this->get('/login', 'Site\SiteController@login')->name('login');
+
 // Parceiros
 $this->group(['middleware' => ['auth']], function(){
     $this->middleware('auth', 'check-permission:superadmin')
@@ -37,6 +41,7 @@ $this->group([], function(){
     $this->middleware('auth', 'check-permission:superadmin|admin|gerente')
         ->post('admin/usuarios/novo', 'Admin\AdminUserController@create')->name('admin.usuarios.novo');
     $this->post('usuario/login', 'Auth\CustonLoginController@loginUser')->name('usuario.login');
+    $this->post('usuario/recover', 'Auth\CustonLoginController@recoverUser')->name('usuario.login');
 });
 // Clientes
 $this->group(['middleware' => ['auth'], 'namespace' => 'Admin'], function(){
@@ -179,8 +184,7 @@ $this->group(['middleware' => ['auth'], 'namespace' => 'Admin'], function(){
 });
 
 
-$this->get('/', 'Site\SiteController@index')->name('home');
-$this->get('/login', 'Site\SiteController@index')->name('login');
+
 
 Auth::routes();
 

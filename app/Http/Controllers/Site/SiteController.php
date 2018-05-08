@@ -15,4 +15,11 @@ class SiteController extends Controller
         }
         return view('site.index', ['user' => $user]);
     }
+    public function login(Request $request){
+        $user = false;
+        if(Auth::check()){
+            $user = auth()->user();
+        }
+        return redirect()->route('site.index', ['user' => $user]);
+    }
 }

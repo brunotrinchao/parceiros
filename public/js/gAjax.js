@@ -11,7 +11,7 @@
                 async: async,
                 beforeSend: function() {
                     if (preloader === undefined || preloader == true)
-                    $('body').append('<div class="loader"><img src="../../../imagens/ajax-loader.gif"></div>');
+                    $('body').append('<div class="loader"><img src="../imagens/ajax-loader.gif"></div>');
                     $('.loader').fadeIn('fast')
                 },
                 error: function(xhr, textStatus, errorThrown) {
@@ -57,7 +57,7 @@
                 async: async,
                 beforeSend: function() {
                     if (preloader === undefined || preloader == true)
-                        $('body').append('<div class="loader"><img src="{{ url("imagens/ajax-loader.gif")}}"></div>');
+                        $('body').append('<div class="loader"><img src="../imagens/ajax-loader.gif></div>');
                         $('.loader').fadeIn('fast');
                 },
                 error: function() {
@@ -90,7 +90,7 @@
                 async: async,
                 beforeSend: function() {
                     if (preloader === undefined || preloader === true)
-                        $('body').append('<div class="loader"><img src="{{ url("imagens/ajax-loader.gif")}}"></div>');
+                        $('body').append('<div class="loader"><img src="../imagens/ajax-loader.gif"></div>');
                         $('.loader').fadeIn('fast');
                 },
                 error: function(error, payload, msg) {
